@@ -1,4 +1,4 @@
-package com.softsqaured.progrpahy_pizza;
+package com.prography.progrpahy_pizza;
 
 import android.content.Context;
 
