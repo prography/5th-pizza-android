@@ -8,8 +8,6 @@ import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.main.interfaces.MainActivityView;
 
-import butterknife.BindView;
-
 public class MainActivity extends BaseActivity implements MainActivityView {
 
     @Override
