@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
+    tools:context=".src.signin.SignInActivity">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="이메일"
+        android:background="@drawable/form_edittext"
+        android:id="@+id/tv_email_signin"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="비밀번호"
+        android:background="@drawable/form_edittext"
+        android:id="@+id/tv_password_signin"
+        android:layout_marginBottom="32dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="로그인"
+        android:gravity="center"
+        android:background="@drawable/form_edittext"
+        android:id="@+id/btn_signin_signin"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="회원가입"
+        android:gravity="center"
+        android:background="@drawable/form_edittext"
+        android:id="@+id/btn_signup_signin"
+        android:layout_marginBottom="16dp"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="카카오계정으로 시작하기"
+        android:gravity="center"
+        android:background="@drawable/form_edittext"
+        android:id="@+id/btn_kakaosignup_signin"
+        />
+
+
+
+</LinearLayout>

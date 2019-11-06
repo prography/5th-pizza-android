@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.prography.progrpahy_pizza"
-        minSdkVersion 21
+        minSdkVersion 26
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -28,12 +28,13 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     // https://github.com/square/retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
 
     // https://github.com/square/okhttp
-    implementation("com.squareup.okhttp3:okhttp:4.0.1")
+    implementation('com.squareup.okhttp3:okhttp:4.2.2')
 
     // https://github.com/square/retrofit/tree/master/retrofit-converters/gson
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
     implementation 'com.google.android.material:material:1.0.0'
+    implementation files('src\\main\\jniLibs\\libDaumMapAndroid.jar')
 }
