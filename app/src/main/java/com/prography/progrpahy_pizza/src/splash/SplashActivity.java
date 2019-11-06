@@ -5,8 +5,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.main.MainActivity;
 import com.prography.progrpahy_pizza.src.record.RecordActivity;
