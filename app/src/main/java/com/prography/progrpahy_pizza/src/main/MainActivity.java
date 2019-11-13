@@ -15,6 +15,8 @@ import com.prography.progrpahy_pizza.src.main.models.RecyclerViewAdapter;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +24,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
 
     private FloatingActionButton floatingActionButton;
     private RecyclerView recyclerView;
+    private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +32,10 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
 
         floatingActionButton=findViewById(R.id.btn_main_addChallenge);
         recyclerView=findViewById(R.id.recyclerView);
+        toolbar=findViewById(R.id.toolbar_main);
+
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
 
         floatingActionButton.setOnClickListener(this);
 
@@ -51,6 +58,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.main_edit:
+
                 
         }
 
