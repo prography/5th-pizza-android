@@ -12,6 +12,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,6 +37,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private Button btnStartRecord;
     private Button btnSubmitRecord;
     private MapView mvRecord;
+    private ImageView ivClose;
 
     private Handler timerHandler;
     private Handler distanceHandler;
@@ -76,10 +78,12 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         btnStartRecord = findViewById(R.id.btn_start_record);
         btnSubmitRecord = findViewById(R.id.btn_submit_record);
         mvRecord = findViewById(R.id.frame_mapview_record);
+        ivClose = findViewById(R.id.iv_back_record);
 
         /* Set on Click Listener */
         btnStartRecord.setOnClickListener(this);
         btnSubmitRecord.setOnClickListener(this);
+        ivClose.setOnClickListener(this);
 
         /* Get Location - GPS */
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -191,6 +195,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                finish();
                             }
                         })
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -200,6 +205,9 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                             }
                         })
                         .create().show();
+                break;
+            case R.id.iv_back_record:
+                finish();
                 break;
         }
     }
