@@ -8,6 +8,7 @@ import com.prography.progrpahy_pizza.config.XAccessTokenInterceptor;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
@@ -34,6 +35,7 @@ public class ApplicationClass extends Application {
 
     //날짜 형식
     public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
+    public static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss:S", Locale.getDefault());
 
     // Retrofit 인스턴스
     public static Retrofit retrofit;
@@ -45,6 +47,8 @@ public class ApplicationClass extends Application {
         if (sSharedPreferences == null) {
             sSharedPreferences = getApplicationContext().getSharedPreferences(TAG, Context.MODE_PRIVATE);
         }
+
+        TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
     public static Retrofit getRetrofit() {

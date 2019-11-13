@@ -2,7 +2,7 @@ package com.prography.progrpahy_pizza.src.main;
 
 import com.prography.progrpahy_pizza.src.main.interfaces.MainActivityView;
 import com.prography.progrpahy_pizza.src.main.interfaces.MainRetrofitInterface;
-import com.prography.progrpahy_pizza.src.main.models.DefaultResponse;
+import com.prography.progrpahy_pizza.src.common.models.DefaultResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;

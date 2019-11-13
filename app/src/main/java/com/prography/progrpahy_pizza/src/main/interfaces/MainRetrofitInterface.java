@@ -1,6 +1,6 @@
 package com.prography.progrpahy_pizza.src.main.interfaces;
 
-import com.prography.progrpahy_pizza.src.main.models.DefaultResponse;
+import com.prography.progrpahy_pizza.src.common.models.DefaultResponse;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;

@@ -1,4 +1,4 @@
-package com.prography.progrpahy_pizza.src.main.models;
+package com.prography.progrpahy_pizza.src.common.models;
 
 import com.google.gson.annotations.SerializedName;
 

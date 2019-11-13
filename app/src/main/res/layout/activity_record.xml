@@ -46,27 +46,16 @@
         android:id="@+id/btn_submit_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="인증"
+        android:text="종료"
         android:textSize="18sp"
         android:textColor="@android:color/white"
         android:textStyle="bold"
+        android:visibility="invisible"
+        tools:visibility="visible"
         android:background="@android:color/black"
         app:layout_constraintBottom_toBottomOf="@+id/btn_start_record"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_start_record" />
-
-    <Button
-        android:id="@+id/btn_resume_record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="계속"
-        android:textSize="18sp"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:background="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_start_record"
-        app:layout_constraintEnd_toStartOf="@+id/btn_start_record"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btn_start_record"
@@ -77,10 +66,11 @@
         android:textSize="18sp"
         android:textColor="@android:color/white"
         android:textStyle="bold"
+
         android:background="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_submit_record"
-        app:layout_constraintStart_toEndOf="@+id/btn_resume_record" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <net.daum.mf.map.api.MapView
         android:layout_width="0dp"
