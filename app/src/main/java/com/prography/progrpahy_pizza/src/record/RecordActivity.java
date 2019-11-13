@@ -1,10 +1,15 @@
 package com.prography.progrpahy_pizza.src.record;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,6 +21,10 @@ import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.record.interfaces.RecordActivityView;
 
+import net.daum.mf.map.api.MapPolyline;
+import net.daum.mf.map.api.MapView;
+
+import java.util.ArrayList;
 import java.util.Date;
 
 import static com.prography.progrpahy_pizza.src.ApplicationClass.TIME_FORMAT;
@@ -23,18 +32,38 @@ import static com.prography.progrpahy_pizza.src.ApplicationClass.TIME_FORMAT;
 public class RecordActivity extends BaseActivity implements RecordActivityView {
 
     private TextView tvCountTime;
+    private TextView tvDistance;
     private Button btnStartRecord;
     private Button btnSubmitRecord;
-
-    private Thread timerThread;
-
+    private MapView mvRecord;
 
     private Handler timerHandler;
+    private Handler distanceHandler;
+    private LocationManager locationManager;
+
+    private ArrayList<MyLocation> myLocations = new ArrayList<>();
 
     private boolean TIMER_RUNNING = false;
     private long startTime;
     private long totalLeftTime = 0;
     private long leftTime = 0;
+
+    private Location prevLocation;
+    private Location curLocation;
+    private float totalDistance = 0.0f;
+
+    public class MyLocation {
+        double longitude;
+        double latitude;
+        double altitude;
+
+        public MyLocation(double longitude, double latitude, double altitude) {
+            this.longitude = longitude;
+            this.latitude = latitude;
+            this.altitude = altitude;
+        }
+    }
+
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +72,32 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
         /* findViewByID */
         tvCountTime = findViewById(R.id.tv_cur_time_record);
+        tvDistance = findViewById(R.id.tv_cur_distance_record);
         btnStartRecord = findViewById(R.id.btn_start_record);
         btnSubmitRecord = findViewById(R.id.btn_submit_record);
+        mvRecord = findViewById(R.id.frame_mapview_record);
 
         /* Set on Click Listener */
         btnStartRecord.setOnClickListener(this);
         btnSubmitRecord.setOnClickListener(this);
 
+        /* Get Location - GPS */
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return;
+        }
+
+
+        /* Set MapView */
+        mvRecord.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading); // 권한 설정 필요
+        mvRecord.setZoomLevel(3, false);
 
         /* Set Timer Handler */
         timerHandler = new Handler() {
@@ -59,6 +107,13 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 tvCountTime.setText(TIME_FORMAT.format(date));
             }
         };
+        distanceHandler = new Handler() {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                tvDistance.setText(String.format("%.2f", totalDistance) + " m");
+            }
+        };
+
     }
 
     private void tryPostRecord() {
@@ -79,6 +134,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 if (!TIMER_RUNNING) {
                     TIMER_RUNNING = true;
                     startTime = System.currentTimeMillis(); // 초기 시간 기록
+                    // Timer Thread
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -93,6 +149,29 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
+                            }
+                        }
+                    }).start();
+                    // Location Thread
+                    new Thread(new Runnable() {
+                        @SuppressLint("MissingPermission")
+                        @Override
+                        public void run() {
+                            while (TIMER_RUNNING) {
+                                curLocation  = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                double longitude = curLocation.getLongitude();
+                                double latitude = curLocation.getLatitude();
+                                double altitude = curLocation.getAltitude();
+                                myLocations.add(new MyLocation(longitude, latitude, altitude));
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                prevLocation = curLocation;
+                                totalDistance += curLocation.distanceTo(prevLocation);
+                                distanceHandler.sendEmptyMessage(0);
+                                Log.i("LOCATION", "Longitude: " + longitude + ", Latitude: " + latitude + ", Altitude: " + altitude + ", Total Distance: " + totalDistance);
                             }
                         }
                     }).start();

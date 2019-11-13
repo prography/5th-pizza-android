@@ -35,7 +35,7 @@ public class ApplicationClass extends Application {
 
     //날짜 형식
     public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
-    public static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss:S", Locale.getDefault());
+    public static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss.S", Locale.getDefault());
 
     // Retrofit 인스턴스
     public static Retrofit retrofit;
