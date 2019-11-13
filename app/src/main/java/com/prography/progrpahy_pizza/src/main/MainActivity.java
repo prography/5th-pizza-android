@@ -3,9 +3,12 @@ package com.prography.progrpahy_pizza.src.main;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
+import com.prography.progrpahy_pizza.src.addChallenge.AddChallengeActivity;
 import com.prography.progrpahy_pizza.src.main.interfaces.MainActivityView;
 import com.prography.progrpahy_pizza.src.main.models.RecyclerViewAdapter;
 
@@ -15,14 +18,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MainActivity extends BaseActivity implements MainActivityView {
+public class MainActivity extends BaseActivity implements MainActivityView, View.OnClickListener {
 
+    private FloatingActionButton floatingActionButton;
+    private RecyclerView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView=findViewById(R.id.recyclerView);
+        floatingActionButton=findViewById(R.id.btn_main_addChallenge);
+        recyclerView=findViewById(R.id.recyclerView);
+
+        floatingActionButton.setOnClickListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<String> arr=new ArrayList<>();
@@ -57,5 +65,11 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     @Override
     public void validateFailure(String message) {
         hideProgressDialog();
+    }
+
+    @Override
+    public void onClick(View v) {
+        startNextActivity(AddChallengeActivity.class);
+        finish();
     }
 }

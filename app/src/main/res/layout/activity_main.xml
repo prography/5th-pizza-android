@@ -21,15 +21,18 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/button_main"
+        android:id="@+id/btn_main_addChallenge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/recyclerView"
         android:layout_alignBottom="@+id/recyclerView"
         android:layout_marginRight="40dp"
         android:layout_marginBottom="40dp"
+        android:backgroundTint="#ffffff"
         android:src="@drawable/ic_add_circle"
-        android:background="@drawable/ic_add_circle"/>
+        app:backgroundTint="#FF000000"
+        app:fabSize="normal"
+        app:borderWidth="2dp"/>
 
 
 </RelativeLayout>
