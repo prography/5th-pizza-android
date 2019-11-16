@@ -161,19 +161,20 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         @SuppressLint("MissingPermission")
                         @Override
                         public void run() {
+                            prevLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                             while (TIMER_RUNNING) {
                                 curLocation  = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                                 double longitude = curLocation.getLongitude();
                                 double latitude = curLocation.getLatitude();
                                 double altitude = curLocation.getAltitude();
                                 myLocations.add(new MyLocation(longitude, latitude, altitude));
+                                totalDistance += curLocation.distanceTo(prevLocation);
+                                prevLocation = curLocation;
                                 try {
                                     Thread.sleep(1000);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                                prevLocation = curLocation;
-                                totalDistance += curLocation.distanceTo(prevLocation);
                                 distanceHandler.sendEmptyMessage(0);
                                 Log.i("LOCATION", "Longitude: " + longitude + ", Latitude: " + latitude + ", Altitude: " + altitude + ", Total Distance: " + totalDistance);
                             }
