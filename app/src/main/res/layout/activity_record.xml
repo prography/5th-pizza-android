@@ -7,16 +7,18 @@
     android:orientation="vertical"
     tools:context=".src.record.RecordActivity">
 
-
-    <ImageView
-        android:id="@+id/iv_back_record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+    <net.daum.mf.map.api.MapView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:id="@+id/frame_mapview_record"
+        android:foreground="@drawable/foreground_gradient_white_center"
+        app:layout_constraintBottom_toTopOf="@+id/tv_cur_distance_record"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_arrow_back" />
+        app:layout_constraintTop_toBottomOf="parent" />
+
 
     <TextView
         android:id="@+id/tv_cur_time_record"
@@ -58,6 +60,21 @@
         app:layout_constraintStart_toEndOf="@+id/btn_start_record" />
 
     <Button
+        android:id="@+id/btn_change_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="속도"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_start_record"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_start_record" />
+
+    <Button
         android:id="@+id/btn_start_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -66,25 +83,20 @@
         android:textSize="18sp"
         android:textColor="@android:color/white"
         android:textStyle="bold"
-
         android:background="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <net.daum.mf.map.api.MapView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:id="@+id/frame_mapview_record"
-        app:layout_constraintBottom_toTopOf="@+id/tv_cur_distance_record"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_back_record"
-        app:layout_constraintVertical_bias="0.0">
 
-    </net.daum.mf.map.api.MapView>
+
+    <ImageView
+        android:id="@+id/iv_back_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_arrow_back" />
 </androidx.constraintlayout.widget.ConstraintLayout>

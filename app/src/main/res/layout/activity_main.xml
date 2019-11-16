@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context=".src.main.MainActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_main"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/holo_blue_bright"
+        android:background="@android:color/white"
+        android:elevation="2dp"
         app:title="test"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -18,7 +20,8 @@
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_main">
+        android:layout_below="@+id/toolbar_main"
+        tools:listitem="@layout/recycler_item">
 
     </androidx.recyclerview.widget.RecyclerView>
 
