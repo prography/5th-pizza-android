@@ -98,10 +98,9 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             return;
         }
 
-
         /* Set MapView */
         mvRecord.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading); // 권한 설정 필요
-        mvRecord.setZoomLevel(3, false);
+        mvRecord.setZoomLevel(2, false);
 
         /* Set Timer Handler */
         timerHandler = new Handler() {
@@ -114,7 +113,10 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         distanceHandler = new Handler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
-                tvDistance.setText(String.format("%.2f", totalDistance) + " m");
+                if (totalDistance < 1000)
+                    tvDistance.setText(String.format("%.1f", totalDistance) + " m"); // < 1000 : 0.0 m
+                else
+                    tvDistance.setText(String.format("%.2f", totalDistance / 1000) + " km"); // >= 1000 : 0.00 km
             }
         };
 

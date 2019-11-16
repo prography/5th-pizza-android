@@ -18,7 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".src.signup.SignUpActivity"></activity>
+        <activity android:name=".src.mypage.MyPageActivity"></activity>
+        <activity android:name=".src.signup.SignUpActivity" />
         <activity android:name=".src.record.RecordActivity" />
         <activity android:name=".src.signin.SignInActivity" />
         <activity android:name=".src.main.MainActivity" />
