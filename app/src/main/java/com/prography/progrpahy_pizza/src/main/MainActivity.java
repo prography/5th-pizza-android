@@ -10,6 +10,7 @@ import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.addChallenge.AddChallengeActivity;
 import com.prography.progrpahy_pizza.src.main.interfaces.MainActivityView;
+import com.prography.progrpahy_pizza.src.main.models.Challenge;
 import com.prography.progrpahy_pizza.src.main.models.RecyclerViewAdapter;
 
 import java.util.ArrayList;
@@ -40,10 +41,10 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
         floatingActionButton.setOnClickListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ArrayList<String> arr=new ArrayList<>();
-        arr.add("hello");
+        ArrayList<Challenge> arr=new ArrayList<>();
+    /*    arr.add("hello");
         arr.add("hi");
-        arr.add("ahh");
+        arr.add("ahh");*/
         recyclerView.setAdapter(new RecyclerViewAdapter(arr, this));
     }
 
@@ -76,6 +77,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
     }
 
     @Override
+    //floating button
     public void onClick(View v) {
         startNextActivity(AddChallengeActivity.class);
         finish();
