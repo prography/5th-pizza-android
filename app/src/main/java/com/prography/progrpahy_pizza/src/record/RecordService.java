@@ -24,13 +24,13 @@ public class RecordService {
             @Override
             public void onResponse(Call<RecordResponse> call, Response<RecordResponse> response) {
                 final RecordResponse recordResponse = response.body();
-                if (recordResponse == null || !recordResponse.getIsSuccess()) {
+                if (recordResponse == null) {
                     mRecordActivityView.validateFailure(null);
                     return;
                     // Fail
                 }
                 // Success
-                mRecordActivityView.validateSuccess(null);
+                mRecordActivityView.validateSuccess(String.valueOf(recordResponse.getData().get(0).getRecordId()));
             }
 
             @Override
