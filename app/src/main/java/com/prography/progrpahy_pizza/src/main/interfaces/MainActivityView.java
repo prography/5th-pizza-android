@@ -2,7 +2,7 @@ package com.prography.progrpahy_pizza.src.main.interfaces;
 
 public interface MainActivityView {
 
-    void validateSuccess(String text);
+    void getvalidateSuccess();
+    void getvalidateFailure();
 
-    void validateFailure(String message);
 }

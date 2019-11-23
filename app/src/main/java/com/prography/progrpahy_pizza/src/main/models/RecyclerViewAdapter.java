@@ -17,11 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    private ArrayList<Challenge> challenges;
+    private ArrayList<ChallengeResponse> challengeResponses;
     private LayoutInflater layoutInflater;
 
-    public RecyclerViewAdapter(ArrayList<Challenge> challenges, Context context) {
-        this.challenges = challenges;
+    public RecyclerViewAdapter(ArrayList<ChallengeResponse> challengeResponses, Context context) {
+        this.challengeResponses = challengeResponses;
         layoutInflater = LayoutInflater.from(context);
     }
 
@@ -37,29 +37,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Challenge challenge=challenges.get(position);
+        ChallengeResponse challengeResponse = challengeResponses.get(position);
 
-        if(challenge!=null) {
-            holder.routineType.setText(challenge.getRoutineType());
-            holder.time.setText(String.valueOf(challenge.getTime()));
-            holder.objectUnit.setText(challenge.getObjectUnit());
-            holder.exerciseType.setText(challenge.getExerciseType());
+        if(challengeResponse !=null) {
+            holder.routineType.setText(challengeResponse.getRoutineType());
+            holder.time.setText(String.valueOf(challengeResponse.getTime()));
+            holder.objectUnit.setText(challengeResponse.getObjectUnit());
+            holder.exerciseType.setText(challengeResponse.getExerciseType());
         }
-
-       /* holder.routineType.setText(challenges.get(position));
-        holder.time.setText(challenges.get(position));
-        holder.objectUnit.setText(challenges.get(position));
-        holder.exerciseType.setText(challenges.get(position));*/
-
     }
 
     @Override
     public int getItemCount() {
-        return challenges.size();
+        return challengeResponses.size();
     }
 
-    public void addItem(Challenge challenge){
-        challenges.add(challenge);
+    public void addItem(ChallengeResponse challengeResponse){
+        challengeResponses.add(challengeResponse);
     }
 
     // 아이템 뷰를 저장하는 뷰홀더 클래스.

@@ -12,7 +12,7 @@ import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.addChallenge.AddChallengeActivity;
 import com.prography.progrpahy_pizza.src.main.interfaces.MainActivityView;
-import com.prography.progrpahy_pizza.src.main.models.Challenge;
+import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 import com.prography.progrpahy_pizza.src.main.models.RecyclerViewAdapter;
 
 import java.util.ArrayList;
@@ -27,10 +27,15 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
     private FloatingActionButton floatingActionButton;
     private RecyclerView recyclerView;
     private Toolbar toolbar;
-    private ArrayList<Challenge> arr1;
+    private ArrayList<ChallengeResponse> challengeResponseArrayList;
     private RecyclerViewAdapter adapter;
 
+    private String routineType;
+    private double time;
+    private String objectUnit;
+    private String exerciseType;
 
+    private static final int REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +51,8 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
 
         floatingActionButton.setOnClickListener(this);
 
-
-        ArrayList<String> arr = new ArrayList<>();
-//        arr.add("hello");
-//        arr.add("hi");
-//        arr.add("ahh");
-//        recyclerView.setAdapter(new RecyclerViewAdapter(arr, this));
-
-        arr1=new ArrayList<>();
-        adapter=new RecyclerViewAdapter(arr1, this);
+        challengeResponseArrayList = new ArrayList<>();
+        adapter = new RecyclerViewAdapter(challengeResponseArrayList, this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -77,46 +75,51 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
     }
 
     @Override
-    public void validateSuccess(String text) {
+    public void getvalidateSuccess() {
         hideProgressDialog();
+        Log.i("GET", "getvalidateSuccess");
     }
 
     @Override
-    public void validateFailure(String message) {
+    public void getvalidateFailure() {
         hideProgressDialog();
+        Log.i("GET", "getvalidateFauilure");
+    }
+
+    private void tryGetChallenge(){
+        showProgressDialog();
+        MainService mainService=new MainService(this);
+        mainService.getChallege();
     }
 
     @Override
     //floating button
     public void onClick(View v) {
         Intent intent = new Intent(this, AddChallengeActivity.class);
-        startActivityForResult(intent, 1);
-//        startNextActivity(AddChallengeActivity.class);
-//        finish();
+        startActivityForResult(intent, REQUEST_CODE);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 1){
-            if (resultCode == RESULT_OK){
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
                 Log.e("LOG", "결과 받기 성공");
-                String routineType=data.getStringExtra("routineType");
-                String t=data.getStringExtra("time");
-                double time = Integer.parseInt(t);
-                String objectUnit=data.getStringExtra("objectUnit");
-                String exerciseType=data.getStringExtra("exerciseType");
 
-                Challenge challenge=new Challenge();
-                challenge.setRoutineType(routineType);
-                challenge.setTime(time);
-                challenge.setObjectUnit(objectUnit);
-                challenge.setExerciseType(exerciseType);
+                routineType = data.getStringExtra("routineType");
+                String t = data.getStringExtra("time");
+                time = Double.parseDouble(t);
+                objectUnit = data.getStringExtra("objectUnit");
+                exerciseType = data.getStringExtra("exerciseType");
 
-                adapter.addItem(challenge);
+                ChallengeResponse challengeResponse = new ChallengeResponse(routineType, time, objectUnit, exerciseType);
 
-                adapter.notifyItemInserted(adapter.getItemCount()-1);
+                adapter.addItem(challengeResponse);
 
+                adapter.notifyItemInserted(adapter.getItemCount() - 1);
+
+            } else {
+                Log.e("LOG", "결과 받기 실패");
             }
         }
     }

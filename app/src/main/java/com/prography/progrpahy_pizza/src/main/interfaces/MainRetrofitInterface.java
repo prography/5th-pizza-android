@@ -1,30 +1,18 @@
 package com.prography.progrpahy_pizza.src.main.interfaces;
 
-import com.prography.progrpahy_pizza.src.common.models.DefaultResponse;
+import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 
-import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 public interface MainRetrofitInterface {
 
-    @GET("/jwt")
-    Call<DefaultResponse> getTest();
+    @GET("/challenges")
+    Call<ChallengeResponse> getChallenges();
 
-    @GET("/test/{number}")
-    Call<DefaultResponse> getTestPathAndQuery(
-            @Path("number") int number,
-            @Query("content") final String content
-    );
+    @POST("/challenges")
+    Call<ChallengeResponse> postChallenges();
 
-//    @GET("/challenges/")
-   /* @Delete("/test")
-    Call<DefaultResponse> deleteTest();*/
 
-    @POST("/test")
-    Call<DefaultResponse> postTest(@Body RequestBody params);
 }
