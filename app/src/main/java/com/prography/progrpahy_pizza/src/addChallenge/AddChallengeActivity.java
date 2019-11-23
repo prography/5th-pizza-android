@@ -49,20 +49,9 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
                     case R.id.btn_challengeAssign:
                         time = edtTime.getText().toString();
                         double t = Double.parseDouble(time);
-
                         tryPostChallenge(routineType, t, objectUnit, exerciseType);
                         //서버로 post 하고 postvalidateSuccess 하면, mainActivity에 intent 넘겨주고 finish();
 
-
-                        //for recyclerView
-                        Intent intent = new Intent();
-                        intent.putExtra("routineType", routineType);
-                        intent.putExtra("time", time);
-                        intent.putExtra("objectUnit", objectUnit);
-                        intent.putExtra("exerciseType", exerciseType);
-
-                        setResult(RESULT_OK, intent);
-                        finish();
 
                     default:
                         setResult(RESULT_CANCELED);
@@ -73,11 +62,24 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
 
     }
 
+    @Override
     public void postvalidateSuccess() {
         hideProgressDialog();
         showToast("postSuccess");
+
+        //for recyclerView
+        Intent intent = new Intent();
+        intent.putExtra("routineType", routineType);
+        intent.putExtra("time", time);
+        intent.putExtra("objectUnit", objectUnit);
+        intent.putExtra("exerciseType", exerciseType);
+
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
+
+    @Override
     public void postvalidateFailure() {
         hideProgressDialog();
         showToast("postFailure");
@@ -91,9 +93,17 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        routineType = (String) spnRoutineType.getItemAtPosition(position);
-        objectUnit = (String) spnObjectUnit.getItemAtPosition(position);
-        exerciseType = (String) spnExerciseType.getItemAtPosition(position);
+        switch (view.getId()) {
+            case R.id.spinner_exerciseType:
+                exerciseType = (String) spnExerciseType.getItemAtPosition(position);
+                break;
+            case R.id.spinner_objectUnit:
+                objectUnit = (String) spnObjectUnit.getItemAtPosition(position);
+                break;
+            case R.id.spinner_routineType:
+                routineType = (String) spnRoutineType.getItemAtPosition(position);
+                break;
+        }
     }
 
     @Override

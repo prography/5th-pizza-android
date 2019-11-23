@@ -8,7 +8,7 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface AddChallengeRetrofitInterface {
-    @POST("/challenges")
+    @POST("challenges")
     Call<ChallengeResponse> postChallenge(@Body ChallengeRequest challengeRequest);
 
 }
