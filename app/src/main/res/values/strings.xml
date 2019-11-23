@@ -1,6 +1,21 @@
 <resources>
-    <string name="app_name">progrpahy_pizza</string>
+    <string name="app_name">헤쳐모여</string>
     <string name="loading">로딩중입니다.</string>
     <string name="network_error">네트워크 연결이 원활하지 않습니다.</string>
     <string name="kakao_app_key">4e1f3abef3128af5765f1bc592d8534b</string>
+
+    <!-- AddChallenge Activity -->
+    <string name="tv_userid_addchallenge">UserName</string>
+    <string name="tv_daily_addchallenge">매일</string>
+    <string name="tv_weekly_addchallenge">매주</string>
+    <string name="tv_monthly_addchallenge">매달</string>
+    <string name="tv_30min_addchallenge">30분</string>
+    <string name="tv_60min_addchallenge">1시간</string>
+    <string name="tv_120min_addchallenge">2시간</string>
+    <string name="tv_1km_addchallenge">1km</string>
+    <string name="tv_2km_addchallenge">2km</string>
+    <string name="tv_3km_addchallenge">3km</string>
+    <string name="tv_5km_addchallenge">5km</string>
+    <string name="tv_run_addcahllenge">달리기를 하겠다.</string>
+    <string name="tv_cycle_addcahllenge">자전거를 타겠다.</string>
 </resources>

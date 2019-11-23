@@ -7,9 +7,14 @@
     </string-array>
     
     <string-array name="array_objectUnit">
-        <item>분</item>
-        <item>시간</item>
-        <item>km</item>
+        <item>30분</item>
+        <item>1시간</item>
+        <item>2시간</item>
+        <item>3시간</item>
+        <item>1km</item>
+        <item>2km</item>
+        <item>3km</item>
+        <item>5km</item>
     </string-array>
     
     <string-array name="array_exerciseType">
