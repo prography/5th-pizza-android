@@ -4,6 +4,14 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.Nullable;
+
+import com.kakao.auth.ApprovalType;
+import com.kakao.auth.AuthType;
+import com.kakao.auth.IApplicationConfig;
+import com.kakao.auth.ISessionConfig;
+import com.kakao.auth.KakaoAdapter;
+import com.kakao.auth.KakaoSDK;
 import com.prography.progrpahy_pizza.config.XAccessTokenInterceptor;
 
 import java.text.SimpleDateFormat;
@@ -17,6 +25,17 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApplicationClass extends Application {
+
+    private static volatile ApplicationClass instance = null;
+
+    public static ApplicationClass getApplicationClassContext() {
+        if (instance == null)
+            throw new IllegalStateException("Error of ApplicationClass");
+        return instance;
+    }
+
+
+
     public static MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=uft-8");
     public static MediaType MEDIA_TYPE_JPEG = MediaType.parse("image/jpeg");
 
@@ -43,12 +62,59 @@ public class ApplicationClass extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
 
         if (sSharedPreferences == null) {
             sSharedPreferences = getApplicationContext().getSharedPreferences(TAG, Context.MODE_PRIVATE);
         }
 
+        KakaoSDK.init(new KakaoSDKAdapter());
+
         TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
+
+    private static class KakaoSDKAdapter extends KakaoAdapter {
+
+
+        @Override
+        public ISessionConfig getSessionConfig() {
+            return new ISessionConfig() {
+                @Override
+                public AuthType[] getAuthTypes() {
+                    return new AuthType[] {AuthType.KAKAO_LOGIN_ALL};
+                }
+
+                @Override
+                public boolean isUsingWebviewTimer() {
+                    return false;
+                }
+
+                @Override
+                public boolean isSecureMode() {
+                    return false;
+                }
+
+                @Override
+                public ApprovalType getApprovalType() {
+                    return ApprovalType.INDIVIDUAL;
+                }
+
+                @Override
+                public boolean isSaveFormData() {
+                    return true;
+                }
+            };
+        }
+
+        @Override
+        public IApplicationConfig getApplicationConfig() {
+            return new IApplicationConfig() {
+                @Override
+                public Context getApplicationContext() {
+                    return ApplicationClass.getApplicationClassContext();
+                }
+            };
+        }
     }
 
     public static Retrofit getRetrofit() {
