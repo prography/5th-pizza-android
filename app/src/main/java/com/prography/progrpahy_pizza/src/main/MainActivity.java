@@ -107,8 +107,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
                 Log.e("LOG", "결과 받기 성공");
 
                 routineType = data.getStringExtra("routineType");
-                String t = data.getStringExtra("time");
-                time = Double.parseDouble(t);
+                time = data.getDoubleExtra("time",0);
                 objectUnit = data.getStringExtra("objectUnit");
                 exerciseType = data.getStringExtra("exerciseType");
 
