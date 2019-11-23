@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:nestedScrollingEnabled="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
         android:layout_width="match_parent"
@@ -21,41 +23,45 @@
         android:background="@android:color/white"
         android:elevation="1dp"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="144dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_selector1_bottomsheet"
+        android:layout_width="0dp"
+        android:layout_height="192dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_header_selector_bottomsheet">
+        app:layout_constraintTop_toBottomOf="@+id/tv_header_selector_bottomsheet"
+        app:layout_constraintEnd_toStartOf="@id/rv_selector2_bottomsheet"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:listitem="@layout/item_selectorbottomsheet"
+        tools:itemCount="6"
+        android:paddingVertical="72dp"
+        android:clipToPadding="false"/>
 
-        <ListView
-            android:id="@+id/lv_selector1_bottomsheet"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_selector2_bottomsheet"
+        android:layout_width="0dp"
+        android:layout_height="192dp"
+        app:layout_constraintStart_toEndOf="@+id/rv_selector1_bottomsheet"
+        app:layout_constraintEnd_toStartOf="@+id/rv_selector3_bottomsheet"
+        app:layout_constraintTop_toBottomOf="@+id/tv_header_selector_bottomsheet"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:listitem="@layout/item_selectorbottomsheet"
+        tools:itemCount="6"
+        android:paddingVertical="72dp"
+        android:clipToPadding="false"/>
 
-            android:layout_weight="1"
-            android:entries="@array/array_rountineType"
-            android:scrollbars="none" />
-
-        <ListView
-            android:id="@+id/lv_selector2_bottomsheet"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:entries="@array/array_objectUnit"
-            android:scrollbars="none" />
-
-        <ListView
-            android:id="@+id/lv_selector3_bottomsheet"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:entries="@array/array_exerciseType"
-            android:scrollbars="none" />
-
-    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_selector3_bottomsheet"
+        android:layout_width="0dp"
+        android:layout_height="192dp"
+        app:layout_constraintStart_toEndOf="@id/rv_selector2_bottomsheet"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_header_selector_bottomsheet"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:listitem="@layout/item_selectorbottomsheet"
+        tools:itemCount="6"
+        android:paddingVertical="72dp"
+        android:clipToPadding="false"/>
 
 
 

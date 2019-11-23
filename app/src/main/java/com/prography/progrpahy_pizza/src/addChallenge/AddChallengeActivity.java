@@ -1,13 +1,18 @@
 package com.prography.progrpahy_pizza.src.addChallenge;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.addChallenge.fragments.SelectorBottomSheetFragment;
@@ -20,6 +25,8 @@ import androidx.appcompat.widget.Toolbar;
 
 public class AddChallengeActivity extends BaseActivity implements AddChallengeActivityView {
 
+    public int mScreenWidth;
+
     private TextView tvDate;
     private TextView tvTimeOrDistance;
     private TextView tvType;
@@ -30,6 +37,8 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
     private double quota;
     private String object_unit;
     private String exerceise_type;
+
+    private SelectorBottomSheetFragment selectorBottomSheetFragment;
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,12 +58,19 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_close);
 
+        /* BottomSheetFragment */
+        selectorBottomSheetFragment = new SelectorBottomSheetFragment();
+
         /* Set On Click Listener */
         btnSubmit.setOnClickListener(this);
         tvType.setOnClickListener(this);
         tvDate.setOnClickListener(this);
         tvTimeOrDistance.setOnClickListener(this);
 
+        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        mScreenWidth = displayMetrics.widthPixels;
     }
 
     @Override
@@ -139,17 +155,19 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
                 //서버로 post 하고 postvalidateSuccess 하면, mainActivity에 intent 넘겨주고 finish();
                 break;
             case R.id.tv_date_addchallenge:
-                SelectorBottomSheetFragment selectorBottomSheetFragment = new SelectorBottomSheetFragment();
                 selectorBottomSheetFragment.show(getSupportFragmentManager(), "selector");
                 break;
             case R.id.tv_type_addchallenge:
-                SelectorBottomSheetFragment selectorBottomSheetFragment2 = new SelectorBottomSheetFragment();
-                selectorBottomSheetFragment2.show(getSupportFragmentManager(), "selector");
+                selectorBottomSheetFragment.show(getSupportFragmentManager(), "selector");
                 break;
             case R.id.tv_time_addchallenge:
-                SelectorBottomSheetFragment selectorBottomSheetFragment3 = new SelectorBottomSheetFragment();
-                selectorBottomSheetFragment3.show(getSupportFragmentManager(), "selector");
+                selectorBottomSheetFragment.show(getSupportFragmentManager(), "selector");
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }
