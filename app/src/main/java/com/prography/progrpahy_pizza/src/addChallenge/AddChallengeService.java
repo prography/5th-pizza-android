@@ -24,7 +24,7 @@ public class AddChallengeService {
             @Override
             public void onResponse(Call<ChallengeResponse> call, Response<ChallengeResponse> response) {
                 final ChallengeResponse challengeResponse = response.body();
-                if (challengeResponse == null || !challengeResponse.getIsSuccess()) {
+                if (challengeResponse == null) {
                     addChallengeActivityView.postvalidateFailure();
                     return;
                     // Fail

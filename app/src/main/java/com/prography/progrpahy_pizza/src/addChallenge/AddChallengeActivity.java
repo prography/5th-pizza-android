@@ -2,7 +2,6 @@ package com.prography.progrpahy_pizza.src.addChallenge;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -15,12 +14,11 @@ import com.prography.progrpahy_pizza.src.addChallenge.interfaces.AddChallengeAct
 
 import androidx.annotation.Nullable;
 
-public class AddChallengeActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
+public class AddChallengeActivity extends BaseActivity implements AddChallengeActivityView {
     private Spinner spnRoutineType;
     private EditText edtTime;
     private Spinner spnObjectUnit;
     private Spinner spnExerciseType;
-    //    private ArrayAdapter arrRoutineType, arrObjectUnit, arrExerciseType;
     private Button btn_addChallenge;
 
     private String routineType;
@@ -50,6 +48,10 @@ public class AddChallengeActivity extends BaseActivity implements AdapterView.On
                 switch (v.getId()) {
                     case R.id.btn_challengeAssign:
                         time = edtTime.getText().toString();
+                        double t = Double.parseDouble(time);
+
+                        tryPostChallenge(routineType, t, objectUnit, exerciseType);
+                        //서버로 post 하고 postvalidateSuccess 하면, mainActivity에 intent 넘겨주고 finish();
 
 
                         //for recyclerView
@@ -73,19 +75,20 @@ public class AddChallengeActivity extends BaseActivity implements AdapterView.On
 
     public void postvalidateSuccess() {
         hideProgressDialog();
-        Log.i("POST", "postvalidateSuccess");
+        showToast("postSuccess");
     }
 
     public void postvalidateFailure() {
         hideProgressDialog();
-        Log.i("POST", "postvalidateFailure");
+        showToast("postFailure");
     }
 
     private void tryPostChallenge(String routineType, double time, String objectUnit, String exerciseType) {
         showProgressDialog();
-        AddChallengeService addChallengeService=new AddChallengeService((AddChallengeActivityView) this);
+        AddChallengeService addChallengeService = new AddChallengeService(this);
         addChallengeService.postChallenge(routineType, time, objectUnit, exerciseType);
     }
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         routineType = (String) spnRoutineType.getItemAtPosition(position);
