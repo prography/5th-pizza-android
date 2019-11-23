@@ -65,6 +65,8 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
     private boolean MODE_VELOCITY = false;
 
+
+
     public class MyLocation {
         double longitude;
         double latitude;
@@ -150,9 +152,23 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
     }
 
-    private void tryPostRecord() {
+    private void tryPostRecord(double totalTime, double totalDistance) {
+        showProgressDialog();
         RecordService recordService = new RecordService(this);
-        recordService.postRecord();
+        recordService.postRecord(totalTime, totalDistance);
+    }
+
+    @Override
+    public void validateSuccess(String message) {
+        hideProgressDialog();
+        showToast("업로드에 성공하였습니다.");
+        finish();
+    }
+
+    @Override
+    public void validateFailure(String message) {
+        hideProgressDialog();
+        showToast("업로드에 실패하였습니다.");
     }
 
 
@@ -244,6 +260,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                tryPostRecord(totalTime, (double) totalDistance);
                                 dialog.dismiss();
                                 finish();
                             }

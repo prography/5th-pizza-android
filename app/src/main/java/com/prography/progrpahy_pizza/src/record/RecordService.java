@@ -18,22 +18,25 @@ public class RecordService {
         this.mRecordActivityView = mRecordActivityView;
     }
 
-    public void postRecord() {
+    public void postRecord(double totalTime, double totalDistance) {
         final RecordRetrofitInterface recordRetrofitInterface = getRetrofit().create(RecordRetrofitInterface.class);
-        recordRetrofitInterface.postRecord(new RecordRequest()).enqueue(new Callback<RecordResponse>() {
+        recordRetrofitInterface.postRecord(new RecordRequest(totalTime, totalDistance)).enqueue(new Callback<RecordResponse>() {
             @Override
             public void onResponse(Call<RecordResponse> call, Response<RecordResponse> response) {
                 final RecordResponse recordResponse = response.body();
                 if (recordResponse == null || !recordResponse.getIsSuccess()) {
+                    mRecordActivityView.validateFailure(null);
                     return;
                     // Fail
                 }
                 // Success
+                mRecordActivityView.validateSuccess(null);
             }
 
             @Override
             public void onFailure(Call<RecordResponse> call, Throwable t) {
                 t.printStackTrace();
+                mRecordActivityView.validateSuccess(null);
                 // Fail
             }
         });

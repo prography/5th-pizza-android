@@ -8,6 +8,6 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface RecordRetrofitInterface {
-    @POST("record")
+    @POST("records")
     Call<RecordResponse> postRecord(@Body RecordRequest recordRequest);
 }
