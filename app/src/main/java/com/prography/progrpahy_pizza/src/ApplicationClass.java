@@ -62,7 +62,7 @@ public class ApplicationClass extends Application {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(client)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create()) //데이터 파싱
                     .build();
         }
 

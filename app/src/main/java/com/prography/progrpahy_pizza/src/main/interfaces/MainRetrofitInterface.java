@@ -21,6 +21,10 @@ public interface MainRetrofitInterface {
             @Query("content") final String content
     );
 
+//    @GET("/challenges/")
+   /* @Delete("/test")
+    Call<DefaultResponse> deleteTest();*/
+
     @POST("/test")
     Call<DefaultResponse> postTest(@Body RequestBody params);
 }

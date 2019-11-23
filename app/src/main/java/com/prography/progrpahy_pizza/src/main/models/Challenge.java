@@ -9,7 +9,7 @@ public class Challenge {
     public int id = 0;
 
     private String routineType;
-    private int time;
+    private double time;
     private String objectUnit;
     private String exerciseType;
 
@@ -17,7 +17,7 @@ public class Challenge {
 
     }
 
-    public Challenge(String routineType, int time, String objectUnit, String exerciseType) {
+    public Challenge(String routineType, double time, String objectUnit, String exerciseType) {
         this.routineType = routineType;
         this.time = time;
         this.objectUnit = objectUnit;
@@ -40,11 +40,11 @@ public class Challenge {
         this.routineType = routineType;
     }
 
-    public int getTime() {
+    public double getTime() {
         return time;
     }
 
-    public void setTime(int time) {
+    public void setTime(double time) {
         this.time = time;
     }
 
