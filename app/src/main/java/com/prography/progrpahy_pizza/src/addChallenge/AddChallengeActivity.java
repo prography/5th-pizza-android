@@ -22,6 +22,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.ArrayList;
+
 public class AddChallengeActivity extends BaseActivity implements AddChallengeActivityView {
 
     private TextView tvDate;
@@ -56,7 +58,17 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
         actionBar.setHomeAsUpIndicator(R.drawable.ic_close);
 
         /* BottomSheetFragment */
-        selectorBottomSheetFragment = new SelectorBottomSheetFragment(this);
+        ArrayList<ArrayList<String>> pickerLists = new ArrayList<>();
+        ArrayList<String> list1 = new ArrayList<>();
+        ArrayList<String> list2 = new ArrayList<>();
+        ArrayList<String> list3 = new ArrayList<>();
+        list1.add("매일");list1.add("매주");list1.add("매달");
+        list2.add("30분");list2.add("1시간");list2.add("2시간");list2.add("3시간");list2.add("1km");list2.add("2km");list2.add("3km");list2.add("5km");list2.add("10km");
+        list3.add("달리기를 하겠다.");list3.add("자전거를 타겠다.");
+        pickerLists.add(list1);
+        pickerLists.add(list2);
+        pickerLists.add(list3);
+        selectorBottomSheetFragment = new SelectorBottomSheetFragment(this, pickerLists);
 
         /* Set On Click Listener */
         btnSubmit.setOnClickListener(this);

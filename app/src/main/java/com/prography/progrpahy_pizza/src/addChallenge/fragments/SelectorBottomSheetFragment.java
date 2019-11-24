@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,24 +26,19 @@ import java.util.ArrayList;
 
 public class SelectorBottomSheetFragment extends BottomSheetDialogFragment implements SelectorBotomSheetFragmentView {
 
-    private Dialog mDialog;
-
     final AddChallengeActivityView mAddChallengeActivityView;
-
-    public SelectorBottomSheetFragment(AddChallengeActivityView mAddChallengeActivityView) {
-        this.mAddChallengeActivityView = mAddChallengeActivityView;
-    }
 
     private TextView tvPositive;
     private TextView tvNegative;
+    ArrayList<RecyclerView> rvPickerLists = new ArrayList<>();
 
-    private RecyclerView rvItem1;
-    private RecyclerView rvItem2;
-    private RecyclerView rvItem3;
+    private ArrayList<ArrayList<String>> mPickerLists;
+    private ArrayList<LinearSnapHelper> mLinearSnapHelpers = new ArrayList<>();
 
-    ArrayList<String> list1 = new ArrayList<>();
-    ArrayList<String> list2 = new ArrayList<>();
-    ArrayList<String> list3 = new ArrayList<>();
+    public SelectorBottomSheetFragment(AddChallengeActivityView mAddChallengeActivityView, ArrayList<ArrayList<String>> pickerLists) {
+        this.mAddChallengeActivityView = mAddChallengeActivityView;
+        this.mPickerLists = pickerLists;
+    }
 
     @Nullable
     @Override
@@ -52,30 +48,22 @@ public class SelectorBottomSheetFragment extends BottomSheetDialogFragment imple
         /* findViewByID */
         tvPositive = view.findViewById(R.id.tv_positive_selector_bottomsheet);
         tvNegative = view.findViewById(R.id.tv_negative_selector_bottomsheet);
-        rvItem1 = view.findViewById(R.id.rv_selector1_bottomsheet);
-        rvItem2 = view.findViewById(R.id.rv_selector2_bottomsheet);
-        rvItem3 = view.findViewById(R.id.rv_selector3_bottomsheet);
+        rvPickerLists.add((RecyclerView) view.findViewById(R.id.rv_selector1_bottomsheet));
+        rvPickerLists.add((RecyclerView) view.findViewById(R.id.rv_selector2_bottomsheet));
+        rvPickerLists.add((RecyclerView) view.findViewById(R.id.rv_selector3_bottomsheet));
+
+        mLinearSnapHelpers.clear();
+        mLinearSnapHelpers.add(new LinearSnapHelper());
+        mLinearSnapHelpers.add(new LinearSnapHelper());
+        mLinearSnapHelpers.add(new LinearSnapHelper());
 
         /* RecyclerView */
-        list1.clear();
-        list2.clear();
-        list3.clear();
-        list1.add("매일");list1.add("매주");list1.add("매달");
-        list2.add("30분");list2.add("1시간");list2.add("2시간");list2.add("3시간");
-        list2.add("1km");list2.add("2km");list2.add("3km");list2.add("5km");list2.add("10km");
-        list3.add("달리기를 하겠다.");list3.add("자전거를 타겠다.");
-
-        rvItem1.setLayoutManager(new PickerLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false, this, 0));
-        rvItem2.setLayoutManager(new PickerLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false, this, 1));
-        rvItem3.setLayoutManager(new PickerLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false, this, 2));
-
-        rvItem1.setAdapter(new SelectorListAdapter(list1, getActivity(), this, 0));
-        rvItem2.setAdapter(new SelectorListAdapter(list2, getActivity(), this, 1));
-        rvItem3.setAdapter(new SelectorListAdapter(list3, getActivity(), this, 2));
-
-        new LinearSnapHelper().attachToRecyclerView(rvItem1);
-        new LinearSnapHelper().attachToRecyclerView(rvItem2);
-        new LinearSnapHelper().attachToRecyclerView(rvItem3);
+        for (int i = 0; i < rvPickerLists.size(); i++) {
+            rvPickerLists.get(i).setLayoutManager(new PickerLayoutManager(getActivity(),
+                    LinearLayoutManager.VERTICAL, false, this, i));
+            rvPickerLists.get(i).setAdapter(new SelectorListAdapter(mPickerLists.get(i), getActivity(), this, i));
+            mLinearSnapHelpers.get(i).attachToRecyclerView(rvPickerLists.get(i));
+        }
 
         /* Set On Click Listener */
         tvPositive.setOnClickListener(this);
@@ -87,55 +75,25 @@ public class SelectorBottomSheetFragment extends BottomSheetDialogFragment imple
     @Override
     public void onStart() {
         super.onStart();
-        mDialog = getDialog();
-        View dialogView = mDialog.getWindow().getDecorView().findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        View dialogView = getDialog().getWindow().getDecorView().findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        getDialog().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         BottomSheetBehavior.from(dialogView).setHideable(false);
     }
 
 
     @Override
-    public void onItemClick(int recyclerIndex, final int position) {
-        switch (recyclerIndex) {
-            case 0:
-                rvItem1.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        rvItem1.smoothScrollToPosition(position);
-                    }
-                }, 100);
-                break;
-            case 1:
-                rvItem2.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        rvItem2.smoothScrollToPosition(position);
-                    }
-                }, 100);
-                break;
-            case 2:
-                rvItem3.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        rvItem3.smoothScrollToPosition(position);
-                    }
-                }, 100);
-                break;
-        }
+    public void onItemClick(final int recyclerIndex, final int position) {
+        rvPickerLists.get(recyclerIndex).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rvPickerLists.get(recyclerIndex).smoothScrollToPosition(position);
+            }
+        }, 100);
     }
 
     @Override
     public void onItemSelected(int recyclerIndex, int position) {
-        switch (recyclerIndex) {
-            case 0:
-                mAddChallengeActivityView.onPickerItemSelected(recyclerIndex, list1.get(position));
-                break;
-            case 1:
-                mAddChallengeActivityView.onPickerItemSelected(recyclerIndex, list2.get(position));
-                break;
-            case 2:
-                mAddChallengeActivityView.onPickerItemSelected(recyclerIndex, list3.get(position));
-                break;
-        }
+        mAddChallengeActivityView.onPickerItemSelected(recyclerIndex, mPickerLists.get(recyclerIndex).get(position));
     }
 
     @Override

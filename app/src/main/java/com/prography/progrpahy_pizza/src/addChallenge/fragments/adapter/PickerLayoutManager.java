@@ -3,6 +3,7 @@ package com.prography.progrpahy_pizza.src.addChallenge.fragments.adapter;
 import android.content.Context;
 import android.graphics.PointF;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ public class PickerLayoutManager extends LinearLayoutManager {
     }
     SelectorBotomSheetFragmentView mSelectorBotomSheetFragmentView = null;
     private int mIndex;
+    private RecyclerView recyclerView;
 
     public PickerLayoutManager(Context context, int orientation, boolean reverseLayout, SelectorBotomSheetFragmentView mSelectorBotomSheetFragmentView, int recyclerIndex) {
         super(context, orientation, reverseLayout);
@@ -40,6 +42,12 @@ public class PickerLayoutManager extends LinearLayoutManager {
     }
 
     @Override
+    public void onAttachedToWindow(RecyclerView view) {
+        super.onAttachedToWindow(view);
+        recyclerView = view;
+    }
+
+    @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
         updateChildrenAlpha();
         return super.scrollVerticallyBy(dy, recycler, state);
@@ -58,19 +66,21 @@ public class PickerLayoutManager extends LinearLayoutManager {
         if (state == RecyclerView.SCROLL_STATE_IDLE) {
             int position = -1;
             float minDistance = (float) getHeight();
+
             for (int i = 0; i < getChildCount(); i++) {
                 View child = getChildAt(i);
                 float bottom = (float) getDecoratedBottom(child);
                 float top = (float) getDecoratedTop(child);
                 float childCenter = bottom + (top - bottom) / 2f;
                 float distance = Math.abs(childCenter - getHeight() / 2f);
+                Log.i("POSITION", "onScrollStateChanged: " + i + " : " + top+ " : " + bottom + " : " + childCenter + " : " + distance);
                 if (distance < minDistance) {
                     minDistance = distance;
-                    position = i;
+                    position = recyclerView.getChildLayoutPosition(child);
                 }
-                mSelectorBotomSheetFragmentView.onItemSelected(mIndex, position);
             }
-
+            Log.i("POSITION", "onScrollStateChanged: " + position);
+            mSelectorBotomSheetFragmentView.onItemSelected(mIndex, position);
         }
     }
 

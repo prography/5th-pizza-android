@@ -92,7 +92,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         btnSubmitRecord = findViewById(R.id.btn_submit_record);
         btnChangeRecord = findViewById(R.id.btn_change_record);
         mvRecord = findViewById(R.id.frame_mapview_record);
-        ivClose = findViewById(R.id.iv_back_record);
+        //ivClose = findViewById(R.id.iv_back_record);
 
 
 
@@ -272,9 +272,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                             }
                         })
                         .create().show();
-                break;
-            case R.id.iv_back_record:
-                finish();
                 break;
             case R.id.btn_change_record:
                 if (MODE_VELOCITY)

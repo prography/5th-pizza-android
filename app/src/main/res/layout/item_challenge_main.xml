@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingVertical="14dp"
+    android:paddingHorizontal="16dp"
+    android:background="@android:color/white"
+    android:elevation="1dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_title_item_challenge_main"
+        tools:text="Challenge Title"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:fontFamily="@font/nanumsquare_bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_menu_item"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:adjustViewBounds="true"
+        android:id="@+id/iv_menu_item_challenge" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="2019.11.23 부터 지금까지"
+        android:textSize="13sp"
+        android:fontFamily="@font/nanumsquare_regular"
+        app:layout_constraintBottom_toTopOf="@id/pb_item_challenge_main"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/tv_start_date_item_challenge_main" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="56%"
+        android:textSize="16sp"
+        android:fontFamily="@font/nanumsquare_bold"
+        app:layout_constraintBottom_toTopOf="@id/pb_item_challenge_main"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/tv_progress_percentage_item_challenge_main" />
+
+    <ProgressBar
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:id="@+id/pb_item_challenge_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="40"
+        android:progressTint="#FFA047"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
