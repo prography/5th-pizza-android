@@ -1,18 +1,16 @@
 package com.prography.progrpahy_pizza.src.addChallenge;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.addChallenge.fragments.SelectorBottomSheetFragment;
@@ -21,11 +19,10 @@ import com.prography.progrpahy_pizza.src.addChallenge.interfaces.AddChallengeAct
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 
 public class AddChallengeActivity extends BaseActivity implements AddChallengeActivityView {
-
-    public int mScreenWidth;
 
     private TextView tvDate;
     private TextView tvTimeOrDistance;
@@ -33,10 +30,10 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
     private Button btnSubmit;
     private Toolbar tbAddChallenge;
 
-    private String routine_type;
-    private double quota;
-    private String object_unit;
-    private String exerceise_type;
+    private String mRoutineType;
+    private double mQuota;
+    private String mObjectUnit;
+    private String mExerceiseType;
 
     private SelectorBottomSheetFragment selectorBottomSheetFragment;
 
@@ -59,18 +56,13 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
         actionBar.setHomeAsUpIndicator(R.drawable.ic_close);
 
         /* BottomSheetFragment */
-        selectorBottomSheetFragment = new SelectorBottomSheetFragment();
+        selectorBottomSheetFragment = new SelectorBottomSheetFragment(this);
 
         /* Set On Click Listener */
         btnSubmit.setOnClickListener(this);
         tvType.setOnClickListener(this);
         tvDate.setOnClickListener(this);
         tvTimeOrDistance.setOnClickListener(this);
-
-        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-        mScreenWidth = displayMetrics.widthPixels;
     }
 
     @Override
@@ -90,10 +82,10 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
 
         //for recyclerView
         Intent intent = new Intent();
-        //intent.putExtra("routineType", spnRoutineType.getSelectedItem().toString());
-        //intent.putExtra("time", Double.parseDouble(edtTime.getText().toString()));
-        //intent.putExtra("objectUnit", spnObjectUnit.getSelectedItem().toString());
-        //intent.putExtra("exerciseType", spnExerciseType.getSelectedItem().toString());
+        intent.putExtra("mRoutineType", mRoutineType);
+        intent.putExtra("time", mQuota);
+        intent.putExtra("mObjectUnit", mObjectUnit);
+        intent.putExtra("exerciseType", mExerceiseType);
 
         setResult(RESULT_OK, intent);
         finish();
@@ -106,53 +98,97 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
         showToast("postFailure");
     }
 
-    private void tryPostChallenge(String routineType, double time, String objectUnit, String exerciseType) {
+    @Override
+    public void onPickerItemSelected(int which, String selected) {
+        switch (which) {
+            case 0:
+                tvDate.setText(selected);
+                break;
+            case 1:
+                tvTimeOrDistance.setText(selected);
+                break;
+            case 2:
+                tvType.setText(selected);
+                break;
+        }
+    }
+
+    @Override
+    public void onPickerPositiveClick() {
+        // Server Connecting...
+        tryPostChallenge(tvDate.getText().toString(), tvTimeOrDistance.getText().toString(), tvType.getText().toString());
+    }
+
+    public void tryPostChallenge(String dateType, String timeOrDistance, String exerciseType) {
         showProgressDialog();
         AddChallengeService addChallengeService = new AddChallengeService(this);
 
-        switch (routineType){
+        switch (dateType){
             case "매일":
-                routine_type = "daily";
+                mRoutineType = "daily";
                 break;
             case "매주":
-                routine_type="weekly";
+                mRoutineType ="weekly";
                 break;
             case "매달":
-                routine_type="monthly";
+                mRoutineType ="monthly";
                 break;
         }
 
-        switch (objectUnit){
-            case "분":
-            case "시간":
-                object_unit="time";
+        switch (timeOrDistance){
+            case "30분":
+            case "1시간":
+            case "2시간":
+            case "3시간":
+                mObjectUnit ="time";
+                int minIdx = timeOrDistance.lastIndexOf('분');
+                int hourIdx = timeOrDistance.lastIndexOf('시');
+                if (minIdx != -1) {
+                    mQuota = Double.parseDouble(timeOrDistance.substring(0, minIdx));
+                } else if (hourIdx != -1) {
+                    mQuota = Double.parseDouble(timeOrDistance.substring(0, hourIdx)) * 60;
+                }
                 break;
-            case "km":
-                object_unit="distance";
+            case "1km":
+            case "2km":
+            case "3km":
+            case "5km":
+            case "10km":
+                mObjectUnit ="distance";
+                mQuota = Double.parseDouble(timeOrDistance.substring(0, timeOrDistance.lastIndexOf('k')));
                 break;
         }
 
         switch (exerciseType){
-            case "러닝":
-                exerceise_type="running";
+            case "달리기를 하겠다.":
+                mExerceiseType ="running";
                 break;
-            case "사이클":
-                exerceise_type="cycling";
+            case "자전거를 타겠다.":
+                mExerceiseType ="cycling";
                 break;
         }
 
-        addChallengeService.postChallenge(routine_type, quota, object_unit, exerceise_type);
+        addChallengeService.postChallenge(mRoutineType, mQuota, mObjectUnit, mExerceiseType);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_challengeAssign:
-                /*tryPostChallenge(spnRoutineType.getSelectedItem().toString(),
-                Double.parseDouble(edtTime.getText().toString()),
-                        spnObjectUnit.getSelectedItem().toString(),
-                        spnExerciseType.getSelectedItem().toString());*/
-                //서버로 post 하고 postvalidateSuccess 하면, mainActivity에 intent 넘겨주고 finish();
+                if (tvDate.getText().toString().equals("") || tvTimeOrDistance.getText().toString().equals("") || tvType.getText().toString().equals("")) {
+                    new AlertDialog.Builder(this)
+                            .setMessage("입력값을 다시 확인해주세요.")
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).create()
+                            .show();
+                    return;
+                }
+                // Server Connecting...
+                tryPostChallenge(tvDate.getText().toString(), tvTimeOrDistance.getText().toString(), tvType.getText().toString());
                 break;
             case R.id.tv_date_addchallenge:
                 selectorBottomSheetFragment.show(getSupportFragmentManager(), "selector");
@@ -164,10 +200,5 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
                 selectorBottomSheetFragment.show(getSupportFragmentManager(), "selector");
                 break;
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 }

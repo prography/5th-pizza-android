@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,9 +33,9 @@ public class PickerLayoutManager extends LinearLayoutManager {
             float top = (float) getDecoratedTop(child);
             float childCenter = bottom + (top - bottom) / 2f;
             float center = getHeight() / 2f;
-            child.setAlpha((center - Math.abs(center - childCenter)) / center);
-            child.setScaleX((center - 0.5f * Math.abs(center - childCenter)) / center);
-            child.setScaleY((center - 0.5f * Math.abs(center - childCenter)) / center);
+            child.setAlpha((center - Math.abs(center - childCenter)) / center);// alpha : 0.0 ~ 1.0
+            child.setScaleX((center - 0.5f * Math.abs(center - childCenter)) / center); // scale : 0.5 ~ 1.0
+            child.setScaleY((center - 0.5f * Math.abs(center - childCenter)) / center); // scale : 0.5 ~ 1.0
         }
     }
 

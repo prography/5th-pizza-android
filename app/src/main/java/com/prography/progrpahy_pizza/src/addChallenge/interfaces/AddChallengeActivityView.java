@@ -6,4 +6,8 @@ import android.widget.AdapterView;
 public interface AddChallengeActivityView extends View.OnClickListener{
     void postvalidateSuccess();
     void postvalidateFailure();
+
+    void onPickerItemSelected(int which, String selected);
+
+    void onPickerPositiveClick();
 }
