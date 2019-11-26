@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_rountineType">
+        <item>매일</item>
+        <item>매주</item>
+        <item>매달</item>
+    </string-array>
+    
+    <string-array name="array_objectUnit">
+        <item>30분</item>
+        <item>1시간</item>
+        <item>2시간</item>
+        <item>3시간</item>
+        <item>1km</item>
+        <item>2km</item>
+        <item>3km</item>
+        <item>5km</item>
+    </string-array>
+    
+    <string-array name="array_exerciseType">
+        <item>러닝</item>
+        <item>사이클</item>
+    </string-array>
+</resources>

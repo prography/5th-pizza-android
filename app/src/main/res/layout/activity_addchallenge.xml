@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_gradient_orange"
+    tools:context=".src.addChallenge.AddChallengeActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/toolbar_addchallenge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_main_desc_addchallenge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="64dp"
+        android:fontFamily="@font/nanumsquare_bold"
+        android:text="새로운 도전을\n시작해볼까요?"
+        android:textColor="@android:color/white"
+        android:textSize="32sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_addchallenge" />
+
+    <TextView
+        android:id="@+id/tv_username_desc_addchallenge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:fontFamily="@font/nanumsquare_bold"
+        android:text="나"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="@+id/tv_main_desc_addchallenge"
+        app:layout_constraintTop_toBottomOf="@+id/tv_main_desc_addchallenge" />
+
+    <TextView
+        android:id="@+id/tv_username_addchallenge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:fontFamily="@font/nanumsquare_extrabold"
+        android:text="@string/tv_userid_addchallenge"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_username_desc_addchallenge"
+        app:layout_constraintStart_toEndOf="@+id/tv_username_desc_addchallenge"
+        app:layout_constraintTop_toTopOf="@+id/tv_username_desc_addchallenge" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_bottomline"
+        app:layout_constraintStart_toStartOf="@+id/tv_username_addchallenge"
+        app:layout_constraintEnd_toEndOf="@+id/tv_username_addchallenge"
+        app:layout_constraintTop_toBottomOf="@+id/tv_username_addchallenge"
+        android:scaleType="centerCrop"/>
+
+    <TextView
+        android:id="@+id/tv_username_desc2_addchallenge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:fontFamily="@font/nanumsquare_bold"
+        android:text="은(는)"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_username_addchallenge"
+        app:layout_constraintStart_toEndOf="@+id/tv_username_addchallenge"
+        app:layout_constraintTop_toTopOf="@+id/tv_username_addchallenge" />
+
+    <TextView
+        android:id="@+id/tv_date_addchallenge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="50dp"
+        android:fontFamily="@font/nanumsquare_extrabold"
+        android:text="@string/tv_daily_addchallenge"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="@+id/tv_main_desc_addchallenge"
+        app:layout_constraintTop_toBottomOf="@+id/tv_username_desc_addchallenge" />
+
+    <ImageView
+        android:id="@+id/iv_expand_date_addchallenge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_expand"
+        app:layout_constraintStart_toEndOf="@+id/tv_date_addchallenge"
+        app:layout_constraintTop_toTopOf="@+id/tv_date_addchallenge"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_date_addchallenge" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_bottomline"
+        app:layout_constraintStart_toStartOf="@id/tv_date_addchallenge"
+        app:layout_constraintEnd_toEndOf="@id/iv_expand_date_addchallenge"
+        app:layout_constraintTop_toBottomOf="@id/tv_date_addchallenge"
+        android:scaleType="centerCrop"/>
+
+    <TextView
+        android:id="@+id/tv_time_addchallenge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/tv_30min_addchallenge"
+        android:fontFamily="@font/nanumsquare_extrabold"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="@+id/tv_main_desc_addchallenge"
+        app:layout_constraintTop_toBottomOf="@id/tv_date_addchallenge" />
+
+    <ImageView
+        android:id="@+id/iv_expand_timeordistance_addchallenge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_expand"
+        app:layout_constraintStart_toEndOf="@+id/tv_time_addchallenge"
+        app:layout_constraintTop_toTopOf="@+id/tv_time_addchallenge"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_time_addchallenge" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_bottomline"
+        app:layout_constraintStart_toStartOf="@+id/tv_time_addchallenge"
+        app:layout_constraintEnd_toEndOf="@+id/iv_expand_timeordistance_addchallenge"
+        app:layout_constraintTop_toBottomOf="@+id/tv_time_addchallenge"
+        android:scaleType="centerCrop"/>
+
+
+    <TextView
+        android:id="@+id/tv_time_desc_addchallenge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="씩"
+        android:fontFamily="@font/nanumsquare_bold"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_expand_timeordistance_addchallenge"
+        app:layout_constraintStart_toEndOf="@+id/iv_expand_timeordistance_addchallenge"
+        app:layout_constraintTop_toTopOf="@+id/iv_expand_timeordistance_addchallenge" />
+
+    <TextView
+        android:id="@+id/tv_type_addchallenge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_run_addcahllenge"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        android:fontFamily="@font/nanumsquare_extrabold"
+        android:layout_marginTop="50dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_time_addchallenge"
+        app:layout_constraintStart_toStartOf="@+id/tv_main_desc_addchallenge" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_expand"
+        android:id="@+id/iv_expand_type_addchallenge"
+        app:layout_constraintStart_toEndOf="@+id/tv_type_addchallenge"
+        app:layout_constraintTop_toTopOf="@+id/tv_type_addchallenge"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_type_addchallenge" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_bottomline"
+        app:layout_constraintStart_toStartOf="@+id/tv_type_addchallenge"
+        app:layout_constraintEnd_toEndOf="@+id/iv_expand_type_addchallenge"
+        app:layout_constraintTop_toBottomOf="@+id/tv_type_addchallenge"
+        android:scaleType="centerCrop"/>
+
+
+
+    <Button
+        android:id="@+id/btn_challengeAssign"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="28dp"
+        android:background="#FF7D38"
+        android:fontFamily="@font/nanumsquare_regular"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="챌린지 개설하기"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_recommend_addchallenage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_recommend_addchallenage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:fontFamily="@font/nanumsquare_regular"
+        android:text="이런 도전은 어때요?"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

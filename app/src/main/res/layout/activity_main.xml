@@ -1,29 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
+<<<<<<< Updated upstream
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+=======
+<<<<<<< HEAD
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+=======
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+>>>>>>> d78fc0ad97733175099706d87cd22130bda63d14
+>>>>>>> Stashed changes
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+<<<<<<< Updated upstream
+=======
+    android:background="@drawable/background_gradient_orange"
+    android:fitsSystemWindows="true"
+>>>>>>> Stashed changes
     tools:context=".src.main.MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_main"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
+<<<<<<< Updated upstream
         android:layout_height="?attr/actionBarSize" />
+=======
+<<<<<<< HEAD
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapseBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:minHeight="100dp"
+            app:contentScrim="@color/transparent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_main"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin" />
+
+            <ImageView
+                android:id="@+id/main_myPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_profile_default"
+                app:layout_collapseMode="parallax"
+                android:scaleType="center"/>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+=======
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@android:color/white"
+        android:elevation="2dp"
+        app:title="test"/>
+>>>>>>> d78fc0ad97733175099706d87cd22130bda63d14
+>>>>>>> Stashed changes
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:scrollbars="vertical"
         android:layout_width="match_parent"
+<<<<<<< HEAD
+        android:layout_height="0dp"
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/recycler_item" />
+=======
         android:layout_height="match_parent"
+<<<<<<< Updated upstream
         android:layout_below="@+id/toolbar_main">
+=======
+        android:layout_marginHorizontal="20dp"
+        android:layout_below="@+id/toolbar_main"
+        tools:listitem="@layout/item_challenge_main"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+>>>>>>> Stashed changes
 
     </androidx.recyclerview.widget.RecyclerView>
+>>>>>>> d78fc0ad97733175099706d87cd22130bda63d14
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+<<<<<<< Updated upstream
         android:layout_alignRight="@+id/recyclerView"
         android:layout_alignBottom="@+id/recyclerView"
         android:layout_marginRight="40dp"
@@ -33,3 +103,20 @@
 
 
 </RelativeLayout>
+=======
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
+        android:backgroundTint="#F16E6E"
+        android:src="@drawable/ic_add_circle"
+        app:backgroundTint="#757575"
+        app:borderWidth="1dp"
+        app:fabSize="normal" />
+
+
+<<<<<<< HEAD
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+=======
+</RelativeLayout>
+>>>>>>> d78fc0ad97733175099706d87cd22130bda63d14
+>>>>>>> Stashed changes

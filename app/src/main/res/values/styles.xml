@@ -6,6 +6,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+<<<<<<< Updated upstream
+=======
+        <item name="android:statusBarColor">#AA000000</item>
+>>>>>>> Stashed changes
     </style>
 
     <!-- Splash Screen Theme -->
