@@ -4,11 +4,13 @@ import android.view.View;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 
 import java.util.ArrayList;
 
-public interface MainActivityView extends View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+
+public interface MainActivityView extends View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener {
 
     void validateSuccess(ArrayList<ChallengeResponse.Data> data);
     void validateFailure();
