@@ -3,8 +3,6 @@ package com.prography.progrpahy_pizza.src.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -14,10 +12,10 @@ import com.prography.progrpahy_pizza.src.addChallenge.AddChallengeActivity;
 import com.prography.progrpahy_pizza.src.main.interfaces.MainActivityView;
 import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 import com.prography.progrpahy_pizza.src.main.models.RecyclerViewAdapter;
+import com.prography.progrpahy_pizza.src.main.models.RecyclerViewDecoration;
 
 import java.util.ArrayList;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,32 +46,16 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
+        toolbar.setLogo(R.drawable.ic_menu_white);
 
         floatingActionButton.setOnClickListener(this);
 
         challengeResponseArrayList = new ArrayList<>();
         adapter = new RecyclerViewAdapter(challengeResponseArrayList, this);
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new RecyclerViewDecoration(20));
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.main_edit:
-
-
-        }
-
-        return true;
-    }
-
     @Override
     public void getvalidateSuccess() {
         hideProgressDialog();

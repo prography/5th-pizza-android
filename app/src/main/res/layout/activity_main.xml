@@ -1,33 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/background_gradient_orange"
     tools:context=".src.main.MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_main"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@android:color/white"
-        android:elevation="2dp"
-        app:title="test"/>
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:background="@color/transparent">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="오늘 도전할 챌린지가\n2개 있습니다"
+                android:textColor="@android:color/white"
+                android:textSize="30dp"
+                android:fontFamily="@font/nanumsquare_bold"
+                android:layout_marginTop="100dp"
+                android:layout_marginLeft="30dp"
+                app:layout_collapseMode="parallax"/>
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_main"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/transparent"
+                app:layout_collapseMode="pin"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_profile_default"
+                android:layout_gravity="end"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="30dp"
+                app:layout_collapseMode="parallax"/>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="305dp"
         android:layout_marginHorizontal="20dp"
-        android:layout_below="@+id/toolbar_main"
+        android:scrollbars="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_challenge_main"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+        android:layout_gravity="center"
+        android:layout_marginTop="70dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -35,15 +68,15 @@
         android:id="@+id/btn_main_addChallenge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/recyclerView"
-        android:layout_alignBottom="@+id/recyclerView"
-        android:layout_marginRight="40dp"
-        android:layout_marginBottom="40dp"
-        android:backgroundTint="#ffffff"
+        android:backgroundTint="#F78E8E"
         android:src="@drawable/ic_add_circle"
         app:backgroundTint="#FF000000"
         app:fabSize="normal"
-        app:borderWidth="2dp"/>
+        app:borderWidth="1dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="40dp"
+        android:layout_marginEnd="40dp"/>
 
 
-</RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

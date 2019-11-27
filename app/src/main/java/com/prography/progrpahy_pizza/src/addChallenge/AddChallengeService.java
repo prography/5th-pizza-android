@@ -24,11 +24,11 @@ public class AddChallengeService {
             @Override
             public void onResponse(Call<ChallengeResponse> call, Response<ChallengeResponse> response) {
                 final ChallengeResponse challengeResponse = response.body();
-                if (challengeResponse == null) {
+               /* if (challengeResponse == null) {
                     addChallengeActivityView.postvalidateFailure();
                     return;
                     // Fail
-                }
+                }*/
                 // Success
                 addChallengeActivityView.postvalidateSuccess();
             }
