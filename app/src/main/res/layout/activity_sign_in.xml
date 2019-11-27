@@ -53,6 +53,10 @@
         android:id="@+id/btn_kakaosignup_signin"
         />
 
+    <com.kakao.usermgmt.LoginButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 
 
 </LinearLayout>

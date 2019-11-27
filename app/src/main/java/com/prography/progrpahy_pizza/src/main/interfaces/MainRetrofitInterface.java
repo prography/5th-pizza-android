@@ -8,11 +8,7 @@ import retrofit2.http.POST;
 
 public interface MainRetrofitInterface {
 
-    @GET("/challenges")
+    @GET("challenges")
     Call<ChallengeResponse> getChallenges();
-
-    @POST("/challenges")
-    Call<ChallengeResponse> postChallenges();
-
 
 }

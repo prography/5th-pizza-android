@@ -1,8 +1,14 @@
 package com.prography.progrpahy_pizza.src.main.interfaces;
 
-public interface MainActivityView {
+import android.view.View;
 
-    void getvalidateSuccess();
+import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
+
+import java.util.ArrayList;
+
+public interface MainActivityView extends View.OnClickListener{
+
+    void getvalidateSuccess(ArrayList<ChallengeResponse.Data> data);
     void getvalidateFailure();
 
 }

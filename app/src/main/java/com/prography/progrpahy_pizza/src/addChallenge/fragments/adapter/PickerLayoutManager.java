@@ -5,22 +5,22 @@ import android.graphics.PointF;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.prography.progrpahy_pizza.src.addChallenge.fragments.interfaces.SelectorBotomSheetFragmentView;
 
 public class PickerLayoutManager extends LinearLayoutManager {
-    public PickerLayoutManager(Context context) {
-        super(context);
-    }
     SelectorBotomSheetFragmentView mSelectorBotomSheetFragmentView = null;
     private int mIndex;
     private RecyclerView recyclerView;
+    public PickerLayoutManager(Context context) {
+        super(context);
+    }
 
     public PickerLayoutManager(Context context, int orientation, boolean reverseLayout, SelectorBotomSheetFragmentView mSelectorBotomSheetFragmentView, int recyclerIndex) {
         super(context, orientation, reverseLayout);
@@ -45,6 +45,7 @@ public class PickerLayoutManager extends LinearLayoutManager {
     public void onAttachedToWindow(RecyclerView view) {
         super.onAttachedToWindow(view);
         recyclerView = view;
+        new LinearSnapHelper().attachToRecyclerView(view);
     }
 
     @Override
@@ -73,7 +74,7 @@ public class PickerLayoutManager extends LinearLayoutManager {
                 float top = (float) getDecoratedTop(child);
                 float childCenter = bottom + (top - bottom) / 2f;
                 float distance = Math.abs(childCenter - getHeight() / 2f);
-                Log.i("POSITION", "onScrollStateChanged: " + i + " : " + top+ " : " + bottom + " : " + childCenter + " : " + distance);
+                Log.i("POSITION", "onScrollStateChanged: " + i + " : " + top + " : " + bottom + " : " + childCenter + " : " + distance);
                 if (distance < minDistance) {
                     minDistance = distance;
                     position = recyclerView.getChildLayoutPosition(child);

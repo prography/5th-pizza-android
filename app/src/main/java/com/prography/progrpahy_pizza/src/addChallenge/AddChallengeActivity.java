@@ -76,7 +76,12 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
         pickerLists.add(list1);
         pickerLists.add(list2);
         pickerLists.add(list3);
-        selectorBottomSheetFragment = new SelectorBottomSheetFragment(this, pickerLists);
+        selectorBottomSheetFragment = new SelectorBottomSheetFragment
+                .Builder(this)
+                .setPickerLists(pickerLists)
+                .setPositiveButton(true)
+                .setNegativeButon(true)
+                .build();
 
         /* Set On Click Listener */
         btnSubmit.setOnClickListener(this);

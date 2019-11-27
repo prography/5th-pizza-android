@@ -73,6 +73,12 @@ public class ApplicationClass extends Application {
         TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        instance = null;
+    }
+
     private static class KakaoSDKAdapter extends KakaoAdapter {
 
 

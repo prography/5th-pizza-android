@@ -10,6 +10,7 @@ import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.addChallenge.AddChallengeActivity;
 import com.prography.progrpahy_pizza.src.main.interfaces.MainActivityView;
+import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 import com.prography.progrpahy_pizza.src.main.models.RecyclerViewAdapter;
 import com.prography.progrpahy_pizza.src.main.models.RecyclerViewDecoration;
 
@@ -19,7 +20,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MainActivity extends BaseActivity implements MainActivityView, View.OnClickListener {
+public class MainActivity extends BaseActivity implements MainActivityView {
 
     private FloatingActionButton floatingActionButton;
     private RecyclerView recyclerView;
@@ -57,7 +58,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
     }
 
     @Override
-    public void getvalidateSuccess() {
+    public void getvalidateSuccess(ArrayList<ChallengeResponse.Data> data) {
         hideProgressDialog();
         Log.i("GET", "getvalidateSuccess");
     }

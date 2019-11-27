@@ -28,7 +28,7 @@ public class MainService {
                     return;
                 }
 
-                mMainActivityView.getvalidateSuccess();
+                mMainActivityView.getvalidateSuccess(challengeResponse.getData());
             }
 
 
