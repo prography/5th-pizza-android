@@ -47,7 +47,7 @@ public class ApplicationClass extends Application {
     public static SharedPreferences sSharedPreferences = null;
 
     // SharedPreferences 키 값
-    public static String TAG = "TEMPLATE_APP";
+    public static String TAG = "PIZZA-PROGRPAHY";
 
     // JWT Token 값
     public static String X_ACCESS_TOKEN = "X-ACCESS-TOKEN";

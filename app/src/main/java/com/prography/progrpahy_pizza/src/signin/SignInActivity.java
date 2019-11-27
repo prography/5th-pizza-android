@@ -36,8 +36,21 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
         Session.getCurrentSession().addCallback(callback);
         Session.getCurrentSession().checkAndImplicitOpen();
 
+    }
 
+    private class SessionCallback implements ISessionCallback {
 
+        @Override
+        public void onSessionOpened() {
+
+        }
+
+        @Override
+        public void onSessionOpenFailed(KakaoException exception) {
+            if (exception != null) {
+
+            }
+        }
     }
 
     @Override
@@ -53,9 +66,6 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
     protected void onResume() {
         super.onResume();
 
-        String token = Session.getCurrentSession().getAccessToken();
-        Log.i("KAKAO TOKEN", token);
-        tryGetKakaoToken(token);
     }
 
     @Override
@@ -77,70 +87,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
         showToast("Failure");
     }
 
-    private class SessionCallback implements ISessionCallback {
 
-        @Override
-        public void onSessionOpened() {
-
-        }
-
-        @Override
-        public void onSessionOpenFailed(KakaoException exception) {
-            if (exception != null) {
-
-            }
-        }
-    }
-
-    private void requestMe() {
-        List<String> keys = new ArrayList<>();
-        keys.add("properties.nickname");
-        keys.add("properties.profile_image");
-
-        UserManagement.getInstance().me(keys, new MeV2ResponseCallback() {
-            @Override
-            public void onFailure(ErrorResult errorResult) {
-                String message = "failed to get user info. msg=" + errorResult;
-                Logger.d(message);
-            }
-
-            @Override
-            public void onSessionClosed(ErrorResult errorResult) {
-                //
-            }
-
-            @Override
-            public void onSuccess(MeV2Response response) {
-                Logger.d("user id : " + response.getId());
-                Logger.d("email: " + response.getKakaoAccount().getEmail());
-            }
-
-        });
-    }
-
-    private void requestAccessTokenInfo() {
-        AuthService.getInstance().requestAccessTokenInfo(new ApiResponseCallback<AccessTokenInfoResponse>() {
-            @Override
-            public void onSessionClosed(ErrorResult errorResult) {
-                //redirectLoginActivity(self);
-            }
-
-            @Override
-            public void onNotSignedUp() {
-                // not happened
-            }
-
-            @Override
-            public void onFailure(ErrorResult errorResult) {
-                Logger.e("failed to get access token info. msg=" + errorResult);
-            }
-
-            @Override
-            public void onSuccess(AccessTokenInfoResponse accessTokenInfoResponse) {
-
-            }
-        });
-    }
 
     public void tryGetKakaoToken(String token) {
         showProgressDialog();

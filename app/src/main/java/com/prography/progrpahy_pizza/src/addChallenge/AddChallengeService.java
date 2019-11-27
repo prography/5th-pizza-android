@@ -2,7 +2,7 @@ package com.prography.progrpahy_pizza.src.addChallenge;
 
 import com.prography.progrpahy_pizza.src.addChallenge.interfaces.AddChallengeActivityView;
 import com.prography.progrpahy_pizza.src.addChallenge.interfaces.AddChallengeRetrofitInterface;
-import com.prography.progrpahy_pizza.src.addChallenge.models.ChallengeRequest;
+import com.prography.progrpahy_pizza.src.addChallenge.models.AddChallengeRequest;
 import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 
 import retrofit2.Call;
@@ -20,7 +20,7 @@ public class AddChallengeService {
 
     public void postChallenge(String routineType, double time, String objectUnit, String exerciseType ){
         final AddChallengeRetrofitInterface addChallengeRetrofitInterface=getRetrofit().create(AddChallengeRetrofitInterface.class);
-        addChallengeRetrofitInterface.postChallenge(new ChallengeRequest(routineType, time, objectUnit, exerciseType)).enqueue(new Callback<ChallengeResponse>() {
+        addChallengeRetrofitInterface.postChallenge(new AddChallengeRequest(routineType, time, objectUnit, exerciseType)).enqueue(new Callback<ChallengeResponse>() {
             @Override
             public void onResponse(Call<ChallengeResponse> call, Response<ChallengeResponse> response) {
                 final ChallengeResponse challengeResponse = response.body();

@@ -1,4 +1,4 @@
-package com.prography.progrpahy_pizza.src.main.models;
+package com.prography.progrpahy_pizza.src.main.adapter;
 
 import android.graphics.Rect;
 import android.view.View;
