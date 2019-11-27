@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,15 +19,14 @@ import com.prography.progrpahy_pizza.src.record.RecordActivity;
 import java.util.ArrayList;
 
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdapter.ViewHolder> {
     private ArrayList<ChallengeResponse.Data> challengeResponses;
     private LayoutInflater layoutInflater;
 
-    public RecyclerViewAdapter(ArrayList<ChallengeResponse.Data> challengeResponses, Context context) {
+    public ChallengeListAdapter(ArrayList<ChallengeResponse.Data> challengeResponses, Context context) {
         this.challengeResponses = challengeResponses;
         layoutInflater = LayoutInflater.from(context);
     }
-
 
     @NonNull
     @Override
@@ -38,9 +39,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
-        // 변환 필요.
-        holder.challengeTitle.setText(challengeResponses.get(position).getExerciseType());
+        ChallengeResponse.Data data = challengeResponses.get(position);
+        if (data != null) {
+            // 변환 필요.
+            String title = data.getExerciseType() + data.getTime() + data.getObjectUnit() + data.getRoutineType();
+            holder.tvTitle.setText(title);
+            holder.tvCreatedAt.setText(data.getCreatedAt());
+            // holder.pbChallenge
+            // holder.tvPercentage
+            // holder.ivMore
+        }
     }
 
     @Override
@@ -61,14 +69,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     // 아이템 뷰를 저장하는 뷰홀더 클래스.
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView challengeTitle;
+        TextView tvTitle;
+        TextView tvCreatedAt;
+        ImageView ivMore;
+        TextView tvPercentage;
+        ProgressBar pbChallenge;
 
-        ViewHolder(final View itemView) {
+        public ViewHolder(final View itemView) {
             super(itemView);
 
-            // 뷰 객체에 대한 참조. (hold strong reference)
-            challengeTitle = itemView.findViewById(R.id.tv_title_item_challenge_main);
+            /* findViewByID */
+            tvTitle = itemView.findViewById(R.id.tv_title_item_challenge_main);
+            tvCreatedAt = itemView.findViewById(R.id.tv_start_date_item_challenge_main);
+            ivMore = itemView.findViewById(R.id.iv_menu_item_challenge);
+            tvPercentage = itemView.findViewById(R.id.tv_progress_percentage_item_challenge_main);
+            pbChallenge = itemView.findViewById(R.id.pb_item_challenge_main);
 
+            /* Set On Click Listener */
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

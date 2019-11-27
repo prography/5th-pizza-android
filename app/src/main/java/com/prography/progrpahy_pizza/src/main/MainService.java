@@ -24,16 +24,16 @@ public class MainService {
             public void onResponse(Call<ChallengeResponse> call, Response<ChallengeResponse> response) {
                 final ChallengeResponse challengeResponse = response.body();
                 if (challengeResponse == null) {
-                    mMainActivityView.getvalidateFailure();
+                    mMainActivityView.validateFailure();
                     return;
                 }
 
-                mMainActivityView.getvalidateSuccess(challengeResponse.getData());
+                mMainActivityView.validateSuccess(challengeResponse.getData());
             }
 
 
             public void onFailure(Call<ChallengeResponse> call, Throwable t) {
-                mMainActivityView.getvalidateFailure();
+                mMainActivityView.validateFailure();
             }
         });
     }

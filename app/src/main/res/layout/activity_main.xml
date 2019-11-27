@@ -11,16 +11,18 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/abl_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="180dp"
         android:fitsSystemWindows="true"
         android:background="@color/transparent"
         app:elevation="0dp">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+
 
             <TextView
                 android:id="@+id/tv_title_expanded_main"
@@ -30,8 +32,20 @@
                 android:textColor="@android:color/white"
                 android:textSize="30dp"
                 android:fontFamily="@font/nanumsquare_bold"
-                android:layout_marginTop="100dp"
-                android:layout_marginLeft="30dp"
+                android:layout_gravity="bottom|start"
+                android:layout_marginBottom="12dp"
+                android:layout_marginStart="30dp"
+                app:layout_collapseMode="parallax"/>
+
+            <ImageView
+                android:id="@+id/iv_profile_expanded_main"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/kakao_default_profile_image"
+                android:layout_gravity="end"
+                app:layout_collapseParallaxMultiplier="0.7"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="30dp"
                 app:layout_collapseMode="parallax"/>
 
             <androidx.appcompat.widget.Toolbar
@@ -41,16 +55,19 @@
                 android:background="@color/transparent"
                 app:layout_collapseMode="pin"/>
 
-            <ImageView
-                android:id="@+id/iv_profile_expanded_main"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_profile_default"
-                android:layout_gravity="end"
-                android:layout_marginRight="30dp"
-                android:layout_marginTop="30dp"
-                app:layout_collapseMode="parallax"/>
-
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:fontFamily="@font/nanumsquare_bold"
+                app:layout_collapseParallaxMultiplier="0"
+                app:layout_collapseMode="pin"
+                android:layout_gravity="center|top"
+                android:layout_marginTop="16sp"
+                android:gravity="center"
+                android:id="@+id/tv_toolbar_title_collapsed_main"
+                tools:text="TITLE" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -61,19 +78,18 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:layout_marginTop="40dp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:scrollbars="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_challenge_main">
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:scrollbars="none"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_challenge_main">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -82,13 +98,9 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#F78E8E"
         android:src="@drawable/ic_add_circle"
-        app:backgroundTint="#FF000000"
         app:fabSize="normal"
-        app:borderWidth="1dp"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="40dp"
         android:layout_marginEnd="40dp"/>
-
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

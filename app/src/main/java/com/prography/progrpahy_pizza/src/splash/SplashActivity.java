@@ -40,7 +40,6 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
     public void validateFailure(String message) {
         hideProgressDialog();
         startNextActivity(SignInActivity.class);
-
         finish();
     }
 

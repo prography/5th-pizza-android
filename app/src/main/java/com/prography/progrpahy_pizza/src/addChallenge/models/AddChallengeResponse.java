@@ -2,25 +2,20 @@ package com.prography.progrpahy_pizza.src.addChallenge.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class AddChallengeResponse {
-    @SerializedName("data") private ArrayList<Data> data;
+    @SerializedName("data") private Data datum;
 
-    public static class Data {
-        @SerializedName("id")
-        private int id;
-        @SerializedName("user_id") UserInfo userInfo;
-        @SerializedName("routine_type")
-        private String routineType;
-        @SerializedName("quota")
-        private double time;
-        @SerializedName("object_unit")
-        private String objectUnit;
-        @SerializedName("exercise_type")
-        private String exerciseType;
-        @SerializedName("created_at")
-        private String createdAt;
+    public static class Data implements Serializable {
+        @SerializedName("id") private int challengeId;
+        @SerializedName("userId") private int userId;
+        @SerializedName("routine_type") private String routineType;
+        @SerializedName("quota") private double time;
+        @SerializedName("object_unit") private String objectUnit;
+        @SerializedName("exercise_type") private String exerciseType;
+        @SerializedName("created_at") private String createdAt;
 
         public String getRoutineType() {
             return routineType;
@@ -38,57 +33,29 @@ public class AddChallengeResponse {
             return exerciseType;
         }
 
-        public int getId() {
-            return id;
+        public int getChallengeId() {
+            return challengeId;
         }
 
         public String getCreatedAt() {
             return createdAt;
         }
 
-        public Data(int id, String routineType, double time, String objectUnit, String exerciseType, String createdAt) {
-            this.id = id;
+        public int getUserId() {
+            return userId;
+        }
+
+        public Data(int challengeId, String userId, String routineType, double time, String objectUnit, String exerciseType, String createdAt) {
+            this.challengeId = challengeId;
             this.routineType = routineType;
             this.time = time;
             this.objectUnit = objectUnit;
             this.exerciseType = exerciseType;
             this.createdAt = createdAt;
         }
-
-        public static class UserInfo {
-            @SerializedName("id") private int userUniqueId;
-            @SerializedName("user_id") private int userId;
-            @SerializedName("email") private String userEmail;
-            @SerializedName("nickname") private String userNickname;
-            @SerializedName("created_at") private String createdAt;
-
-            public int getUserUniqueId() {
-                return userUniqueId;
-            }
-
-            public int getUserId() {
-                return userId;
-            }
-
-            public String getUserEmail() {
-                return userEmail;
-            }
-
-            public String getUserNickname() {
-                return userNickname;
-            }
-
-            public String getCreatedAt() {
-                return createdAt;
-            }
-        }
-
-        public UserInfo getUserInfo() {
-            return userInfo;
-        }
     }
 
-    public ArrayList<Data> getData() {
-        return data;
+    public Data getDatum() {
+        return datum;
     }
 }

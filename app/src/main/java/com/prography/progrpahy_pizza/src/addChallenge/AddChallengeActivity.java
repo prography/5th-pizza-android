@@ -12,6 +12,7 @@ import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.addChallenge.fragments.SelectorBottomSheetFragment;
 import com.prography.progrpahy_pizza.src.addChallenge.interfaces.AddChallengeActivityView;
+import com.prography.progrpahy_pizza.src.addChallenge.models.AddChallengeResponse;
 
 import java.util.ArrayList;
 
@@ -100,22 +101,17 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
         return true;
     }
 
+
+
     @Override
-    public void postvalidateSuccess() {
+    public void postvalidateSuccess(AddChallengeResponse.Data datum) {
         hideProgressDialog();
         showToast("postSuccess");
-
-        //for recyclerView
         Intent intent = new Intent();
-
-        intent.putExtra("mRoutineType", tvDate.getText().toString());
-        intent.putExtra("mQuota", tvTimeOrDistance.getText().toString());
-        intent.putExtra("mExerciseType", tvType.getText().toString());
-
+        intent.putExtra("item", datum);
         setResult(RESULT_OK, intent);
         finish();
     }
-
 
     @Override
     public void postvalidateFailure() {

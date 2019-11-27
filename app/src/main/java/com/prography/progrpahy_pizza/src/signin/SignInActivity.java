@@ -42,9 +42,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
 
         @Override
         public void onSessionOpened() {
-          String token = Session.getCurrentSession().getAccessToken();
-            Log.i("KAKAO TOKEN", token);
-            tryGetKakaoToken(token);
+
         }
 
         @Override
@@ -58,7 +56,9 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-
+            String token = Session.getCurrentSession().getAccessToken();
+            Log.i("KAKAO TOKEN", token);
+            tryGetKakaoToken(token);
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -88,8 +88,6 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
         hideProgressDialog();
         showToast("Failure");
     }
-
-
 
     public void tryGetKakaoToken(String token) {
         showProgressDialog();
