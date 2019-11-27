@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import com.kakao.auth.ApiResponseCallback;
 import com.kakao.auth.AuthService;
 import com.kakao.auth.ISessionCallback;
@@ -24,6 +22,8 @@ import com.prography.progrpahy_pizza.src.signin.interfaces.SignInActivityView;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+
 public class SignInActivity extends BaseActivity implements SignInActivityView {
 
     private SessionCallback callback;
@@ -35,7 +35,6 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
         callback = new SessionCallback();
         Session.getCurrentSession().addCallback(callback);
         Session.getCurrentSession().checkAndImplicitOpen();
-
 
 
     }
@@ -53,9 +52,11 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
     protected void onResume() {
         super.onResume();
 
-        String token = Session.getCurrentSession().getAccessToken();
-        Log.i("KAKAO TOKEN", token);
-        tryGetKakaoToken(token);
+        if(Session.getCurrentSession().isOpened()) {
+            String token = Session.getCurrentSession().getAccessToken();
+            Log.i("KAKAO TOKEN", token);
+            tryGetKakaoToken(token);
+        }
     }
 
     @Override

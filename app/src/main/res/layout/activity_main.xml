@@ -9,10 +9,12 @@
     tools:context=".src.main.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/abl_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:background="@color/transparent">
+        android:background="@color/transparent"
+        app:elevation="0dp">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -21,6 +23,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <TextView
+                android:id="@+id/tv_title_expanded_main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="오늘 도전할 챌린지가\n2개 있습니다"
@@ -39,6 +42,7 @@
                 app:layout_collapseMode="pin"/>
 
             <ImageView
+                android:id="@+id/iv_profile_expanded_main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_profile_default"
@@ -52,10 +56,12 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srl_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
+        android:layout_marginTop="40dp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.recyclerview.widget.RecyclerView
