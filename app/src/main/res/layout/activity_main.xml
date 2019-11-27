@@ -10,13 +10,13 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         android:background="@color/transparent">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -51,18 +51,24 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="305dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_challenge_main"
-        android:layout_gravity="center"
-        android:layout_marginTop="70dp">
+        tools:listitem="@layout/item_challenge_main">
 
     </androidx.recyclerview.widget.RecyclerView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_main_addChallenge"

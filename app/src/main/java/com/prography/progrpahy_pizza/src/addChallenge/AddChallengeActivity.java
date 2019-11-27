@@ -1,13 +1,10 @@
 package com.prography.progrpahy_pizza.src.addChallenge;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -16,13 +13,13 @@ import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.addChallenge.fragments.SelectorBottomSheetFragment;
 import com.prography.progrpahy_pizza.src.addChallenge.interfaces.AddChallengeActivityView;
 
+import java.util.ArrayList;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
-
-import java.util.ArrayList;
 
 public class AddChallengeActivity extends BaseActivity implements AddChallengeActivityView {
 
@@ -62,9 +59,20 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
         ArrayList<String> list1 = new ArrayList<>();
         ArrayList<String> list2 = new ArrayList<>();
         ArrayList<String> list3 = new ArrayList<>();
-        list1.add("매일");list1.add("매주");list1.add("매달");
-        list2.add("30분");list2.add("1시간");list2.add("2시간");list2.add("3시간");list2.add("1km");list2.add("2km");list2.add("3km");list2.add("5km");list2.add("10km");
-        list3.add("달리기를 하겠다.");list3.add("자전거를 타겠다.");
+        list1.add("매일");
+        list1.add("매주");
+        list1.add("매달");
+        list2.add("30분");
+        list2.add("1시간");
+        list2.add("2시간");
+        list2.add("3시간");
+        list2.add("1km");
+        list2.add("2km");
+        list2.add("3km");
+        list2.add("5km");
+        list2.add("10km");
+        list3.add("달리기를 하겠다.");
+        list3.add("자전거를 타겠다.");
         pickerLists.add(list1);
         pickerLists.add(list2);
         pickerLists.add(list3);
@@ -94,10 +102,10 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
 
         //for recyclerView
         Intent intent = new Intent();
-        intent.putExtra("mRoutineType", mRoutineType);
-        intent.putExtra("time", mQuota);
-        intent.putExtra("mObjectUnit", mObjectUnit);
-        intent.putExtra("exerciseType", mExerceiseType);
+
+        intent.putExtra("mRoutineType", tvDate.getText().toString());
+        intent.putExtra("mQuota", tvTimeOrDistance.getText().toString());
+        intent.putExtra("mExerciseType", tvType.getText().toString());
 
         setResult(RESULT_OK, intent);
         finish();
@@ -135,24 +143,24 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
         showProgressDialog();
         AddChallengeService addChallengeService = new AddChallengeService(this);
 
-        switch (dateType){
+        switch (dateType) {
             case "매일":
                 mRoutineType = "daily";
                 break;
             case "매주":
-                mRoutineType ="weekly";
+                mRoutineType = "weekly";
                 break;
             case "매달":
-                mRoutineType ="monthly";
+                mRoutineType = "monthly";
                 break;
         }
 
-        switch (timeOrDistance){
+        switch (timeOrDistance) {
             case "30분":
             case "1시간":
             case "2시간":
             case "3시간":
-                mObjectUnit ="time";
+                mObjectUnit = "time";
                 int minIdx = timeOrDistance.lastIndexOf('분');
                 int hourIdx = timeOrDistance.lastIndexOf('시');
                 if (minIdx != -1) {
@@ -166,17 +174,17 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
             case "3km":
             case "5km":
             case "10km":
-                mObjectUnit ="distance";
+                mObjectUnit = "distance";
                 mQuota = Double.parseDouble(timeOrDistance.substring(0, timeOrDistance.lastIndexOf('k')));
                 break;
         }
 
-        switch (exerciseType){
+        switch (exerciseType) {
             case "달리기를 하겠다.":
-                mExerceiseType ="running";
+                mExerceiseType = "running";
                 break;
             case "자전거를 타겠다.":
-                mExerceiseType ="cycling";
+                mExerceiseType = "cycling";
                 break;
         }
 
@@ -191,11 +199,11 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
                     new AlertDialog.Builder(this)
                             .setMessage("입력값을 다시 확인해주세요.")
                             .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).create()
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).create()
                             .show();
                     return;
                 }

@@ -10,7 +10,6 @@ import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.addChallenge.AddChallengeActivity;
 import com.prography.progrpahy_pizza.src.main.interfaces.MainActivityView;
-import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 import com.prography.progrpahy_pizza.src.main.models.RecyclerViewAdapter;
 import com.prography.progrpahy_pizza.src.main.models.RecyclerViewDecoration;
 
@@ -25,12 +24,11 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
     private FloatingActionButton floatingActionButton;
     private RecyclerView recyclerView;
     private Toolbar toolbar;
-    private ArrayList<ChallengeResponse> challengeResponseArrayList;
+    private ArrayList<String> challengeResponseArrayList;
     private RecyclerViewAdapter adapter;
 
     private String routineType;
-    private double time;
-    private String objectUnit;
+    private String quota;
     private String exerciseType;
 
     private static final int REQUEST_CODE = 1;
@@ -54,8 +52,10 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
         challengeResponseArrayList = new ArrayList<>();
         adapter = new RecyclerViewAdapter(challengeResponseArrayList, this);
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new RecyclerViewDecoration(20));
+
+        recyclerView.addItemDecoration(new RecyclerViewDecoration(30));
     }
+
     @Override
     public void getvalidateSuccess() {
         hideProgressDialog();
@@ -68,9 +68,9 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
         Log.i("GET", "getvalidateFauilure");
     }
 
-    private void tryGetChallenge(){
+    private void tryGetChallenge() {
         showProgressDialog();
-        MainService mainService=new MainService(this);
+        MainService mainService = new MainService(this);
         mainService.getChallege();
     }
 
@@ -88,14 +88,13 @@ public class MainActivity extends BaseActivity implements MainActivityView, View
             if (resultCode == RESULT_OK) {
                 Log.e("LOG", "결과 받기 성공");
 
-                routineType = data.getStringExtra("routineType");
-                time = data.getDoubleExtra("time",0);
-                objectUnit = data.getStringExtra("objectUnit");
-                exerciseType = data.getStringExtra("exerciseType");
+                routineType = data.getStringExtra("mRoutineType");
+                quota = data.getStringExtra("mQuota");
+                exerciseType = data.getStringExtra("mExerciseType");
 
-                ChallengeResponse challengeResponse = new ChallengeResponse(routineType, time, objectUnit, exerciseType);
+                String uniform = routineType + " " + quota + " " + exerciseType;
 
-                adapter.addItem(challengeResponse);
+                adapter.addItem(uniform);
 
                 adapter.notifyItemInserted(adapter.getItemCount() - 1);
 

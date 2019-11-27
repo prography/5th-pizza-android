@@ -17,10 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    private ArrayList<ChallengeResponse> challengeResponses;
+    private ArrayList<String> challengeResponses;
     private LayoutInflater layoutInflater;
 
-    public RecyclerViewAdapter(ArrayList<ChallengeResponse> challengeResponses, Context context) {
+    public RecyclerViewAdapter(ArrayList<String> challengeResponses, Context context) {
         this.challengeResponses = challengeResponses;
         layoutInflater = LayoutInflater.from(context);
     }
@@ -37,14 +37,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ChallengeResponse challengeResponse = challengeResponses.get(position);
 
-        if(challengeResponse !=null) {
-            holder.routineType.setText(challengeResponse.getRoutineType());
-            holder.time.setText(String.valueOf(challengeResponse.getTime()));
-            holder.objectUnit.setText(challengeResponse.getObjectUnit());
-            holder.exerciseType.setText(challengeResponse.getExerciseType());
-        }
+        holder.challenge_list.setText(challengeResponses.get(position));
     }
 
     @Override
@@ -52,26 +46,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return challengeResponses.size();
     }
 
-    public void addItem(ChallengeResponse challengeResponse){
-        challengeResponses.add(challengeResponse);
+    public void addItem(String s){
+        challengeResponses.add(s);
     }
 
     // 아이템 뷰를 저장하는 뷰홀더 클래스.
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView routineType;
-        TextView time;
-        TextView objectUnit;
-        TextView exerciseType;
+        TextView challenge_list;
 
 
         ViewHolder(final View itemView) {
             super(itemView);
 
             // 뷰 객체에 대한 참조. (hold strong reference)
-            routineType = itemView.findViewById(R.id.list_routineType);
-            time = itemView.findViewById(R.id.list_time);
-            objectUnit = itemView.findViewById(R.id.list_objectUnit);
-            exerciseType = itemView.findViewById(R.id.list_exerciseType);
+           challenge_list=itemView.findViewById(R.id.tv_title_item_challenge_main);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
