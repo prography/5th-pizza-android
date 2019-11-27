@@ -9,7 +9,7 @@ public class ChallengeResponse {
 
     public static class Data {
         @SerializedName("id")
-        private int id;
+        private int challengeId;
         @SerializedName("routine_type")
         private String routineType;
         @SerializedName("quota")
@@ -37,16 +37,16 @@ public class ChallengeResponse {
             return exerciseType;
         }
 
-        public int getId() {
-            return id;
+        public int getChallengeId() {
+            return challengeId;
         }
 
         public String getCreatedAt() {
             return createdAt;
         }
 
-        public Data(int id, String routineType, double time, String objectUnit, String exerciseType, String createdAt) {
-            this.id = id;
+        public Data(int challengeId, String routineType, double time, String objectUnit, String exerciseType, String createdAt) {
+            this.challengeId = challengeId;
             this.routineType = routineType;
             this.time = time;
             this.objectUnit = objectUnit;

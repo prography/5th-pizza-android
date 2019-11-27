@@ -1,4 +1,4 @@
-package com.prography.progrpahy_pizza.src.main.models;
+package com.prography.progrpahy_pizza.src.main.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,20 +7,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.prography.progrpahy_pizza.R;
+import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 import com.prography.progrpahy_pizza.src.record.RecordActivity;
 
 import java.util.ArrayList;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    private ArrayList<String> challengeResponses;
+    private ArrayList<ChallengeResponse.Data> challengeResponses;
     private LayoutInflater layoutInflater;
 
-    public RecyclerViewAdapter(ArrayList<String> challengeResponses, Context context) {
+    public RecyclerViewAdapter(ArrayList<ChallengeResponse.Data> challengeResponses, Context context) {
         this.challengeResponses = challengeResponses;
         layoutInflater = LayoutInflater.from(context);
     }
@@ -38,7 +39,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        holder.challenge_list.setText(challengeResponses.get(position));
+        // 변환 필요.
+        holder.challengeTitle.setText(challengeResponses.get(position).getExerciseType());
     }
 
     @Override
@@ -46,20 +48,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return challengeResponses.size();
     }
 
-    public void addItem(String s){
-        challengeResponses.add(s);
+    public void addItem(ChallengeResponse.Data datum) {
+        challengeResponses.add(datum);
+        notifyItemInserted(getItemCount() - 1);
+    }
+
+    public void setItems(ArrayList<ChallengeResponse.Data> data) {
+        challengeResponses = data;
+        notifyDataSetChanged();
     }
 
     // 아이템 뷰를 저장하는 뷰홀더 클래스.
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView challenge_list;
 
+        TextView challengeTitle;
 
         ViewHolder(final View itemView) {
             super(itemView);
 
             // 뷰 객체에 대한 참조. (hold strong reference)
-           challenge_list=itemView.findViewById(R.id.tv_title_item_challenge_main);
+            challengeTitle = itemView.findViewById(R.id.tv_title_item_challenge_main);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
