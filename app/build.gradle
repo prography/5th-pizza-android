@@ -38,7 +38,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
 
 
-    // Ted Permission
+    // https://github.com/ParkSangGwon/TedPermission
     implementation 'gun0912.ted:tedpermission:2.2.2'
 
     // Android Room
@@ -52,6 +52,9 @@ dependencies {
     // Kakao Developers
     implementation files('src\\main\\jniLibs\\libDaumMapAndroid.jar')
     implementation group: 'com.kakao.sdk', name: 'usermgmt', version: project.KAKAO_SDK_VERSION
+
+    // https://github.com/PhilJay/MPAndroidChart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 
 }

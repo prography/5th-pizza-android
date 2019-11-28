@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.gun0912.tedpermission.PermissionListener;
@@ -44,6 +45,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private Button btnChangeRecord;
     private MapView mvRecord;
     private ImageView ivClose;
+    private ProgressBar pbRecord;
 
     private Handler timerHandler;
     private Handler distanceHandler;
@@ -62,13 +64,14 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private Location curLocation;
     private float totalDistance = 0.0f;
     private float increaseDistance = 0.0f;
-
     private float velocity = 0.0f;
     private float velocityAvg = 0.0f;
-
     private boolean MODE_VELOCITY = false;
 
     private PermissionListener permissionListener;
+
+    // TODO: Thread. location null exception 해결.
+    // TODO: Progressbar 만들기.
 
     public class MyLocation {
         double longitude;
@@ -95,6 +98,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         btnSubmitRecord = findViewById(R.id.btn_submit_record);
         btnChangeRecord = findViewById(R.id.btn_change_record);
         mvRecord = findViewById(R.id.frame_mapview_record);
+        pbRecord = findViewById(R.id.pb_record);
 //        ivClose = findViewById(R.id.iv_back_record);
 
 
@@ -139,8 +143,11 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         mvRecord.setOnClickListener(this);
         btnChangeRecord.setOnClickListener(this);
 
-        /* Init View */
 
+
+        /* Init View */
+        pbRecord.setIndeterminate(false);
+        pbRecord.setProgress(30);
 
     }
 

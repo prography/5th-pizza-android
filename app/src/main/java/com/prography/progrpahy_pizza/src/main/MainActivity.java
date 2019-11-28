@@ -46,6 +46,8 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private ImageView ivProfile;
     private PermissionListener mPermissionListener;
 
+    // TODO: Title '오늘 도전할 챌린지가 n개 있습니다' 만들어서 setText하기.
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

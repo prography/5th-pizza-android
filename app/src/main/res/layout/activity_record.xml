@@ -110,9 +110,11 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <ProgressBar
-        style="@style/Widget.AppCompat.ProgressBar"
+        android:id="@+id/pb_record"
+        style="@android:style/Widget.Holo.Light.ProgressBar.Large.Inverse"
         android:layout_width="160dp"
         android:layout_height="160dp"
+        android:indeterminate="false"
         android:max="100"
         android:progress="0"
         app:layout_constraintBottom_toBottomOf="@+id/iv_start_record"
