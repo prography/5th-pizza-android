@@ -38,5 +38,24 @@ public class MainService {
         });
     }
 
+    public void deleteChallenge(int challengeId) {
+        final MainRetrofitInterface mainRetrofitInterface = getRetrofit().create(MainRetrofitInterface.class);
+        mainRetrofitInterface.deleteChallenges(challengeId).enqueue(new Callback<ChallengeResponse>() {
+            @Override
+            public void onResponse(Call<ChallengeResponse> call, Response<ChallengeResponse> response) {
+                ChallengeResponse challengeResponse = response.body();
+                if (challengeResponse == null) {
+                    mMainActivityView.validateFailure();
+                    return;
+                }
+                mMainActivityView.validateDeleteSuccess();
+            }
 
+            @Override
+            public void onFailure(Call<ChallengeResponse> call, Throwable t) {
+                t.printStackTrace();
+                mMainActivityView.validateFailure();
+            }
+        });
+    }
 }

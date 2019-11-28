@@ -1,6 +1,7 @@
 package com.prography.progrpahy_pizza.src.main.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,27 +10,33 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.prography.progrpahy_pizza.R;
+import com.prography.progrpahy_pizza.src.main.interfaces.MainActivityView;
 import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 import com.prography.progrpahy_pizza.src.record.RecordActivity;
 
 import java.util.ArrayList;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 
 public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdapter.ViewHolder> {
+    final MainActivityView mMainActivityView;
     private ArrayList<ChallengeResponse.Data> challengeResponses;
     private LayoutInflater layoutInflater;
-
+    private Context mContext;
     private String routineType;
     private String objectUnit;
     private String exerciseType;
 
-    public ChallengeListAdapter(ArrayList<ChallengeResponse.Data> challengeResponses, Context context) {
+    public ChallengeListAdapter(ArrayList<ChallengeResponse.Data> challengeResponses, Context context, MainActivityView mMainActivityView) {
         this.challengeResponses = challengeResponses;
         layoutInflater = LayoutInflater.from(context);
+        mContext = context;
+        this.mMainActivityView = mMainActivityView;
     }
 
     @NonNull
@@ -38,7 +45,15 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
         View view = layoutInflater.inflate(R.layout.item_challenge_main, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
+
         return viewHolder;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDelete());
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -109,6 +124,9 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
     }
 
     public void deleteItem(int position) {
+        // Server connecting...
+        int cid = challengeResponses.get(position).getChallengeId();
+        mMainActivityView.starteDeleteProcess(cid);
         challengeResponses.remove(position);
         notifyItemRemoved(position);
     }
@@ -142,6 +160,36 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
                     }
                 }
             });
+        }
+    }
+
+    public class SwipeToDelete extends ItemTouchHelper.SimpleCallback {
+
+        public SwipeToDelete() {
+            super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+        }
+
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return true;
+        }
+
+        @Override
+        public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
+            new AlertDialog.Builder(mContext).setMessage("정말로 삭제하시겠습니까?").setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    int position = viewHolder.getAdapterPosition();
+                    deleteItem(position);
+                }
+            }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    notifyDataSetChanged();
+                    dialog.cancel();
+                }
+            }).create().show();
+
         }
     }
 }

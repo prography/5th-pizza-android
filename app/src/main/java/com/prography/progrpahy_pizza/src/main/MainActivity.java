@@ -10,6 +10,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.gun0912.tedpermission.PermissionListener;
@@ -19,19 +24,12 @@ import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.addChallenge.AddChallengeActivity;
 import com.prography.progrpahy_pizza.src.addChallenge.models.AddChallengeResponse;
 import com.prography.progrpahy_pizza.src.common.utils.RecyclerViewDecoration;
-import com.prography.progrpahy_pizza.src.common.utils.SwipeToDelete;
 import com.prography.progrpahy_pizza.src.main.adapter.ChallengeListAdapter;
 import com.prography.progrpahy_pizza.src.main.interfaces.MainActivityView;
 import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class MainActivity extends BaseActivity implements MainActivityView {
 
@@ -97,7 +95,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
         /* RecyclerView */
         challengeResponseList = new ArrayList<>();
-        clAdapter = new ChallengeListAdapter(challengeResponseList, this);
+        clAdapter = new ChallengeListAdapter(challengeResponseList, this, this);
         rvMain.setAdapter(clAdapter);
         rvMain.addItemDecoration(new RecyclerViewDecoration(30));
 
@@ -108,8 +106,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         ivProfile.setBackground(new ShapeDrawable(new OvalShape()));
         ivProfile.setClipToOutline(true);
 
-        ItemTouchHelper itemTouchHelper=new ItemTouchHelper(new SwipeToDelete(clAdapter));
-        itemTouchHelper.attachToRecyclerView(rvMain);
+
     }
 
     @Override
@@ -124,6 +121,19 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     public void validateFailure() {
         hideProgressDialog();
         Log.i("GET", "getvalidateFauilure");
+    }
+
+    @Override
+    public void validateDeleteSuccess() {
+        hideProgressDialog();
+        showToast("Delete Success");
+    }
+
+    @Override
+    public void starteDeleteProcess(int challengeId) {
+        showProgressDialog();
+        final MainService mainService = new MainService(this);
+        mainService.deleteChallenge(challengeId);
     }
 
     private void tryGetChallenge() {
