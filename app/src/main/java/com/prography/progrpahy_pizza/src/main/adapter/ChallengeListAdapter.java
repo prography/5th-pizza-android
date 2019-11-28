@@ -24,7 +24,6 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
     private LayoutInflater layoutInflater;
 
     private String routineType;
-    private String time;
     private String objectUnit;
     private String exerciseType;
 
@@ -107,6 +106,11 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
     public void setItems(ArrayList<ChallengeResponse.Data> data) {
         challengeResponses = data;
         notifyDataSetChanged();
+    }
+
+    public void deleteItem(int position) {
+        challengeResponses.remove(position);
+        notifyItemRemoved(position);
     }
 
     // 아이템 뷰를 저장하는 뷰홀더 클래스.

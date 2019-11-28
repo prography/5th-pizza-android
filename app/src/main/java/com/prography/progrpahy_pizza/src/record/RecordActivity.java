@@ -16,9 +16,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-
 import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.record.interfaces.RecordActivityView;
@@ -29,6 +26,9 @@ import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import static com.prography.progrpahy_pizza.src.ApplicationClass.TIME_FORMAT;
 
@@ -92,7 +92,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         btnSubmitRecord = findViewById(R.id.btn_submit_record);
         btnChangeRecord = findViewById(R.id.btn_change_record);
         mvRecord = findViewById(R.id.frame_mapview_record);
-        //ivClose = findViewById(R.id.iv_back_record);
+//        ivClose = findViewById(R.id.iv_back_record);
 
 
 
@@ -143,7 +143,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         /* Set on Click Listener */
         btnStartRecord.setOnClickListener(this);
         btnSubmitRecord.setOnClickListener(this);
-        ivClose.setOnClickListener(this);
+//        ivClose.setOnClickListener(this);
         mvRecord.setOnClickListener(this);
         btnChangeRecord.setOnClickListener(this);
 

@@ -1,22 +1,13 @@
 package com.prography.progrpahy_pizza.src.main;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -24,12 +15,19 @@ import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.addChallenge.AddChallengeActivity;
 import com.prography.progrpahy_pizza.src.addChallenge.models.AddChallengeResponse;
-import com.prography.progrpahy_pizza.src.main.adapter.ChallengeListAdapter;
 import com.prography.progrpahy_pizza.src.common.utils.RecyclerViewDecoration;
+import com.prography.progrpahy_pizza.src.common.utils.SwipeToDelete;
+import com.prography.progrpahy_pizza.src.main.adapter.ChallengeListAdapter;
 import com.prography.progrpahy_pizza.src.main.interfaces.MainActivityView;
 import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 
 import java.util.ArrayList;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class MainActivity extends BaseActivity implements MainActivityView {
 
@@ -87,6 +85,9 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         /* Init View */
         ivProfile.setBackground(new ShapeDrawable(new OvalShape()));
         ivProfile.setClipToOutline(true);
+
+        ItemTouchHelper itemTouchHelper=new ItemTouchHelper(new SwipeToDelete(clAdapter));
+        itemTouchHelper.attachToRecyclerView(rvMain);
     }
 
     @Override
@@ -152,4 +153,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         ivProfile.setAlpha(1.f - alphaOfTitle);
         tvTitleCollapsed.setAlpha(alphaOfTitle);
     }
+
+
 }
