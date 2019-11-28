@@ -9,19 +9,24 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 import com.prography.progrpahy_pizza.src.record.RecordActivity;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 
 public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdapter.ViewHolder> {
     private ArrayList<ChallengeResponse.Data> challengeResponses;
     private LayoutInflater layoutInflater;
+
+    private String routineType;
+    private String time;
+    private String objectUnit;
+    private String exerciseType;
 
     public ChallengeListAdapter(ArrayList<ChallengeResponse.Data> challengeResponses, Context context) {
         this.challengeResponses = challengeResponses;
@@ -40,9 +45,47 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ChallengeResponse.Data data = challengeResponses.get(position);
+
         if (data != null) {
             // 변환 필요.
-            String title = data.getExerciseType() + data.getTime() + data.getObjectUnit() + data.getRoutineType();
+            switch (data.getRoutineType()) {
+                case "daily":
+                    routineType = "매일";
+                    break;
+                case "weekly":
+                    routineType = "매주";
+                    break;
+                case "monthly":
+                    routineType = "매달";
+                    break;
+            }
+
+            switch (data.getObjectUnit()) {
+                case "distance":
+                    objectUnit = "km";
+                    break;
+                case "time":
+                    switch ((int) data.getTime()) {
+                        case 30:
+                            objectUnit = "분";
+                            break;
+                        case 1:
+                        case 2:
+                        case 3:
+                            objectUnit = "시간";
+                            break;
+                    }
+            }
+
+            switch (data.getExerciseType()) {
+                case "running":
+                    exerciseType = "뛰기";
+                    break;
+                case "cycling":
+                    exerciseType = "자전거 타기";
+                    break;
+            }
+            String title = routineType + " " + (int) data.getTime() + objectUnit + " " + exerciseType;
             holder.tvTitle.setText(title);
             holder.tvCreatedAt.setText(data.getCreatedAt());
             // holder.pbChallenge
