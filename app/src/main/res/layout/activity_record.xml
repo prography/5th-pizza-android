@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/nanumsquare_bold"
         android:textSize="20sp"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_record"
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/nanumsquare_extrabold"
         android:textSize="24sp"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_main_desc_record"
@@ -53,7 +53,7 @@
         android:text="00:00:00.0"
         android:textSize="48sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/btn_start_record"
+        app:layout_constraintBottom_toTopOf="@+id/iv_start_record"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -80,9 +80,9 @@
         android:visibility="invisible"
         tools:visibility="visible"
         android:background="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_start_record"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_start_record"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_start_record" />
+        app:layout_constraintStart_toEndOf="@+id/iv_start_record" />
 
     <Button
         android:id="@+id/btn_change_record"
@@ -95,35 +95,30 @@
         android:visibility="invisible"
         tools:visibility="visible"
         android:background="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_start_record"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_start_record"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_start_record" />
+        app:layout_constraintEnd_toStartOf="@+id/iv_start_record" />
 
-    <Button
-        android:id="@+id/btn_start_record"
+    <ImageView
+        android:id="@+id/iv_start_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
-        android:text="시작"
-        tools:visibility="invisible"
-        android:textSize="18sp"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:background="@android:color/black"
+        android:src="@drawable/ic_start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <ProgressBar
         style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:max="100"
-        android:progress="30"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_start_record"
-        app:layout_constraintEnd_toEndOf="@+id/btn_start_record"
-        app:layout_constraintStart_toStartOf="@+id/btn_start_record"
-        app:layout_constraintTop_toTopOf="@+id/btn_start_record" />
+        android:progress="0"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_start_record"
+        app:layout_constraintEnd_toEndOf="@+id/iv_start_record"
+        app:layout_constraintStart_toStartOf="@+id/iv_start_record"
+        app:layout_constraintTop_toTopOf="@+id/iv_start_record" />
 
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"

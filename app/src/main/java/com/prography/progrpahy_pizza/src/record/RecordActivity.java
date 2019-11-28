@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.record.interfaces.RecordActivityView;
@@ -26,6 +28,7 @@ import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -36,7 +39,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
     private TextView tvCountTime;
     private TextView tvDistance;
-    private Button btnStartRecord;
+    private ImageView ivStartRecord;
     private Button btnSubmitRecord;
     private Button btnChangeRecord;
     private MapView mvRecord;
@@ -65,7 +68,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
     private boolean MODE_VELOCITY = false;
 
-
+    private PermissionListener permissionListener;
 
     public class MyLocation {
         double longitude;
@@ -88,26 +91,15 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         /* findViewByID */
         tvCountTime = findViewById(R.id.tv_cur_time_record);
         tvDistance = findViewById(R.id.tv_cur_distance_record);
-        btnStartRecord = findViewById(R.id.btn_start_record);
+        ivStartRecord = findViewById(R.id.iv_start_record);
         btnSubmitRecord = findViewById(R.id.btn_submit_record);
         btnChangeRecord = findViewById(R.id.btn_change_record);
         mvRecord = findViewById(R.id.frame_mapview_record);
 //        ivClose = findViewById(R.id.iv_back_record);
 
 
-
         /* Get Location - GPS */
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    Activity#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for Activity#requestPermissions for more details.
-            return;
-        }
 
         /* Set MapView */
         mvRecord.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading); // 권한 설정 필요
@@ -118,7 +110,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 if (MODE_VELOCITY) {
-                    tvCountTime.setText(velocityAvg + " km/s");
+                    tvCountTime.setText(String.format("%.2f", velocityAvg) + " km/s");
                 } else {
                     Date date = new Date((long) msg.obj);
                     tvCountTime.setText(TIME_FORMAT.format(date));
@@ -129,7 +121,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 if (MODE_VELOCITY) {
-                    tvDistance.setText(velocity + " km/s");
+                    tvDistance.setText(String.format("%.2f", velocity) + " km/s");
                 } else {
                     if (totalDistance < 1000)
                         tvDistance.setText(String.format("%.1f", totalDistance) + " m"); // < 1000 : 0.0 m
@@ -141,7 +133,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         };
 
         /* Set on Click Listener */
-        btnStartRecord.setOnClickListener(this);
+        ivStartRecord.setOnClickListener(this);
         btnSubmitRecord.setOnClickListener(this);
 //        ivClose.setOnClickListener(this);
         mvRecord.setOnClickListener(this);
@@ -180,8 +172,9 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_start_record:
+            case R.id.iv_start_record:
                 if (!TIMER_RUNNING) {
+                    ivStartRecord.setImageResource(R.drawable.ic_pause);
                     TIMER_RUNNING = true;
                     startTime = System.currentTimeMillis(); // 초기 시간 기록
                     // Timer Thread
@@ -243,14 +236,11 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                             }
                         }
                     }).start();
-
-                    btnStartRecord.setText("일시정지");
                     btnSubmitRecord.setVisibility(View.INVISIBLE);
                     btnChangeRecord.setVisibility(View.VISIBLE);
                 } else {
-
                     TIMER_RUNNING = false;
-                    btnStartRecord.setText("계속");
+                    ivStartRecord.setImageResource(R.drawable.ic_start);
                     btnChangeRecord.setVisibility(View.INVISIBLE);
                     btnSubmitRecord.setVisibility(View.VISIBLE);
                 }

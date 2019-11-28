@@ -63,4 +63,10 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
             }
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Session.getCurrentSession().removeCallback(callback);
+    }
 }

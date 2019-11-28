@@ -1,5 +1,6 @@
 package com.prography.progrpahy_pizza.src.main;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.addChallenge.AddChallengeActivity;
@@ -22,6 +25,7 @@ import com.prography.progrpahy_pizza.src.main.interfaces.MainActivityView;
 import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
@@ -42,6 +46,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private TextView tvTitle;
     private TextView tvTitleCollapsed;
     private ImageView ivProfile;
+    private PermissionListener mPermissionListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +62,23 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         tvTitle = findViewById(R.id.tv_title_expanded_main);
         tvTitleCollapsed = findViewById(R.id.tv_toolbar_title_collapsed_main);
         ivProfile = findViewById(R.id.iv_profile_expanded_main);
+
+        /* Permission Listener */
+        mPermissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+            }
+
+            @Override
+            public void onPermissionDenied(List<String> deniedPermissions) {
+                showToast("permission Denied\n" + deniedPermissions.toString());
+            }
+        };
+        TedPermission.with(this)
+                .setPermissionListener(mPermissionListener)
+                .setDeniedMessage("권한 승인을 해야만 이용이 가능합니다.")
+                .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+                .check();
 
         /* Get Contents From Server... */
         tryGetChallenge();

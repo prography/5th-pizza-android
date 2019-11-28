@@ -17,6 +17,7 @@ import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
+import com.prography.progrpahy_pizza.src.main.MainActivity;
 import com.prography.progrpahy_pizza.src.signin.interfaces.SignInActivityView;
 
 import java.util.ArrayList;
@@ -80,7 +81,8 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
     public void validateKakaoSuccess() {
         hideProgressDialog();
         showToast("Success");
-
+        startNextActivity(MainActivity.class);
+        finish();
     }
 
     @Override

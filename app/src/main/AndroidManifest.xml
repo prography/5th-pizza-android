@@ -22,8 +22,7 @@
         <activity android:name=".src.signup.SignUpActivity" />
         <activity android:name=".src.record.RecordActivity" />
         <activity android:name=".src.signin.SignInActivity" />
-        <activity android:name=".src.main.MainActivity">
-        </activity>
+        <activity android:name=".src.main.MainActivity"/>
         <activity android:name=".src.addChallenge.AddChallengeActivity" />
         <activity
             android:name=".src.splash.SplashActivity"
