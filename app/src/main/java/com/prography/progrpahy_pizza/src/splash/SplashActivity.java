@@ -4,12 +4,15 @@ import android.os.Bundle;
 
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
+import com.kakao.auth.authorization.accesstoken.AccessToken;
 import com.kakao.util.exception.KakaoException;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.main.MainActivity;
 import com.prography.progrpahy_pizza.src.signin.SignInActivity;
 import com.prography.progrpahy_pizza.src.splash.interfaces.SplashActivityView;
 import com.prography.progrpahy_pizza.src.splash.models.SplashResponse;
+
+import java.util.Date;
 
 import static com.prography.progrpahy_pizza.src.ApplicationClass.X_ACCESS_TOKEN;
 import static com.prography.progrpahy_pizza.src.ApplicationClass.sSharedPreferences;
@@ -24,7 +27,12 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
 
         callback = new SessionCallback();
         Session.getCurrentSession().addCallback(callback);
-        Session.getCurrentSession().checkAndImplicitOpen();
+        if (Session.getCurrentSession().checkAndImplicitOpen()) {
+
+        } else {
+            startNextActivity(SignInActivity.class);
+            finish();
+        }
     }
 
 
@@ -39,8 +47,7 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
     @Override
     public void validateFailure(String message) {
         hideProgressDialog();
-        startNextActivity(SignInActivity.class);
-        finish();
+
     }
 
     public void trySignIn(String kakaoToken) {
@@ -53,13 +60,15 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
         @Override
         public void onSessionOpened() {
             String token = Session.getCurrentSession().getAccessToken();
-            trySignIn(token);
+            if (token != null && !token.equals("")) {
+                trySignIn(token);
+            }
         }
 
         @Override
         public void onSessionOpenFailed(KakaoException exception) {
             if (exception != null) {
-
+                exception.printStackTrace();
             }
         }
     }
