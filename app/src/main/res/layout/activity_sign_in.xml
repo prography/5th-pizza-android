@@ -1,62 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="16dp"
+    android:background="@drawable/background_gradient_orange"
     tools:context=".src.signin.SignInActivity">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="이메일"
-        android:background="@drawable/form_edittext"
-        android:id="@+id/tv_email_signin"
-        android:layout_marginBottom="16dp"/>
 
-    <EditText
-        android:layout_width="match_parent"
+
+    <TextView
+        android:id="@+id/tv_title_signIn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="비밀번호"
-        android:background="@drawable/form_edittext"
-        android:id="@+id/tv_password_signin"
-        android:layout_marginBottom="32dp"/>
+        android:layout_marginTop="180dp"
+        android:fontFamily="@font/nanumsquare_extrabold"
+        android:text="헤쳐모여"
+        android:textColor="@android:color/white"
+        android:textSize="70dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_subTitle_singIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/nanumsquare_regular"
+        android:text="우리 같이 운동하자"
+        android:textColor="@android:color/white"
+        android:textSize="25dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_signIn"/>
+
+
+    <View
+        android:layout_width="100dp"
+        android:layout_height="1dp"
+        android:background="@android:color/white"
+        android:layout_marginTop="115dp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_simpleLogin_signIn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_subTitle_singIn" />
+
+    <View
+        android:layout_width="100dp"
+        android:layout_height="1dp"
+        android:background="@android:color/white"
+        android:layout_marginTop="115dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_simpleLogin_signIn"
+        app:layout_constraintTop_toBottomOf="@id/tv_subTitle_singIn" />
+
+
+    <TextView
+        android:id="@+id/tv_simpleLogin_signIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:fontFamily="@font/nanumsquare_regular"
+        android:text="간편 로그인"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_subTitle_singIn" />
+
+
+  <!--  <com.kakao.usermgmt.LoginButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_simpleLogin_signIn" />-->
 
     <Button
-        android:layout_width="match_parent"
+        android:id="@+id/btn_kakaoLogin"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="로그인"
-        android:gravity="center"
-        android:background="@drawable/form_edittext"
-        android:id="@+id/btn_signin_signin"
-        android:layout_marginBottom="16dp"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="회원가입"
-        android:gravity="center"
-        android:background="@drawable/form_edittext"
-        android:id="@+id/btn_signup_signin"
-        android:layout_marginBottom="16dp"
-        />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="카카오계정으로 시작하기"
-        android:gravity="center"
-        android:background="@drawable/form_edittext"
-        android:id="@+id/btn_kakaosignup_signin"
-        />
-
-    <com.kakao.usermgmt.LoginButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_marginTop="40dp"
+        android:background="@drawable/kakao_login_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_simpleLogin_signIn" />
 
 
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,18 +3,17 @@ package com.prography.progrpahy_pizza.src.signin;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
-import com.kakao.auth.ApiResponseCallback;
-import com.kakao.auth.AuthService;
+import com.kakao.auth.AuthType;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
-import com.kakao.auth.network.response.AccessTokenInfoResponse;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.util.exception.KakaoException;
-import com.kakao.util.helper.log.Logger;
 import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.main.MainActivity;
@@ -33,15 +32,28 @@ import static com.prography.progrpahy_pizza.src.ApplicationClass.sSharedPreferen
 public class SignInActivity extends BaseActivity implements SignInActivityView {
 
     private SessionCallback callback;
+    private Button btnKakao;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        /*callback = new SessionCallback();
+        Session.getCurrentSession().addCallback(callback);
+        Session.getCurrentSession().checkAndImplicitOpen();*/
+
+
+        btnKakao=findViewById(R.id.btn_kakaoLogin);
+        btnKakao.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View v) {
         callback = new SessionCallback();
         Session.getCurrentSession().addCallback(callback);
+        Session.getCurrentSession().open(AuthType.KAKAO_LOGIN_ALL,this);
         Session.getCurrentSession().checkAndImplicitOpen();
-
     }
 
     private class SessionCallback implements ISessionCallback {

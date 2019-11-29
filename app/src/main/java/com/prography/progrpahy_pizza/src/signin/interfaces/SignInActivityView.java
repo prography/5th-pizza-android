@@ -1,6 +1,8 @@
 package com.prography.progrpahy_pizza.src.signin.interfaces;
 
-public interface SignInActivityView {
+import android.view.View;
+
+public interface SignInActivityView extends View.OnClickListener{
 
     void validateKakaoSuccess();
 

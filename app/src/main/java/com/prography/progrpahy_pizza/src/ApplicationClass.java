@@ -4,8 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import androidx.annotation.Nullable;
-
 import com.kakao.auth.ApprovalType;
 import com.kakao.auth.AuthType;
 import com.kakao.auth.IApplicationConfig;
