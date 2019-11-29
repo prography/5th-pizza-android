@@ -28,7 +28,7 @@
                 android:id="@+id/tv_title_expanded_main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="오늘 도전할 챌린지가\n2개 있습니다"
+                android:text="오늘 도전할 챌린지가\n0개 있습니다"
                 android:textColor="@android:color/white"
                 android:textSize="30dp"
                 android:fontFamily="@font/nanumsquare_bold"

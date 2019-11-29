@@ -144,7 +144,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }
 
     private void tryGetChallenge() {
-        showProgressDialog();
+        hideProgressDialog();
         MainService mainService = new MainService(this);
         mainService.getChallege();
     }
@@ -168,6 +168,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                     Log.e("RESULT", "결과 받기 성공");
                     ChallengeResponse.Data newDatum = new ChallengeResponse.Data(datum);
                     clAdapter.addItem(newDatum);
+
                 }
             } else {
                 Log.e("RESULT", "결과 받기 실패");
@@ -178,6 +179,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     @Override
     public void onRefresh() {
         tryGetChallenge();
+        tvTitle.setText("오늘 도전할 챌린지가\n" + clAdapter.getItemCount() + "개 있습니다");
         srlMain.setRefreshing(false);
     }
 
@@ -207,6 +209,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         tvTitle.setAlpha(1.f - alphaOfTitle);
         ivProfile.setAlpha(1.f - alphaOfTitle);
         tvTitleCollapsed.setAlpha(alphaOfTitle);
+        tvTitleCollapsed.setText("오늘의 챌린지: " + clAdapter.getItemCount() + "개");
     }
 
 
