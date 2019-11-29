@@ -1,9 +1,7 @@
 package com.prography.progrpahy_pizza.src.record;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -11,14 +9,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.record.interfaces.RecordActivityView;
@@ -32,24 +31,31 @@ import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 
 import static com.prography.progrpahy_pizza.src.ApplicationClass.TIME_FORMAT;
 
 public class RecordActivity extends BaseActivity implements RecordActivityView {
 
-    private TextView tvCountTime;
-    private TextView tvDistance;
+    private Toolbar tbRecord;
+    private ActionBar abRecord;
+    private TextView tvProgress;
+    private TextView tvProgressMap;
+    private TextView tvProgressUnit;
+    private TextView tvProgressMapUnit;
     private ImageView ivStartRecord;
-    private Button btnSubmitRecord;
-    private Button btnChangeRecord;
+    private ImageView ivSubmitRecord;
+    private ImageView ivChangeRecord;
+    private ImageView ivLocation;
     private MapView mvRecord;
-    private ImageView ivClose;
-    private ProgressBar pbRecord;
+    private PieChart pcRecord;
+    private ImageView ivForeground;
 
-    private Handler timerHandler;
-    private Handler distanceHandler;
+    private Handler progressHandler;
     private LocationManager locationManager;
+    private AlertDialog mAlertDialog;
 
     private ArrayList<MyLocation> myLocations = new ArrayList<>();
     private ArrayList<MapPolyline> mapPolylines = new ArrayList<>();
@@ -66,11 +72,27 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private float increaseDistance = 0.0f;
     private float velocity = 0.0f;
     private float velocityAvg = 0.0f;
-    private boolean MODE_VELOCITY = false;
+    private boolean MODE_MAP = false;
 
-    private PermissionListener permissionListener;
+    private State mState = new State();
+    public class State {
+        public static final int MODE_PACE = 10;
+        public static final int MODE_PROGRESS = 11;
+        public static final int MODE_DISTANCE = 12;
+        public static final int MODE_TIME = 13;
+        public static final int MODE_VELOCITY = 14;
 
-    // TODO: Thread. location null exception 해결.
+        private int currentState = MODE_DISTANCE;
+
+        public void setCurrentState(int currentState) {
+            this.currentState = currentState;
+        }
+
+        public int getCurrentState() {
+            return currentState;
+        }
+    }
+
     // TODO: Progressbar 만들기.
 
     public class MyLocation {
@@ -92,15 +114,27 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         setContentView(R.layout.activity_record);
 
         /* findViewByID */
-        tvCountTime = findViewById(R.id.tv_cur_time_record);
-        tvDistance = findViewById(R.id.tv_cur_distance_record);
+        tvProgress = findViewById(R.id.tv_cur_progress_record);
+        tvProgressUnit = findViewById(R.id.tv_cur_progress_unit_record);
+        tvProgressMap = findViewById(R.id.tv_cur_progress_map_record);
+        tvProgressMapUnit = findViewById(R.id.tv_cur_progress_unit_map_record);
         ivStartRecord = findViewById(R.id.iv_start_record);
-        btnSubmitRecord = findViewById(R.id.btn_submit_record);
-        btnChangeRecord = findViewById(R.id.btn_change_record);
+        ivSubmitRecord = findViewById(R.id.iv_submit_record);
+        ivChangeRecord = findViewById(R.id.iv_change_record);
         mvRecord = findViewById(R.id.frame_mapview_record);
-        pbRecord = findViewById(R.id.pb_record);
-//        ivClose = findViewById(R.id.iv_back_record);
+        pcRecord = findViewById(R.id.pc_record);
+        ivLocation = findViewById(R.id.iv_location_record);
+        ivForeground = findViewById(R.id.iv_foreground_record);
+        tbRecord = findViewById(R.id.toolbar_record);
 
+        /* Get Intent */
+
+        /* Toolbar */
+        setSupportActionBar(tbRecord);
+        abRecord = getSupportActionBar();
+        abRecord.setDisplayShowTitleEnabled(false);
+        abRecord.setDisplayHomeAsUpEnabled(true);
+        abRecord.setHomeAsUpIndicator(R.drawable.ic_close);
 
         /* Get Location - GPS */
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -110,45 +144,117 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         mvRecord.setZoomLevel(1, false);
 
         /* Set Timer Handler */
-        timerHandler = new Handler() {
+        progressHandler = new Handler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
-                if (MODE_VELOCITY) {
-                    tvCountTime.setText(String.format("%.2f", velocityAvg) + " km/s");
-                } else {
-                    Date date = new Date((long) msg.obj);
-                    tvCountTime.setText(TIME_FORMAT.format(date));
+                switch (mState.getCurrentState()) {
+                    case State.MODE_DISTANCE:
+                        if (totalDistance < 1000) {
+                            tvProgressMap.setText(String.format("%.1f", totalDistance)); // < 1000 : 0.0 m
+                            tvProgress.setText(String.format("%.1f", totalDistance)); // < 1000 : 0.0 m
+                            tvProgressUnit.setText("m");
+                            tvProgressMapUnit.setText("m");
+                        }
+                        else {
+                            tvProgressMap.setText(String.format("%.2f", totalDistance / 1000) + " km"); // >= 1000 : 0.00 km
+                            tvProgress.setText(String.format("%.2f", totalDistance / 1000) + " km"); // >= 1000 : 0.00 km
+                            tvProgressUnit.setText("km");
+                            tvProgressMapUnit.setText("km");
+                        }
+                        break;
+                    case State.MODE_PACE:
+                        int pace = Math.round(60 / velocity);
+                        tvProgress.setText(String.format("%02d'%02d''", pace / 60, pace % 60));
+                        tvProgressMap.setText(String.format("%02d'%02d''", pace / 60, pace % 60));
+                        tvProgressUnit.setText("pace");
+                        tvProgressMapUnit.setText("pace");
+                        break;
+                    case State.MODE_PROGRESS:
+                        tvProgressUnit.setText("%");
+                        tvProgressMapUnit.setText("%");
+                        break;
+                    case State.MODE_TIME:
+                        Date date = new Date((long) msg.obj);
+                        tvProgress.setText(TIME_FORMAT.format(date));
+                        tvProgressMap.setText(TIME_FORMAT.format(date));
+                        tvProgressUnit.setText("sec");
+                        tvProgressMapUnit.setText("sec");
+                        break;
+                    case State.MODE_VELOCITY:
+                        tvProgress.setText(String.format("%.2f", velocity));
+                        tvProgressUnit.setText("km/s .avg");
+                        tvProgressMap.setText(String.format("%.2f", velocity));
+                        tvProgressMapUnit.setText("km/s .avg");
+                        break;
                 }
-            }
-        };
-        distanceHandler = new Handler() {
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                if (MODE_VELOCITY) {
-                    tvDistance.setText(String.format("%.2f", velocity) + " km/s");
-                } else {
-                    if (totalDistance < 1000)
-                        tvDistance.setText(String.format("%.1f", totalDistance) + " m"); // < 1000 : 0.0 m
-                    else
-                        tvDistance.setText(String.format("%.2f", totalDistance / 1000) + " km"); // >= 1000 : 0.00 km
-                }
-
             }
         };
 
         /* Set on Click Listener */
         ivStartRecord.setOnClickListener(this);
-        btnSubmitRecord.setOnClickListener(this);
-//        ivClose.setOnClickListener(this);
+        ivSubmitRecord.setOnClickListener(this);
         mvRecord.setOnClickListener(this);
-        btnChangeRecord.setOnClickListener(this);
+        ivChangeRecord.setOnClickListener(this);
+        ivLocation.setOnClickListener(this);
+        tvProgressMapUnit.setOnClickListener(this);
+        tvProgressMap.setOnClickListener(this);
+        tvProgressUnit.setOnClickListener(this);
+        tvProgress.setOnClickListener(this);
 
 
+        /* Make AlertDialog */
+        mAlertDialog = new AlertDialog.Builder(this).setMessage("운동을 저장하지 않고 종료하시겠습니까?")
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        }).create();
 
         /* Init View */
-        pbRecord.setIndeterminate(false);
-        pbRecord.setProgress(30);
+        /* PieChart */
+        List<PieEntry> pieEntryList = new ArrayList<>();
+        PieEntry pieEntry1 = new PieEntry(0.4f);
+        pieEntry1.setLabel("");
+        pieEntryList.add(pieEntry1);
+        PieEntry pieEntry2 = new PieEntry(0.6f);
+        pieEntry2.setLabel("");
+        pieEntryList.add(pieEntry2);
+        PieDataSet pieDataSet = new PieDataSet(pieEntryList, "");
+        pieDataSet.setColors(new int[] {R.color.piechart_record, R.color.transparent}, this);
+        pieDataSet.setLabel("");
+        pieDataSet.setDrawValues(false);
+        PieData pieData = new PieData(pieDataSet);
+        pcRecord.setData(pieData);
+        pcRecord.invalidate();
+        pcRecord.setHoleColor(Color.TRANSPARENT);
+        pcRecord.setHoleRadius(90);
+        pcRecord.setDrawEntryLabels(false);
+        pcRecord.getLegend().setEnabled(false);
+        pcRecord.getDescription().setEnabled(false);
+        pcRecord.setTouchEnabled(false);
 
+        ivForeground.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mAlertDialog.show();
+        }
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        mAlertDialog.show();
     }
 
     private void tryPostRecord(double totalTime, double totalDistance) {
@@ -194,7 +300,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                                 leftTime = System.currentTimeMillis() - startTime; // 지속시간 누적
                                 totalTime = totalLastLeftTime + leftTime;
                                 message.obj = totalTime;
-                                timerHandler.sendMessage(message);
+                                progressHandler.sendMessage(message);
                                 try {
                                     Thread.sleep(100);
                                 } catch (InterruptedException e) {
@@ -240,21 +346,21 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                                distanceHandler.sendEmptyMessage(0);
                                 Log.i("LOCATION", "Longitude: " + longitude + ", Latitude: " + latitude + ", Altitude: " + altitude + ", Total Distance: " + totalDistance);
                             }
                         }
                     }).start();
-                    btnSubmitRecord.setVisibility(View.INVISIBLE);
-                    btnChangeRecord.setVisibility(View.VISIBLE);
+
+                    ivSubmitRecord.setVisibility(View.INVISIBLE);
+                    ivChangeRecord.setVisibility(View.VISIBLE);
                 } else {
                     TIMER_RUNNING = false;
                     ivStartRecord.setImageResource(R.drawable.ic_start);
-                    btnChangeRecord.setVisibility(View.INVISIBLE);
-                    btnSubmitRecord.setVisibility(View.VISIBLE);
+                    ivChangeRecord.setVisibility(View.INVISIBLE);
+                    ivSubmitRecord.setVisibility(View.VISIBLE);
                 }
                 break;
-            case R.id.btn_submit_record:
+            case R.id.iv_submit_record:
                 new AlertDialog.Builder(this).setMessage("이대로 제출하시겠습니까?")
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
@@ -272,12 +378,48 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         })
                         .create().show();
                 break;
-            case R.id.btn_change_record:
-                if (MODE_VELOCITY)
-                    btnChangeRecord.setText("거리");
-                else
-                    btnChangeRecord.setText("속도");
-                MODE_VELOCITY = !MODE_VELOCITY;
+
+            case R.id.iv_location_record:
+                if (MODE_MAP) {
+                    ivForeground.setVisibility(View.VISIBLE);
+                    tvProgress.setVisibility(View.VISIBLE);
+                    tvProgressUnit.setVisibility(View.VISIBLE);
+                    tvProgressMap.setVisibility(View.GONE);
+                    tvProgressMapUnit.setVisibility(View.GONE);
+                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+                } else {
+                    ivForeground.setVisibility(View.GONE);
+                    tvProgress.setVisibility(View.GONE);
+                    tvProgressUnit.setVisibility(View.GONE);
+                    tvProgressMap.setVisibility(View.VISIBLE);
+                    tvProgressMapUnit.setVisibility(View.VISIBLE);
+                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
+                }
+                MODE_MAP = !MODE_MAP;
+                break;
+            case R.id.iv_change_record:
+            case R.id.tv_cur_progress_map_record:
+            case R.id.tv_cur_progress_unit_map_record:
+            case R.id.tv_cur_progress_unit_record:
+            case R.id.tv_cur_progress_record:
+                // 모드 변경
+                switch (mState.getCurrentState()) {
+                    case State.MODE_DISTANCE:
+                        mState.setCurrentState(State.MODE_PACE);
+                        break;
+                    case State.MODE_PACE:
+                        mState.setCurrentState(State.MODE_PROGRESS);
+                        break;
+                    case State.MODE_PROGRESS:
+                        mState.setCurrentState(State.MODE_TIME);
+                        break;
+                    case State.MODE_TIME:
+                        mState.setCurrentState(State.MODE_VELOCITY);
+                        break;
+                    case State.MODE_VELOCITY:
+                        mState.setCurrentState(State.MODE_DISTANCE);
+                        break;
+                }
                 break;
         }
     }

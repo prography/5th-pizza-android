@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">헤쳐모여</string>
     <string name="loading">로딩중입니다.</string>
+    <string name="not_implemented">미구현기능입니다.</string>
     <string name="network_error">네트워크 연결이 원활하지 않습니다.</string>
     <string name="kakao_app_key">4e1f3abef3128af5765f1bc592d8534b</string>
 

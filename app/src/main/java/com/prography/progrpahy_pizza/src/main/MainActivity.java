@@ -73,6 +73,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         ivProfile = findViewById(R.id.iv_profile_expanded_main);
         ivProfileNext = findViewById(R.id.iv_next_profile_main);
 
+
         /* Permission Listener */
         mPermissionListener = new PermissionListener() {
             @Override
@@ -103,16 +104,18 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         /* AppbarLayout OffSet Change Listener */
         ablMain.addOnOffsetChangedListener(this);
 
-        /* Set On Click Listener */
-        fbtnAddChallenge.setOnClickListener(this);
-        ablMain.setOnClickListener(this);
-        tbMain.setOnClickListener(this);
-
         /* RecyclerView */
         challengeResponseList = new ArrayList<>();
         clAdapter = new ChallengeListAdapter(challengeResponseList, this, this);
         rvMain.setAdapter(clAdapter);
         rvMain.addItemDecoration(new RecyclerViewDecoration(30));
+
+        /* Set On Click Listener */
+        fbtnAddChallenge.setOnClickListener(this);
+        ablMain.setOnClickListener(this);
+        tbMain.setOnClickListener(this);
+        ivProfileNext.setOnClickListener(this);
+        ivProfile.setOnClickListener(this);
 
         /* Set On Refresh Listener */
         srlMain.setOnRefreshListener(this);
@@ -172,6 +175,10 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             case R.id.abl_main:
             case R.id.toolbar_main:
                 ablMain.setExpanded(true,true);
+                break;
+            case R.id.iv_next_profile_main:
+            case R.id.iv_profile_expanded_main:
+                showToast(getString(R.string.not_implemented));
                 break;
         }
     }
