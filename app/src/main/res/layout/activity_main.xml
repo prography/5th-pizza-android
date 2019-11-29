@@ -103,7 +103,7 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_main_addChallenge"
+        android:id="@+id/fbtn_add_challenge_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#F78E8E"

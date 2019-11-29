@@ -63,7 +63,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         setContentView(R.layout.activity_main);
 
         /* findViewByID */
-        fbtnAddChallenge = findViewById(R.id.btn_main_addChallenge);
+        fbtnAddChallenge = findViewById(R.id.fbtn_add_challenge_main);
         rvMain = findViewById(R.id.recyclerView);
         tbMain = findViewById(R.id.toolbar_main);
         srlMain = findViewById(R.id.srl_main);
@@ -105,6 +105,8 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
         /* Set On Click Listener */
         fbtnAddChallenge.setOnClickListener(this);
+        ablMain.setOnClickListener(this);
+        tbMain.setOnClickListener(this);
 
         /* RecyclerView */
         challengeResponseList = new ArrayList<>();
@@ -162,8 +164,16 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(this, AddChallengeActivity.class);
-        startActivityForResult(intent, REQUEST_CODE);
+        switch (v.getId()) {
+            case R.id.fbtn_add_challenge_main:
+                Intent intent = new Intent(this, AddChallengeActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
+                break;
+            case R.id.abl_main:
+            case R.id.toolbar_main:
+                ablMain.setExpanded(true,true);
+                break;
+        }
     }
 
     @Override
@@ -211,14 +221,20 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-        float alphaOfTitle = 1.f - Math.abs((i + appBarLayout.getTotalScrollRange()) * 2.5f / (float) appBarLayout.getTotalScrollRange());
-        if (alphaOfTitle >= 1.f)
-            alphaOfTitle = 1.f;
-        else if (alphaOfTitle <= 0.f)
-            alphaOfTitle = 0.f;
-        tvTitle.setAlpha(1.f - alphaOfTitle);
-        ivProfile.setAlpha(1.f - alphaOfTitle);
-        tvTitleCollapsed.setAlpha(alphaOfTitle);
+        float collapsedTitleAlpha = 1.0f - Math.abs((i + appBarLayout.getTotalScrollRange()) * 2.5f / (float) appBarLayout.getTotalScrollRange());
+        if (collapsedTitleAlpha <= 0.0f)
+            collapsedTitleAlpha = 0.0f;
+        else if (collapsedTitleAlpha >= 1.0f)
+            collapsedTitleAlpha = 1.0f;
+        float expandedTitleAlpha = Math.abs((i + appBarLayout.getTotalScrollRange()) * 2.5f / (float) appBarLayout.getTotalScrollRange()) - 1.0f;
+        if (expandedTitleAlpha <= 0.0f)
+            expandedTitleAlpha = 0.0f;
+        else if (expandedTitleAlpha >= 1.0f)
+            expandedTitleAlpha = 1.0f;
+        tvTitle.setAlpha(expandedTitleAlpha);
+        ivProfile.setAlpha(expandedTitleAlpha);
+        ivProfileNext.setAlpha(expandedTitleAlpha);
+        tvTitleCollapsed.setAlpha(collapsedTitleAlpha);
     }
 
 
