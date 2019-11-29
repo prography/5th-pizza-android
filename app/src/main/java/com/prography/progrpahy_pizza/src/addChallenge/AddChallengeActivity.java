@@ -89,6 +89,9 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
         tvType.setOnClickListener(this);
         tvDate.setOnClickListener(this);
         tvTimeOrDistance.setOnClickListener(this);
+
+        /* Init View */
+        selectorBottomSheetFragment.show(getSupportFragmentManager(), "selector");
     }
 
     @Override
@@ -212,11 +215,7 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
                 tryPostChallenge(tvDate.getText().toString(), tvTimeOrDistance.getText().toString(), tvType.getText().toString());
                 break;
             case R.id.tv_date_addchallenge:
-                selectorBottomSheetFragment.show(getSupportFragmentManager(), "selector");
-                break;
             case R.id.tv_type_addchallenge:
-                selectorBottomSheetFragment.show(getSupportFragmentManager(), "selector");
-                break;
             case R.id.tv_time_addchallenge:
                 selectorBottomSheetFragment.show(getSupportFragmentManager(), "selector");
                 break;

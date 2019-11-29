@@ -34,8 +34,6 @@ public class ApplicationClass extends Application {
         return instance;
     }
 
-
-
     public static MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=uft-8");
     public static MediaType MEDIA_TYPE_JPEG = MediaType.parse("image/jpeg");
 
@@ -51,6 +49,11 @@ public class ApplicationClass extends Application {
 
     // JWT Token 값
     public static String X_ACCESS_TOKEN = "X-ACCESS-TOKEN";
+
+    // 카카오 USER INFO 값
+    public static String KAKAO_PROFILE = "KAKAO-PROFILE";
+    public static String KAKAO_USERNAME = "KAKAO-USERNAME";
+    public static String KAKAO_USEREMAIL = "KAKAO-USEREMAIL";
 
     //날짜 형식
     public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);

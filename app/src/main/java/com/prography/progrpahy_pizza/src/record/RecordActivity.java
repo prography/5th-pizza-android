@@ -208,9 +208,11 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         @SuppressLint("MissingPermission")
                         @Override
                         public void run() {
-                            prevLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            prevLocation = (locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null ) ?
+                                    locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) : locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                             while (TIMER_RUNNING) {
-                                curLocation  = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                curLocation  = (locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null ) ?
+                                        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) : locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                                 double longitude = curLocation.getLongitude();
                                 double latitude = curLocation.getLatitude();
                                 double altitude = curLocation.getAltitude();

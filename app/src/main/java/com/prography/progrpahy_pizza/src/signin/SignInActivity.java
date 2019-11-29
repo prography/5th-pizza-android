@@ -25,6 +25,11 @@ import java.util.List;
 
 import androidx.annotation.Nullable;
 
+import static com.prography.progrpahy_pizza.src.ApplicationClass.KAKAO_PROFILE;
+import static com.prography.progrpahy_pizza.src.ApplicationClass.KAKAO_USEREMAIL;
+import static com.prography.progrpahy_pizza.src.ApplicationClass.KAKAO_USERNAME;
+import static com.prography.progrpahy_pizza.src.ApplicationClass.sSharedPreferences;
+
 public class SignInActivity extends BaseActivity implements SignInActivityView {
 
     private SessionCallback callback;
@@ -43,9 +48,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
 
         @Override
         public void onSessionOpened() {
-            String token = Session.getCurrentSession().getAccessToken();
-            Log.i("KAKAO TOKEN", token);
-            tryGetKakaoToken(token);
+            requestMe();
         }
 
         @Override
@@ -95,5 +98,35 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
         showProgressDialog();
         final SignInService signInService = new SignInService(this);
         signInService.getKakaoSignIn(token);
+    }
+
+    private void requestMe() {
+        List<String> keys = new ArrayList<>();
+        keys.add("properties.nickname");
+        keys.add("kakao_account.profile");
+        keys.add("kakao_account.email");
+
+        UserManagement.getInstance().me(keys, new MeV2ResponseCallback() {
+            @Override
+            public void onFailure(ErrorResult errorResult) {
+                /*String message = "failed to get user info. msg=" + errorResult;
+                Logger.d(message);*/
+            }
+
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                //redirectLoginActivity();
+            }
+
+            @Override
+            public void onSuccess(MeV2Response response) {
+                sSharedPreferences.edit().putString(KAKAO_PROFILE, response.getKakaoAccount().getProfile().getProfileImageUrl()).apply();
+                sSharedPreferences.edit().putString(KAKAO_USERNAME, response.getKakaoAccount().getDisplayId()).apply();
+                sSharedPreferences.edit().putString(KAKAO_USEREMAIL, response.getKakaoAccount().getEmail()).apply();
+                String token = Session.getCurrentSession().getAccessToken();
+                Log.i("KAKAO TOKEN", token);
+                tryGetKakaoToken(token);
+            }
+        });
     }
 }

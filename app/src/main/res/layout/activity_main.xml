@@ -22,8 +22,6 @@
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-
-
             <TextView
                 android:id="@+id/tv_title_expanded_main"
                 android:layout_width="wrap_content"
@@ -48,6 +46,18 @@
                 android:layout_marginTop="30dp"
                 app:layout_collapseMode="parallax"/>
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right"
+                android:layout_gravity="end"
+                android:layout_marginRight="26dp"
+                android:layout_marginTop="64dp"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.7"
+                android:rotation="-90"
+                android:id="@+id/iv_next_profile_main" />
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_main"
                 android:layout_width="match_parent"
@@ -67,7 +77,7 @@
                 android:layout_marginTop="16sp"
                 android:gravity="center"
                 android:id="@+id/tv_toolbar_title_collapsed_main"
-                tools:text="TITLE" />
+                android:text="TITLE" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

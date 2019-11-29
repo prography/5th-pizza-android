@@ -69,7 +69,9 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
         public void onSessionOpenFailed(KakaoException exception) {
             if (exception != null) {
                 exception.printStackTrace();
+
             }
+
         }
     }
 

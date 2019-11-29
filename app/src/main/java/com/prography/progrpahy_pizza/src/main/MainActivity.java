@@ -17,6 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.gun0912.tedpermission.PermissionListener;
@@ -35,6 +36,9 @@ import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.prography.progrpahy_pizza.src.ApplicationClass.KAKAO_PROFILE;
+import static com.prography.progrpahy_pizza.src.ApplicationClass.sSharedPreferences;
+
 public class MainActivity extends BaseActivity implements MainActivityView {
 
     private static final int REQUEST_CODE = 1;
@@ -48,6 +52,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private TextView tvTitle;
     private TextView tvTitleCollapsed;
     private ImageView ivProfile;
+    private ImageView ivProfileNext;
     private PermissionListener mPermissionListener;
 
     // TODO: Title '오늘 도전할 챌린지가 n개 있습니다' 만들어서 setText하기.
@@ -66,6 +71,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         tvTitle = findViewById(R.id.tv_title_expanded_main);
         tvTitleCollapsed = findViewById(R.id.tv_toolbar_title_collapsed_main);
         ivProfile = findViewById(R.id.iv_profile_expanded_main);
+        ivProfileNext = findViewById(R.id.iv_next_profile_main);
 
         /* Permission Listener */
         mPermissionListener = new PermissionListener() {
@@ -112,8 +118,11 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         /* Init View */
         ivProfile.setBackground(new ShapeDrawable(new OvalShape()));
         ivProfile.setClipToOutline(true);
-
-
+        Glide.with(this)
+                .load(sSharedPreferences.getString(KAKAO_PROFILE, ""))
+                .placeholder(R.drawable.kakao_default_profile_image)
+                .error(R.drawable.kakao_default_profile_image)
+                .into(ivProfile);
     }
 
     @Override
@@ -121,6 +130,8 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         hideProgressDialog();
         challengeResponseList = data;
         clAdapter.setItems(challengeResponseList);
+        tvTitle.setText("오늘 도전할 챌린지가\n" + clAdapter.getItemCount() + "개 있습니다");
+        tvTitleCollapsed.setText("오늘의 챌린지: " + clAdapter.getItemCount() + "개");
         Log.i("GET", "getvalidateSuccess");
     }
 
@@ -179,7 +190,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     @Override
     public void onRefresh() {
         tryGetChallenge();
-        tvTitle.setText("오늘 도전할 챌린지가\n" + clAdapter.getItemCount() + "개 있습니다");
         srlMain.setRefreshing(false);
     }
 
@@ -209,7 +219,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         tvTitle.setAlpha(1.f - alphaOfTitle);
         ivProfile.setAlpha(1.f - alphaOfTitle);
         tvTitleCollapsed.setAlpha(alphaOfTitle);
-        tvTitleCollapsed.setText("오늘의 챌린지: " + clAdapter.getItemCount() + "개");
     }
 
 
