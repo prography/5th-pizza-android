@@ -69,19 +69,22 @@
         app:layout_constraintTop_toBottomOf="@id/tv_subTitle_singIn" />
 
 
-  <!--  <com.kakao.usermgmt.LoginButton
+    <com.kakao.usermgmt.LoginButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:id="@+id/btn_kakao_signin_signin"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_simpleLogin_signIn" />-->
+        app:layout_constraintTop_toBottomOf="@+id/tv_simpleLogin_signIn" />
 
     <Button
-        android:id="@+id/btn_kakaoLogin"
+        android:id="@+id/btn_kakao_signin_impl_signin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
+        android:foreground="?attr/selectableItemBackground"
         android:background="@drawable/kakao_login_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

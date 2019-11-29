@@ -22,17 +22,16 @@
         <activity android:name=".src.signup.SignUpActivity" />
         <activity android:name=".src.record.RecordActivity" />
         <activity android:name=".src.main.MainActivity" />
-        <activity android:name=".src.splash.SplashActivity"/>
-        <activity android:name=".src.addChallenge.AddChallengeActivity" />
-        <activity
-            android:name=".src.signin.SignInActivity"
-            android:theme="@style/AppTheme">
+        <activity android:name=".src.splash.SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".src.addChallenge.AddChallengeActivity" />
+        <activity android:name=".src.signin.SignInActivity" />
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"

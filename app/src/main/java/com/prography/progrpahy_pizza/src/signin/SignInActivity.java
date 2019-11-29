@@ -6,10 +6,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.kakao.auth.AuthType;
+import androidx.annotation.Nullable;
+
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.LoginButton;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
@@ -22,8 +24,6 @@ import com.prography.progrpahy_pizza.src.signin.interfaces.SignInActivityView;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 import static com.prography.progrpahy_pizza.src.ApplicationClass.KAKAO_PROFILE;
 import static com.prography.progrpahy_pizza.src.ApplicationClass.KAKAO_USEREMAIL;
 import static com.prography.progrpahy_pizza.src.ApplicationClass.KAKAO_USERNAME;
@@ -32,42 +32,34 @@ import static com.prography.progrpahy_pizza.src.ApplicationClass.sSharedPreferen
 public class SignInActivity extends BaseActivity implements SignInActivityView {
 
     private SessionCallback callback;
-    private Button btnKakao;
+    private Button btnKakaoImpl;
+    private LoginButton btnKakao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        /*callback = new SessionCallback();
+        /* findViewById */
+        btnKakao = findViewById(R.id.btn_kakao_signin_signin);
+        btnKakaoImpl = findViewById(R.id.btn_kakao_signin_impl_signin);
+
+        /* Kakao Session */
+        callback = new SessionCallback();
         Session.getCurrentSession().addCallback(callback);
-        Session.getCurrentSession().checkAndImplicitOpen();*/
+        Session.getCurrentSession().checkAndImplicitOpen();
 
-
-        btnKakao=findViewById(R.id.btn_kakaoLogin);
+        /* Set OnClick Listener */
+        btnKakaoImpl.setOnClickListener(this);
         btnKakao.setOnClickListener(this);
-
     }
 
     @Override
     public void onClick(View v) {
-        callback = new SessionCallback();
-        Session.getCurrentSession().addCallback(callback);
-        Session.getCurrentSession().open(AuthType.KAKAO_LOGIN_ALL,this);
-        Session.getCurrentSession().checkAndImplicitOpen();
-    }
-
-    private class SessionCallback implements ISessionCallback {
-
-        @Override
-        public void onSessionOpened() {
-            requestMe();
-        }
-
-        @Override
-        public void onSessionOpenFailed(KakaoException exception) {
-            if (exception != null) {
-
-            }
+        switch (v.getId()) {
+            case R.id.btn_kakao_signin_impl_signin:
+                btnKakao.performClick();
+                break;
         }
     }
 
@@ -140,5 +132,20 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
                 tryGetKakaoToken(token);
             }
         });
+    }
+
+    private class SessionCallback implements ISessionCallback {
+
+        @Override
+        public void onSessionOpened() {
+            requestMe();
+        }
+
+        @Override
+        public void onSessionOpenFailed(KakaoException exception) {
+            if (exception != null) {
+
+            }
+        }
     }
 }
