@@ -22,6 +22,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 
+import static com.prography.progrpahy_pizza.src.ApplicationClass.KAKAO_USERNAME;
+import static com.prography.progrpahy_pizza.src.ApplicationClass.sSharedPreferences;
+
 public class AddChallengeActivity extends BaseActivity implements AddChallengeActivityView {
 
     private TextView tvDate;
@@ -29,6 +32,7 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
     private TextView tvType;
     private Button btnSubmit;
     private Toolbar tbAddChallenge;
+    private TextView tvUserName;
 
     private String mRoutineType;
     private double mQuota;
@@ -47,6 +51,7 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
         tvType = findViewById(R.id.tv_type_addchallenge);
         btnSubmit = findViewById(R.id.btn_challengeAssign);
         tbAddChallenge = findViewById(R.id.toolbar_addchallenge);
+        tvUserName = findViewById(R.id.tv_username_addchallenge);
 
         /* Toolbar */
         setSupportActionBar(tbAddChallenge);
@@ -92,6 +97,7 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
 
         /* Init View */
         selectorBottomSheetFragment.show(getSupportFragmentManager(), "selector");
+        tvUserName.setText(sSharedPreferences.getString(KAKAO_USERNAME, "USERNAME"));
     }
 
     @Override

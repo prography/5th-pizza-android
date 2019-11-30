@@ -1,6 +1,7 @@
 package com.prography.progrpahy_pizza.src.main;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -198,12 +200,24 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // 임시 로그아웃
-                UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
+                new AlertDialog.Builder(this).setMessage("이 버튼은 임시 로그아웃 버튼입니다. 로그아웃하시겠습니까?")
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
+                                    @Override
+                                    public void onCompleteLogout() {
+                                        finish();
+                                    }
+                                });
+                            }
+                        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onCompleteLogout() {
-                        finish();
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
                     }
-                });
+                }).create().show();
+
                 return true;
         }
         return false;

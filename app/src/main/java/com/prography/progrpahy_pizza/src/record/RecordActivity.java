@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -195,8 +196,8 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                             tvProgressMapUnit.setText("m");
                         }
                         else {
-                            tvProgressMap.setText(String.format("%.2f", totalDistance / 1000) + " km"); // >= 1000 : 0.00 km
-                            tvProgress.setText(String.format("%.2f", totalDistance / 1000) + " km"); // >= 1000 : 0.00 km
+                            tvProgressMap.setText(String.format("%.2f", totalDistance / 1000)); // >= 1000 : 0.00 km
+                            tvProgress.setText(String.format("%.2f", totalDistance / 1000)); // >= 1000 : 0.00 km
                             tvProgressUnit.setText("km");
                             tvProgressMapUnit.setText("km");
                         }
@@ -345,6 +346,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -373,6 +375,27 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         }
                     }).start();
                     // Location Thread
+                    /*locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, new LocationListener() {
+                        @Override
+                        public void onLocationChanged(Location location) {
+
+                        }
+
+                        @Override
+                        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                        }
+
+                        @Override
+                        public void onProviderEnabled(String provider) {
+
+                        }
+
+                        @Override
+                        public void onProviderDisabled(String provider) {
+
+                        }
+                    });*/
                     new Thread(new Runnable() {
                         @SuppressLint("MissingPermission")
                         @Override

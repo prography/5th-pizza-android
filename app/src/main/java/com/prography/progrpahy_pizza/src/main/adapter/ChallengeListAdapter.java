@@ -105,8 +105,8 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
     }
 
     public void addItem(ChallengeResponse.Data datum) {
-        challengeResponses.add(datum);
-        notifyItemInserted(getItemCount() - 1);
+        challengeResponses.add(0, datum);
+        notifyItemInserted(0);
     }
 
     public void setItems(ArrayList<ChallengeResponse.Data> data) {

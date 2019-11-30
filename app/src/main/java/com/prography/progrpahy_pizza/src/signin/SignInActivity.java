@@ -125,7 +125,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
             @Override
             public void onSuccess(MeV2Response response) {
                 sSharedPreferences.edit().putString(KAKAO_PROFILE, response.getKakaoAccount().getProfile().getProfileImageUrl()).apply();
-                sSharedPreferences.edit().putString(KAKAO_USERNAME, response.getKakaoAccount().getDisplayId()).apply();
+                sSharedPreferences.edit().putString(KAKAO_USERNAME, response.getKakaoAccount().getProfile().getNickname()).apply();
                 sSharedPreferences.edit().putString(KAKAO_USEREMAIL, response.getKakaoAccount().getEmail()).apply();
                 String token = Session.getCurrentSession().getAccessToken();
                 Log.i("KAKAO TOKEN", token);
