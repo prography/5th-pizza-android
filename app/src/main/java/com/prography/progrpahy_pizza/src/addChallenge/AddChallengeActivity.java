@@ -113,6 +113,7 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
         Intent intent = new Intent();
         intent.putExtra("item", datum);
         setResult(RESULT_OK, intent);
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
         finish();
     }
 

@@ -1,7 +1,9 @@
 package com.prography.progrpahy_pizza.src.record;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -18,8 +20,11 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
+import com.prography.progrpahy_pizza.src.main.models.ChallengeResponse;
 import com.prography.progrpahy_pizza.src.record.interfaces.RecordActivityView;
 
 import net.daum.mf.map.api.MapPoint;
@@ -60,6 +65,10 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private ArrayList<MyLocation> myLocations = new ArrayList<>();
     private ArrayList<MapPolyline> mapPolylines = new ArrayList<>();
 
+    private double mGoal = 0;
+    private int mGoalType = 1;
+    private float mGoalPercent = 0.f;
+
     private boolean TIMER_RUNNING = false;
     private long startTime;
     private long totalLastLeftTime = 0;
@@ -73,6 +82,9 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private float velocity = 0.0f;
     private float velocityAvg = 0.0f;
     private boolean MODE_MAP = false;
+
+    private PieDataSet mPieDataSet;
+    private PieData mPieData;
 
     private State mState = new State();
     public class State {
@@ -92,8 +104,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             return currentState;
         }
     }
-
-    // TODO: Progressbar 만들기.
 
     public class MyLocation {
         double longitude;
@@ -127,7 +137,37 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         ivForeground = findViewById(R.id.iv_foreground_record);
         tbRecord = findViewById(R.id.toolbar_record);
 
+        /* Permission Listener */
+        TedPermission.with(this)
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        /* Set MapView */
+                        mvRecord.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading); // 권한 설정 필요
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+                        showToast("permission Denied\n" + deniedPermissions.toString());
+                    }
+                })
+                .setDeniedMessage("권한 승인을 해야만 이용이 가능합니다.")
+                .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+                .check();
+
         /* Get Intent */
+        Intent intent = getIntent();
+        ChallengeResponse.Data challenge = (ChallengeResponse.Data) intent.getSerializableExtra("challenge");
+        mGoal = challenge.getTime();
+        switch (challenge.getObjectUnit()) {
+            case "distance":
+                mGoalType = 1;
+                mGoal = mGoal * 1000; // m
+                break;
+            case "time":
+                mGoalType = 2;
+                mGoal = mGoal * 60 * 1000; // min -> mills
+        }
 
         /* Toolbar */
         setSupportActionBar(tbRecord);
@@ -140,7 +180,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         /* Set MapView */
-        mvRecord.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading); // 권한 설정 필요
         mvRecord.setZoomLevel(1, false);
 
         /* Set Timer Handler */
@@ -163,13 +202,17 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         }
                         break;
                     case State.MODE_PACE:
-                        int pace = Math.round(60 / velocity);
+                        int pace = 0;
+                        if (velocity != 0)
+                            pace = Math.round(60 / velocity);
                         tvProgress.setText(String.format("%02d'%02d''", pace / 60, pace % 60));
                         tvProgressMap.setText(String.format("%02d'%02d''", pace / 60, pace % 60));
                         tvProgressUnit.setText("pace");
                         tvProgressMapUnit.setText("pace");
                         break;
                     case State.MODE_PROGRESS:
+                        tvProgress.setText(String.format("%.1f", mGoalPercent));
+                        tvProgressMap.setText(String.format("%.1f", mGoalPercent));
                         tvProgressUnit.setText("%");
                         tvProgressMapUnit.setText("%");
                         break;
@@ -187,6 +230,26 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         tvProgressMapUnit.setText("km/s .avg");
                         break;
                 }
+                switch (mGoalType) {
+                    case 1:
+                        mGoalPercent = (float) (totalDistance / mGoal) * 100;
+                        break;
+                    case 2:
+                        mGoalPercent = (float) (totalTime / mGoal) * 100;
+                        break;
+                }
+
+                List<PieEntry> pieEntryList = new ArrayList<>();
+                PieEntry pieEntry1 = new PieEntry(mGoalPercent / 100);
+                pieEntry1.setLabel("");
+                pieEntryList.add(pieEntry1);
+                PieEntry pieEntry2 = new PieEntry(1 - mGoalPercent / 100);
+                pieEntry2.setLabel("");
+                pieEntryList.add(pieEntry2);
+                mPieDataSet.setValues(pieEntryList);
+                mPieData.setDataSet(mPieDataSet);
+                pcRecord.setData(mPieData);
+                pcRecord.invalidate();
             }
         };
 
@@ -219,18 +282,19 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         /* Init View */
         /* PieChart */
         List<PieEntry> pieEntryList = new ArrayList<>();
-        PieEntry pieEntry1 = new PieEntry(0.4f);
+        PieEntry pieEntry1 = new PieEntry(0.0f);
         pieEntry1.setLabel("");
         pieEntryList.add(pieEntry1);
-        PieEntry pieEntry2 = new PieEntry(0.6f);
+        PieEntry pieEntry2 = new PieEntry(0.1f);
         pieEntry2.setLabel("");
         pieEntryList.add(pieEntry2);
-        PieDataSet pieDataSet = new PieDataSet(pieEntryList, "");
-        pieDataSet.setColors(new int[] {R.color.piechart_record, R.color.transparent}, this);
-        pieDataSet.setLabel("");
-        pieDataSet.setDrawValues(false);
-        PieData pieData = new PieData(pieDataSet);
-        pcRecord.setData(pieData);
+        mPieDataSet = new PieDataSet(pieEntryList, "");
+        mPieDataSet.setColors(new int[] {R.color.piechart_record, R.color.transparent}, this);
+        mPieDataSet.setLabel("");
+        mPieDataSet.setDrawValues(false);
+
+        mPieData = new PieData(mPieDataSet);
+        pcRecord.setData(mPieData);
         pcRecord.invalidate();
         pcRecord.setHoleColor(Color.TRANSPARENT);
         pcRecord.setHoleRadius(90);
@@ -238,7 +302,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         pcRecord.getLegend().setEnabled(false);
         pcRecord.getDescription().setEnabled(false);
         pcRecord.setTouchEnabled(false);
-
         ivForeground.setVisibility(View.VISIBLE);
 
     }
@@ -325,19 +388,40 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                                 myLocations.add(new MyLocation(longitude, latitude, altitude));
                                 increaseDistance = curLocation.distanceTo(prevLocation);
                                 velocity = increaseDistance * 3.6f; // km/h : 러닝 범위 5 km/h ~ 15 km/h
-                                int power = (int) ((velocity - 5.0f) / 10 * 255);
-                                if (power <= 0)
-                                    power = 0;
-                                else if (power >= 255)
-                                    power = 255;
+
+                                int powerRed;
+                                int powerGreen;
+                                if (velocity >= 5.f && velocity < 10.f) {
+                                    powerRed = 255;
+                                    powerGreen = 255 - (int) ((velocity - 5.f) / 10 * 255);
+                                    if (powerGreen <= 0)
+                                        powerGreen = 0;
+                                    else if (powerGreen >= 255)
+                                        powerGreen = 255;
+                                } else if (velocity >= 10.f && velocity <= 15.f) {
+                                    powerRed = 255 - (int) ((velocity - 10.f) / 10 * 255);
+                                    if (powerRed <= 0)
+                                        powerRed = 0;
+                                    else if (powerRed >= 255)
+                                        powerRed = 255;
+                                    powerGreen = 255;
+                                } else if (velocity < 5.f) {
+                                    powerRed = 255;
+                                    powerGreen = 0;
+                                } else {
+                                    powerRed = 0;
+                                    powerGreen = 255;
+                                }
 
                                 totalDistance += increaseDistance;
-                                velocityAvg = (totalDistance / totalTime) * 3.6f;
+                                if (totalTime != 0 && totalDistance != 0) {
+                                    velocityAvg = (totalDistance / totalTime) * 3.6f;
+                                }
                                 /* 새로운 polyline 점 추가*/
                                 MapPolyline mapPolyline = new MapPolyline();
                                 mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(prevLocation.getLatitude(), prevLocation.getLongitude()));
                                 mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(latitude, longitude));
-                                mapPolyline.setLineColor(Color.argb(255, 255 - power, power, 0));
+                                mapPolyline.setLineColor(Color.argb(255, powerRed, powerGreen, 0)); // 색상 범위 : 빨간색 (255, 0, 0) ~ 노란색 (255, 255, 0) ~ 초록색 (0, 255, 0)
                                 prevLocation = curLocation;
                                 mvRecord.addPolyline(mapPolyline);
                                 mapPolylines.add(mapPolyline);

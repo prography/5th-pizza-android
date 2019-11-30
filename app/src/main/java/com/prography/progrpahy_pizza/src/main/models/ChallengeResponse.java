@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class ChallengeResponse {
     @SerializedName("data") private ArrayList<Data> data;
 
-    public static class Data {
+    public static class Data implements Serializable {
         @SerializedName("id")
         private int challengeId;
         @SerializedName("routine_type")

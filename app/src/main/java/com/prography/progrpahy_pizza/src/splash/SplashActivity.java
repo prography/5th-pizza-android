@@ -6,6 +6,7 @@ import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.auth.authorization.accesstoken.AccessToken;
 import com.kakao.util.exception.KakaoException;
+import com.prography.progrpahy_pizza.R;
 import com.prography.progrpahy_pizza.src.BaseActivity;
 import com.prography.progrpahy_pizza.src.main.MainActivity;
 import com.prography.progrpahy_pizza.src.signin.SignInActivity;
@@ -24,6 +25,7 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
 
         callback = new SessionCallback();
         Session.getCurrentSession().addCallback(callback);
@@ -31,6 +33,7 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
 
         } else {
             startNextActivity(SignInActivity.class);
+            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
             finish();
         }
     }
@@ -41,6 +44,7 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
         hideProgressDialog();
         sSharedPreferences.edit().putString(X_ACCESS_TOKEN, token).apply();
         startNextActivity(MainActivity.class);
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
         finish();
     }
 

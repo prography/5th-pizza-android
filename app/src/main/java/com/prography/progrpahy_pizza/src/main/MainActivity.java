@@ -53,7 +53,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private TextView tvTitleCollapsed;
     private ImageView ivProfile;
     private ImageView ivProfileNext;
-    private PermissionListener mPermissionListener;
 
     // TODO: Title '오늘 도전할 챌린지가 n개 있습니다' 만들어서 setText하기.
 
@@ -73,23 +72,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         ivProfile = findViewById(R.id.iv_profile_expanded_main);
         ivProfileNext = findViewById(R.id.iv_next_profile_main);
 
-
-        /* Permission Listener */
-        mPermissionListener = new PermissionListener() {
-            @Override
-            public void onPermissionGranted() {
-            }
-
-            @Override
-            public void onPermissionDenied(List<String> deniedPermissions) {
-                showToast("permission Denied\n" + deniedPermissions.toString());
-            }
-        };
-        TedPermission.with(this)
-                .setPermissionListener(mPermissionListener)
-                .setDeniedMessage("권한 승인을 해야만 이용이 가능합니다.")
-                .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-                .check();
 
         /* Get Contents From Server... */
         tryGetChallenge();
@@ -171,6 +153,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             case R.id.fbtn_add_challenge_main:
                 Intent intent = new Intent(this, AddChallengeActivity.class);
                 startActivityForResult(intent, REQUEST_CODE);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 break;
             case R.id.abl_main:
             case R.id.toolbar_main:

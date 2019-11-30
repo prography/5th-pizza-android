@@ -79,16 +79,7 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
                     objectUnit = "km";
                     break;
                 case "time":
-                    switch ((int) data.getTime()) {
-                        case 30:
-                            objectUnit = "분";
-                            break;
-                        case 1:
-                        case 2:
-                        case 3:
-                            objectUnit = "시간";
-                            break;
-                    }
+                    objectUnit = "분";
             }
 
             switch (data.getExerciseType()) {
@@ -156,6 +147,7 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
                 public void onClick(View v) {
                     if (v == itemView) {
                         Intent intent = new Intent(v.getContext(), RecordActivity.class);
+                        intent.putExtra("challenge", challengeResponses.get(getAdapterPosition()));
                         v.getContext().startActivity(intent);
                     }
                 }
