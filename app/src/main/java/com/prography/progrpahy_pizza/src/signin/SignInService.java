@@ -24,11 +24,12 @@ public class SignInService {
         signInRetrofitInterface.postTokenFromKakao(new SignInParams(token)).enqueue(new Callback<SignInResponse>() {
             @Override
             public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
-                if (response == null) {
+                SignInResponse signInResponse = response.body();
+                if (signInResponse == null) {
                     mSignInActivityView.validateKakaoFailure();
                 }
 
-                mSignInActivityView.validateKakaoSuccess();
+                mSignInActivityView.validateKakaoSuccess(signInResponse.getAccessToken());
             }
 
             @Override

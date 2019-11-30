@@ -27,6 +27,7 @@ import java.util.List;
 import static com.prography.progrpahy_pizza.src.ApplicationClass.KAKAO_PROFILE;
 import static com.prography.progrpahy_pizza.src.ApplicationClass.KAKAO_USEREMAIL;
 import static com.prography.progrpahy_pizza.src.ApplicationClass.KAKAO_USERNAME;
+import static com.prography.progrpahy_pizza.src.ApplicationClass.X_ACCESS_TOKEN;
 import static com.prography.progrpahy_pizza.src.ApplicationClass.sSharedPreferences;
 
 public class SignInActivity extends BaseActivity implements SignInActivityView {
@@ -85,9 +86,10 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
     }
 
     @Override
-    public void validateKakaoSuccess() {
+    public void validateKakaoSuccess(String token) {
         hideProgressDialog();
         showToast("Success");
+        sSharedPreferences.edit().putString(X_ACCESS_TOKEN, token).apply();
         startNextActivity(MainActivity.class);
         finish();
     }
