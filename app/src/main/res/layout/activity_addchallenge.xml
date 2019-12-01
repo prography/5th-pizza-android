@@ -187,7 +187,7 @@
 
 
     <Button
-        android:id="@+id/btn_challengeAssign"
+        android:id="@+id/btn_challenge_submit_addchallenge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
@@ -199,7 +199,7 @@
         android:foreground="?attr/selectableItemBackground"
         android:text="챌린지 개설하기"
         android:textColor="@android:color/white"
-        android:textSize="15sp"
+        android:textSize="17sp"
         app:layout_constraintBottom_toTopOf="@+id/tv_recommend_addchallenage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

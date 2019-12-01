@@ -51,6 +51,7 @@
         android:fontFamily="@font/nanumsquare_extrabold"
         android:textSize="24sp"
         android:textColor="@android:color/black"
+        android:id="@+id/tv_goal_record"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_main_desc_record"
