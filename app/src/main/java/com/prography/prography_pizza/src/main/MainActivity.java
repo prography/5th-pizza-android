@@ -31,6 +31,7 @@ import com.prography.prography_pizza.src.common.utils.RecyclerViewDecoration;
 import com.prography.prography_pizza.src.main.adapter.ChallengeListAdapter;
 import com.prography.prography_pizza.src.main.interfaces.MainActivityView;
 import com.prography.prography_pizza.src.main.models.ChallengeResponse;
+import com.prography.prography_pizza.src.mypage.MyPageActivity;
 
 import java.util.ArrayList;
 
@@ -158,7 +159,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                 break;
             case R.id.iv_next_profile_main:
             case R.id.iv_profile_expanded_main:
-                showToast(getString(R.string.not_implemented));
+                startNextActivity(MyPageActivity.class);
                 break;
         }
     }

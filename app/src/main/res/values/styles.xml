@@ -14,4 +14,9 @@
         <item name="android:background">@drawable/splashscreen</item>
     </style>
 
+    <!-- TabLayout Theme -->
+    <style name="TabTheme" parent="AppTheme">
+        <item name="android:fontFamily">@font/nanumsquare_regular</item>
+    </style>
+
 </resources>
