@@ -1,7 +1,10 @@
 package com.prography.prography_pizza.src.main.models;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
-import com.prography.prography_pizza.src.addChallenge.models.AddChallengeResponse;
+import com.prography.prography_pizza.src.add_challenge.models.AddChallengeResponse;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,7 +12,9 @@ import java.util.ArrayList;
 public class ChallengeResponse {
     @SerializedName("data") private ArrayList<Data> data;
 
+    @Entity
     public static class Data implements Serializable {
+        @PrimaryKey
         @SerializedName("id")
         private int challengeId;
         @SerializedName("routine_type")

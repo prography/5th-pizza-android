@@ -38,7 +38,7 @@ public class MainService {
         });
     }
 
-    public void deleteChallenge(int challengeId) {
+    public void deleteChallenge(final int challengeId) {
         final MainRetrofitInterface mainRetrofitInterface = getRetrofit().create(MainRetrofitInterface.class);
         mainRetrofitInterface.deleteChallenges(challengeId).enqueue(new Callback<ChallengeResponse>() {
             @Override
@@ -48,7 +48,7 @@ public class MainService {
                     mMainActivityView.validateFailure();
                     return;
                 }
-                mMainActivityView.validateDeleteSuccess();
+                mMainActivityView.validateDeleteSuccess(challengeId);
             }
 
             @Override

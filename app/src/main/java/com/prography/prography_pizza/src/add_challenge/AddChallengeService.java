@@ -1,9 +1,9 @@
-package com.prography.prography_pizza.src.addChallenge;
+package com.prography.prography_pizza.src.add_challenge;
 
-import com.prography.prography_pizza.src.addChallenge.interfaces.AddChallengeActivityView;
-import com.prography.prography_pizza.src.addChallenge.interfaces.AddChallengeRetrofitInterface;
-import com.prography.prography_pizza.src.addChallenge.models.AddChallengeRequest;
-import com.prography.prography_pizza.src.addChallenge.models.AddChallengeResponse;
+import com.prography.prography_pizza.src.add_challenge.interfaces.AddChallengeActivityView;
+import com.prography.prography_pizza.src.add_challenge.interfaces.AddChallengeRetrofitInterface;
+import com.prography.prography_pizza.src.add_challenge.models.AddChallengeParams;
+import com.prography.prography_pizza.src.add_challenge.models.AddChallengeResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,7 +20,7 @@ public class AddChallengeService {
 
     public void postChallenge(String routineType, double time, String objectUnit, String exerciseType ){
         final AddChallengeRetrofitInterface addChallengeRetrofitInterface=getRetrofit().create(AddChallengeRetrofitInterface.class);
-        addChallengeRetrofitInterface.postChallenge(new AddChallengeRequest(routineType, time, objectUnit, exerciseType)).enqueue(new Callback<AddChallengeResponse>() {
+        addChallengeRetrofitInterface.postChallenge(new AddChallengeParams(routineType, time, objectUnit, exerciseType)).enqueue(new Callback<AddChallengeResponse>() {
             @Override
             public void onResponse(Call<AddChallengeResponse> call, Response<AddChallengeResponse> response) {
                 final AddChallengeResponse addChallengeResponse = response.body();

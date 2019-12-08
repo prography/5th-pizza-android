@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name="com.prography.prography_pizza.src.ApplicationClass"
+        android:name=".src.ApplicationClass"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
@@ -19,19 +19,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.prography.prography_pizza.src.mypage.MyPageActivity"></activity>
-        <activity android:name="com.prography.prography_pizza.src.signup.SignUpActivity" />
-        <activity android:name="com.prography.prography_pizza.src.record.RecordActivity" />
-        <activity android:name="com.prography.prography_pizza.src.main.MainActivity" />
-        <activity android:name="com.prography.prography_pizza.src.splash.SplashActivity">
+        <activity android:name=".src.challenge_detail.ChallengeDetailActivity"></activity>
+        <activity android:name=".src.mypage.MyPageActivity" />
+        <activity android:name=".src.signup.SignUpActivity" />
+        <activity android:name=".src.record.RecordActivity" />
+        <activity android:name=".src.main.MainActivity" />
+        <activity android:name=".src.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.prography.prography_pizza.src.addChallenge.AddChallengeActivity" />
-        <activity android:name="com.prography.prography_pizza.src.signin.SignInActivity" />
+        <activity android:name=".src.add_challenge.AddChallengeActivity" />
+        <activity android:name=".src.signin.SignInActivity" />
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"

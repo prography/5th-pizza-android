@@ -25,9 +25,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdapter.ViewHolder> {
     final MainActivityView mMainActivityView;
-    private ArrayList<ChallengeResponse.Data> challengeResponses;
     private LayoutInflater layoutInflater;
     private Context mContext;
+    private RecyclerView mRecyclerView;
+
+    private ArrayList<ChallengeResponse.Data> challengeResponses;
     private String routineType;
     private String objectUnit;
     private String exerciseType;
@@ -54,6 +56,7 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
         super.onAttachedToRecyclerView(recyclerView);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDelete());
         itemTouchHelper.attachToRecyclerView(recyclerView);
+        mRecyclerView = recyclerView;
     }
 
     @Override
@@ -107,6 +110,7 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
     public void addItem(ChallengeResponse.Data datum) {
         challengeResponses.add(0, datum);
         notifyItemInserted(0);
+        mRecyclerView.smoothScrollToPosition(0);
     }
 
     public void setItems(ArrayList<ChallengeResponse.Data> data) {
@@ -115,9 +119,8 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
     }
 
     public void deleteItem(int position) {
-        // Server connecting...
         int cid = challengeResponses.get(position).getChallengeId();
-        mMainActivityView.starteDeleteProcess(cid);
+        mMainActivityView.startDeleteProcess(cid);
         challengeResponses.remove(position);
         notifyItemRemoved(position);
     }

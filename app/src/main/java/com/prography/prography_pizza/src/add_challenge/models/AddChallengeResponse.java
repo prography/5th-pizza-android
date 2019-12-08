@@ -1,4 +1,4 @@
-package com.prography.prography_pizza.src.addChallenge.models;
+package com.prography.prography_pizza.src.add_challenge.models;
 
 import com.google.gson.annotations.SerializedName;
 

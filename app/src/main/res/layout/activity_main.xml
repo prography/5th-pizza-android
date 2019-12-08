@@ -20,6 +20,13 @@
             android:layout_height="match_parent"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_main"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/transparent"
+                app:layout_collapseMode="pin"/>
+
             <TextView
                 android:id="@+id/tv_title_expanded_main"
                 android:layout_width="wrap_content"
@@ -55,13 +62,6 @@
                 app:layout_collapseParallaxMultiplier="0.7"
                 android:rotation="-90"
                 android:id="@+id/iv_next_profile_main" />
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar_main"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/transparent"
-                app:layout_collapseMode="pin"/>
 
             <TextView
                 android:layout_width="wrap_content"

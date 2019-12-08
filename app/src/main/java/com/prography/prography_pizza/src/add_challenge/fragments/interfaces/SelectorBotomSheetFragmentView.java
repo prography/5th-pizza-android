@@ -1,4 +1,4 @@
-package com.prography.prography_pizza.src.addChallenge.fragments.interfaces;
+package com.prography.prography_pizza.src.add_challenge.fragments.interfaces;
 
 import android.view.View;
 

@@ -1,4 +1,4 @@
-package com.prography.prography_pizza.src.addChallenge.fragments;
+package com.prography.prography_pizza.src.add_challenge.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -17,10 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.prography.prography_pizza.R;
-import com.prography.prography_pizza.src.addChallenge.fragments.adapter.PickerLayoutManager;
-import com.prography.prography_pizza.src.addChallenge.fragments.adapter.SelectorListAdapter;
-import com.prography.prography_pizza.src.addChallenge.fragments.interfaces.SelectorBotomSheetFragmentView;
-import com.prography.prography_pizza.src.addChallenge.interfaces.AddChallengeActivityView;
+import com.prography.prography_pizza.src.add_challenge.fragments.adapter.PickerLayoutManager;
+import com.prography.prography_pizza.src.add_challenge.fragments.adapter.SelectorListAdapter;
+import com.prography.prography_pizza.src.add_challenge.fragments.interfaces.SelectorBotomSheetFragmentView;
+import com.prography.prography_pizza.src.add_challenge.interfaces.AddChallengeActivityView;
 
 import java.util.ArrayList;
 

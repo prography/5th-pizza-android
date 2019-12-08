@@ -75,14 +75,14 @@ public class MyPageActivity extends BaseActivity implements MyPageActivityView {
         ablMypage.setOnClickListener(this);
 
         /* Init View */
-        tvUserName.setText(sSharedPreferences.getString(KAKAO_USERNAME, "USERName"));
+        tvUserName.setText(sSharedPreferences.getString(KAKAO_USERNAME, "USERName") + "님");
+        tvToolbarTitleCollapsed.setText("마이페이지");
         Glide.with(this)
                 .load(sSharedPreferences.getString(KAKAO_PROFILE, null))
                 .centerCrop()
                 .error(R.drawable.kakao_default_profile_image)
                 .placeholder(R.drawable.kakao_default_profile_image)
                 .into(ivProfile);
-        ivProfile.setBackground(new ShapeDrawable(new OvalShape()));
         ivProfile.setClipToOutline(true);
 
     }

@@ -24,9 +24,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.prography.prography_pizza.R;
+import com.prography.prography_pizza.db.ChallengeModel;
 import com.prography.prography_pizza.src.BaseActivity;
-import com.prography.prography_pizza.src.addChallenge.AddChallengeActivity;
-import com.prography.prography_pizza.src.addChallenge.models.AddChallengeResponse;
+import com.prography.prography_pizza.src.add_challenge.AddChallengeActivity;
+import com.prography.prography_pizza.src.add_challenge.models.AddChallengeResponse;
 import com.prography.prography_pizza.src.common.utils.RecyclerViewDecoration;
 import com.prography.prography_pizza.src.main.adapter.ChallengeListAdapter;
 import com.prography.prography_pizza.src.main.interfaces.MainActivityView;
@@ -113,11 +114,16 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     @Override
     public void validateSuccess(ArrayList<ChallengeResponse.Data> data) {
         hideProgressDialog();
+
+        /* Set View */
         challengeResponseList = data;
         clAdapter.setItems(challengeResponseList);
         tvTitle.setText("오늘 도전할 챌린지가\n" + clAdapter.getItemCount() + "개 있습니다");
         tvTitleCollapsed.setText("오늘의 챌린지: " + clAdapter.getItemCount() + "개");
-        Log.i("GET", "getvalidateSuccess");
+
+        /* Saving to Local DB... */
+        ChallengeModel challengeModel = new ChallengeModel(this);
+        challengeModel.insertData(data);
     }
 
     @Override
@@ -127,20 +133,28 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }
 
     @Override
-    public void validateDeleteSuccess() {
+    public void validateDeleteSuccess(int challengeId) {
         hideProgressDialog();
         showToast("Delete Success");
+
+        /* Saving to Local DB... */
+        ChallengeModel challengeModel = new ChallengeModel(this);
+        challengeModel.delete(challengeId);
+
+        /* Set View */
+        tvTitle.setText("오늘 도전할 챌린지가\n" + clAdapter.getItemCount() + "개 있습니다");
+        tvTitleCollapsed.setText("오늘의 챌린지: " + clAdapter.getItemCount() + "개");
     }
 
     @Override
-    public void starteDeleteProcess(int challengeId) {
+    public void startDeleteProcess(int challengeId) {
         showProgressDialog();
         final MainService mainService = new MainService(this);
         mainService.deleteChallenge(challengeId);
     }
 
     private void tryGetChallenge() {
-        hideProgressDialog();
+        showProgressDialog();
         MainService mainService = new MainService(this);
         mainService.getChallege();
     }
@@ -179,6 +193,10 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                     clAdapter.addItem(newDatum);
                     tvTitle.setText("오늘 도전할 챌린지가\n" + clAdapter.getItemCount() + "개 있습니다");
                     tvTitleCollapsed.setText("오늘의 챌린지: " + clAdapter.getItemCount() + "개");
+
+                    /* Saving to Local DB... */
+                    ChallengeModel challengeModel = new ChallengeModel(this);
+                    challengeModel.insertDatum(newDatum);
                 }
             } else {
                 Log.e("RESULT", "결과 받기 실패");

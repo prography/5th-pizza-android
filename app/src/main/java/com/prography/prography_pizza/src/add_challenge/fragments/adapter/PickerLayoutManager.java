@@ -1,9 +1,8 @@
-package com.prography.prography_pizza.src.addChallenge.fragments.adapter;
+package com.prography.prography_pizza.src.add_challenge.fragments.adapter;
 
 import android.content.Context;
 import android.graphics.PointF;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -12,7 +11,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.prography.prography_pizza.src.addChallenge.fragments.interfaces.SelectorBotomSheetFragmentView;
+import com.prography.prography_pizza.src.add_challenge.fragments.interfaces.SelectorBotomSheetFragmentView;
 
 public class PickerLayoutManager extends LinearLayoutManager {
     SelectorBotomSheetFragmentView mSelectorBotomSheetFragmentView = null;

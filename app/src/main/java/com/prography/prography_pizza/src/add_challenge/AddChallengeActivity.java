@@ -1,4 +1,4 @@
-package com.prography.prography_pizza.src.addChallenge;
+package com.prography.prography_pizza.src.add_challenge;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
-import com.prography.prography_pizza.src.addChallenge.fragments.SelectorBottomSheetFragment;
-import com.prography.prography_pizza.src.addChallenge.interfaces.AddChallengeActivityView;
-import com.prography.prography_pizza.src.addChallenge.models.AddChallengeResponse;
+import com.prography.prography_pizza.src.add_challenge.fragments.SelectorBottomSheetFragment;
+import com.prography.prography_pizza.src.add_challenge.interfaces.AddChallengeActivityView;
+import com.prography.prography_pizza.src.add_challenge.models.AddChallengeResponse;
 
 import java.util.ArrayList;
 

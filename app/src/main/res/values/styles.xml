@@ -17,6 +17,7 @@
     <!-- TabLayout Theme -->
     <style name="TabTheme" parent="AppTheme">
         <item name="android:fontFamily">@font/nanumsquare_regular</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
 </resources>

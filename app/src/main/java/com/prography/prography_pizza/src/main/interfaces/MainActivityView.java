@@ -15,6 +15,6 @@ public interface MainActivityView extends View.OnClickListener, SwipeRefreshLayo
     void validateSuccess(ArrayList<ChallengeResponse.Data> data);
     void validateFailure();
 
-    void validateDeleteSuccess();
-    void starteDeleteProcess(int challengeId);
+    void validateDeleteSuccess(int challengeId);
+    void startDeleteProcess(int challengeId);
 }
