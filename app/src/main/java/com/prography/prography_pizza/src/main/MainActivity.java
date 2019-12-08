@@ -31,7 +31,7 @@ import com.prography.prography_pizza.src.add_challenge.models.AddChallengeRespon
 import com.prography.prography_pizza.src.common.utils.RecyclerViewDecoration;
 import com.prography.prography_pizza.src.main.adapter.ChallengeListAdapter;
 import com.prography.prography_pizza.src.main.interfaces.MainActivityView;
-import com.prography.prography_pizza.src.main.models.ChallengeResponse;
+import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.mypage.MyPageActivity;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private FloatingActionButton fbtnAddChallenge;
     private RecyclerView rvMain;
     private Toolbar tbMain;
-    private ArrayList<ChallengeResponse.Data> challengeResponseList;
+    private ArrayList<MainResponse.Data> challengeResponseList;
     private SwipeRefreshLayout srlMain;
     private ChallengeListAdapter clAdapter;
     private AppBarLayout ablMain;
@@ -112,7 +112,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }
 
     @Override
-    public void validateSuccess(ArrayList<ChallengeResponse.Data> data) {
+    public void validateSuccess(ArrayList<MainResponse.Data> data) {
         hideProgressDialog();
 
         /* Set View */
@@ -189,7 +189,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                 AddChallengeResponse.Data datum = (AddChallengeResponse.Data) data.getSerializableExtra("item");
                 if (datum != null) {
                     Log.e("RESULT", "결과 받기 성공");
-                    ChallengeResponse.Data newDatum = new ChallengeResponse.Data(datum);
+                    MainResponse.Data newDatum = new MainResponse.Data(datum);
                     clAdapter.addItem(newDatum);
                     tvTitle.setText("오늘 도전할 챌린지가\n" + clAdapter.getItemCount() + "개 있습니다");
                     tvTitleCollapsed.setText("오늘의 챌린지: " + clAdapter.getItemCount() + "개");

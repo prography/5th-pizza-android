@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.main.interfaces.MainActivityView;
-import com.prography.prography_pizza.src.main.models.ChallengeResponse;
+import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.RecordActivity;
 
 import java.util.ArrayList;
@@ -29,12 +29,12 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
     private Context mContext;
     private RecyclerView mRecyclerView;
 
-    private ArrayList<ChallengeResponse.Data> challengeResponses;
+    private ArrayList<MainResponse.Data> challengeResponses;
     private String routineType;
     private String objectUnit;
     private String exerciseType;
 
-    public ChallengeListAdapter(ArrayList<ChallengeResponse.Data> challengeResponses, Context context, MainActivityView mMainActivityView) {
+    public ChallengeListAdapter(ArrayList<MainResponse.Data> challengeResponses, Context context, MainActivityView mMainActivityView) {
         this.challengeResponses = challengeResponses;
         layoutInflater = LayoutInflater.from(context);
         mContext = context;
@@ -61,7 +61,7 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ChallengeResponse.Data data = challengeResponses.get(position);
+        MainResponse.Data data = challengeResponses.get(position);
 
         if (data != null) {
             // 변환 필요.
@@ -107,22 +107,22 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
         return challengeResponses.size();
     }
 
-    public void addItem(ChallengeResponse.Data datum) {
+    public void addItem(MainResponse.Data datum) {
         challengeResponses.add(0, datum);
         notifyItemInserted(0);
         mRecyclerView.smoothScrollToPosition(0);
     }
 
-    public void setItems(ArrayList<ChallengeResponse.Data> data) {
+    public void setItems(ArrayList<MainResponse.Data> data) {
         challengeResponses = data;
         notifyDataSetChanged();
     }
 
     public void deleteItem(int position) {
         int cid = challengeResponses.get(position).getChallengeId();
-        mMainActivityView.startDeleteProcess(cid);
         challengeResponses.remove(position);
         notifyItemRemoved(position);
+        mMainActivityView.startDeleteProcess(cid);
     }
 
     // 아이템 뷰를 저장하는 뷰홀더 클래스.

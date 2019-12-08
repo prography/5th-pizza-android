@@ -14,18 +14,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.challenge_detail.ChallengeDetailActivity;
-import com.prography.prography_pizza.src.main.models.ChallengeResponse;
+import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.mypage.MyPageActivity;
-import com.prography.prography_pizza.src.record.RecordActivity;
 
 import java.util.ArrayList;
 
 public class MyChallengeListAdapter extends RecyclerView.Adapter<MyChallengeListAdapter.ChallengeViewHolder> {
 
-    private ArrayList<ChallengeResponse.Data> mChallenges;
+    private ArrayList<MainResponse.Data> mChallenges;
     private Context mContext;
 
-    public MyChallengeListAdapter(Context context, ArrayList<ChallengeResponse.Data> mChallenges) {
+    public MyChallengeListAdapter(Context context, ArrayList<MainResponse.Data> mChallenges) {
         this.mChallenges = mChallenges;
         mContext = context;
     }
@@ -40,7 +39,7 @@ public class MyChallengeListAdapter extends RecyclerView.Adapter<MyChallengeList
 
     @Override
     public void onBindViewHolder(@NonNull ChallengeViewHolder holder, int position) {
-        ChallengeResponse.Data data = mChallenges.get(position);
+        MainResponse.Data data = mChallenges.get(position);
 
         if (data != null) {
             String routineType = "";

@@ -2,7 +2,7 @@ package com.prography.prography_pizza.db;
 
 import android.content.Context;
 
-import com.prography.prography_pizza.src.main.models.ChallengeResponse;
+import com.prography.prography_pizza.src.main.models.MainResponse;
 
 import java.util.ArrayList;
 
@@ -13,18 +13,18 @@ public class ChallengeModel {
         challengeDao = ChallengeDatabase.getDatabase(context).challengeDao();
     }
 
-    public void insertData(final ArrayList<ChallengeResponse.Data> data) {
+    public void insertData(final ArrayList<MainResponse.Data> data) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (ChallengeResponse.Data datum : data) {
+                for (MainResponse.Data datum : data) {
                     challengeDao.insert(datum);
                 }
             }
         }).start();
     }
 
-    public void insertDatum(final ChallengeResponse.Data datum) {
+    public void insertDatum(final MainResponse.Data datum) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -33,8 +33,8 @@ public class ChallengeModel {
         }).start();
     }
 
-    public ArrayList<ChallengeResponse.Data> getAll() {
-        final ArrayList<ChallengeResponse.Data> data = new ArrayList<>();
+    public ArrayList<MainResponse.Data> getAll() {
+        final ArrayList<MainResponse.Data> data = new ArrayList<>();
 
         Thread getThread = new Thread(new Runnable() {
             @Override
@@ -53,8 +53,8 @@ public class ChallengeModel {
         return data;
     }
 
-    public ChallengeResponse.Data findDatum(final int cid) {
-        final ArrayList<ChallengeResponse.Data> data = new ArrayList<>();
+    public MainResponse.Data findDatum(final int cid) {
+        final ArrayList<MainResponse.Data> data = new ArrayList<>();
         Thread getThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -73,7 +73,7 @@ public class ChallengeModel {
     }
 
     public void delete(int cid) {
-        final ChallengeResponse.Data datum = findDatum(cid);
+        final MainResponse.Data datum = findDatum(cid);
 
         new Thread(new Runnable() {
             @Override

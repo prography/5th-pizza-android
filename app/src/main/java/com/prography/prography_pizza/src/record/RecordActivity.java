@@ -6,12 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,7 +23,7 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
-import com.prography.prography_pizza.src.main.models.ChallengeResponse;
+import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.interfaces.RecordActivityView;
 
 import net.daum.mf.map.api.MapPoint;
@@ -163,7 +161,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
         /* Get Intent */
         Intent intent = getIntent();
-        ChallengeResponse.Data challenge = (ChallengeResponse.Data) intent.getSerializableExtra("challenge");
+        MainResponse.Data challenge = (MainResponse.Data) intent.getSerializableExtra("challenge");
         mGoal = challenge.getTime();
         switch (challenge.getObjectUnit()) {
             case "distance":

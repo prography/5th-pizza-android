@@ -6,21 +6,21 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.prography.prography_pizza.src.main.models.ChallengeResponse;
+import com.prography.prography_pizza.src.main.models.MainResponse;
 
 import java.util.List;
 
 @Dao
 public interface ChallengeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(ChallengeResponse.Data datum);
+    void insert(MainResponse.Data datum);
 
     @Query("SELECT * FROM Data ORDER BY challengeId DESC")
-    List<ChallengeResponse.Data> getAll();
+    List<MainResponse.Data> getAll();
 
     @Query("SELECT * FROM Data WHERE challengeId = :id")
-    List<ChallengeResponse.Data> findDatum(int id);
+    List<MainResponse.Data> findDatum(int id);
 
     @Delete
-    void delete(ChallengeResponse.Data datum);
+    void delete(MainResponse.Data datum);
 }

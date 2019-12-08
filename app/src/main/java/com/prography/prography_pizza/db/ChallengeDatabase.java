@@ -6,9 +6,9 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.prography.prography_pizza.src.main.models.ChallengeResponse;
+import com.prography.prography_pizza.src.main.models.MainResponse;
 
-@Database(entities = {ChallengeResponse.Data.class}, version = 1, exportSchema = false)
+@Database(entities = {MainResponse.Data.class}, version = 1, exportSchema = false)
 public abstract class ChallengeDatabase extends RoomDatabase {
     private static volatile ChallengeDatabase database;
 

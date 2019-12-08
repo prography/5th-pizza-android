@@ -9,7 +9,7 @@ import com.prography.prography_pizza.src.add_challenge.models.AddChallengeRespon
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ChallengeResponse {
+public class MainResponse {
     @SerializedName("data") private ArrayList<Data> data;
 
     @Entity
