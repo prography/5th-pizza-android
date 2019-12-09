@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_gradient_orange"
+    tools:context=".src.mypage.MyPageActivity">
+
+    <TextView
+        android:id="@+id/tv_toolbar_title_myPage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18sp"
+        android:fontFamily="@font/nanumsquare_bold"
+        android:text="마이 페이지"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"/>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_mypage"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_profile_myPage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/kakao_default_profile_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_mypage" />
+
+    <TextView
+        android:id="@+id/tv_username_myPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/nanumsquare_regular"
+        android:text="username"
+        android:textColor="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_profile_myPage" />
+
+    <TextView
+        android:id="@+id/tv_level_myPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/nanumsquare_regular"
+        android:text="Lv"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
+        app:layout_constraintLeft_toRightOf="@id/iv_profile_myPage"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_mypage" />
+
+    <TextView
+        android:id="@+id/tv_levelnum_myPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/nanumsquare_regular"
+        android:text="0"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
+        app:layout_constraintLeft_toRightOf="@id/tv_level_myPage"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_mypage" />
+
+    <TextView
+        android:id="@+id/tv_complete_myPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/nanumsquare_regular"
+        android:text="완료한 챌린지"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
+        app:layout_constraintLeft_toRightOf="@id/iv_profile_myPage"
+        app:layout_constraintTop_toBottomOf="@id/tv_level_myPage" />
+
+    <TextView
+        android:id="@+id/tv_completenum_myPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/nanumsquare_regular"
+        android:text="1"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
+        app:layout_constraintLeft_toRightOf="@id/tv_complete_myPage"
+        app:layout_constraintTop_toBottomOf="@id/tv_level_myPage" />
+
+    <TextView
+        android:id="@+id/tv_percent_myPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/nanumsquare_regular"
+        android:text="성공률"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
+        app:layout_constraintLeft_toRightOf="@id/iv_profile_myPage"
+        app:layout_constraintTop_toBottomOf="@id/tv_complete_myPage" />
+
+    <TextView
+        android:id="@+id/tv_percentnum_myPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/nanumsquare_regular"
+        android:text="2%"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
+        app:layout_constraintLeft_toRightOf="@id/tv_percent_myPage"
+        app:layout_constraintTop_toBottomOf="@id/tv_complete_myPage" />
+
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="15dp"
+        android:background="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_username_myPage" />
+
+    <TextView
+        android:id="@+id/tv_ongoing_myPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/nanumsquare_bold"
+        android:text="진행중인 챌린지"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="15dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
