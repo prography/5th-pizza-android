@@ -12,14 +12,26 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.prography.prography_pizza.R;
+import com.prography.prography_pizza.db.ChallengeModel;
 import com.prography.prography_pizza.src.BaseFragment;
+import com.prography.prography_pizza.src.common.utils.RecyclerViewDecoration;
+import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.mypage.fragments.records.adapter.MyChallengeListAdapter;
+import com.prography.prography_pizza.src.mypage.fragments.records.interfaces.RecordsFragmentView;
 
-public class RecordsFragment extends BaseFragment {
+import java.util.ArrayList;
+
+public class RecordsFragment extends BaseFragment implements RecordsFragmentView {
 
     private Context mContext;
     private RecyclerView rvChallengeIng;
     private RecyclerView rvChallengeComplete;
+
+    private MyChallengeListAdapter mclAdapterIng;
+    private MyChallengeListAdapter mclAdapterComplete;
+
+
+    private ArrayList<MainResponse.Data> mChallengeData = new ArrayList<>();
 
     @Override
     public void onAttach(Context context) {
@@ -36,8 +48,17 @@ public class RecordsFragment extends BaseFragment {
         rvChallengeComplete = view.findViewById(R.id.rv_challenge_complete_records_mypage);
         rvChallengeIng = view.findViewById(R.id.rv_challenge_ing_records_mypage);
 
+        /* From Local DB... */
+        ChallengeModel challengeModel = new ChallengeModel(mContext);
+        mChallengeData = challengeModel.getAll();
+
         /* RecyclerView */
-        //rvChallengeIng.setAdapter(new MyChallengeListAdapter(mContext, ));
+        mclAdapterIng = new MyChallengeListAdapter(mContext, mChallengeData);
+        rvChallengeIng.setAdapter(mclAdapterIng);
+        rvChallengeIng.addItemDecoration(new RecyclerViewDecoration(30));
+        mclAdapterComplete = new MyChallengeListAdapter(mContext, mChallengeData);
+        rvChallengeComplete.setAdapter(mclAdapterComplete);
+        rvChallengeComplete.addItemDecoration(new RecyclerViewDecoration(30));
 
         return view;
     }
