@@ -4,6 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".src.challenge_detail.ChallengeDetailActivity">
+    tools:context=".src.challenge_detail.ChallengeDetailActivity"
+    android:background="@drawable/background_gradient_orange">
+
+    <com.github.vipulasri.timelineview.TimelineView
+        android:id="@+id/timeline"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:markerSize="20dp"
+        app:lineWidth="2dp"
+        app:startLineColor="@android:color/white"
+        app:endLineColor="@color/colorPrimary"
+        app:linePadding="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="15dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
