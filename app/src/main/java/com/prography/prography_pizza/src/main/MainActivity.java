@@ -79,7 +79,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_sign_out);
 
         /* AppbarLayout OffSet Change Listener */
         ablMain.addOnOffsetChangedListener(this);
@@ -216,7 +216,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // 임시 로그아웃
-                new AlertDialog.Builder(this).setMessage("이 버튼은 임시 로그아웃 버튼입니다. 로그아웃하시겠습니까?")
+                new AlertDialog.Builder(this).setMessage("앱을 종료 후 로그아웃하시겠습니까?")
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

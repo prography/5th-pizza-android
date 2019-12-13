@@ -15,15 +15,26 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
+
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.google.android.material.tabs.TabLayout;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
+import com.prography.prography_pizza.src.main.MainActivity;
+import com.prography.prography_pizza.src.main.adapter.ChallengeListAdapter;
 import com.prography.prography_pizza.src.main.models.MainResponse;
+import com.prography.prography_pizza.src.record.adapter.RecordPagerAdapter;
+import com.prography.prography_pizza.src.record.fragments.CurrentFragment;
 import com.prography.prography_pizza.src.record.interfaces.RecordActivityView;
 
 import net.daum.mf.map.api.MapPoint;
@@ -34,39 +45,38 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-
-import static com.prography.prography_pizza.src.ApplicationClass.TIME_FORMAT;
+import static com.prography.prography_pizza.src.ApplicationClass.CURRENT_TIME_FORMAT;
+import static com.prography.prography_pizza.src.ApplicationClass.LEFT_TIME_FORMAT;
 
 public class RecordActivity extends BaseActivity implements RecordActivityView {
+
+    public static final int GOALTYPE_DISTANCE = 1;
+    public static final int GOALTYPE_TIME = 2;
 
     private Toolbar tbRecord;
     private ActionBar abRecord;
     private TextView tvGoal;
-    private TextView tvProgress;
-    private TextView tvProgressMap;
-    private TextView tvProgressUnit;
-    private TextView tvProgressMapUnit;
     private ImageView ivStartRecord;
     private ImageView ivSubmitRecord;
     private ImageView ivChangeRecord;
     private ImageView ivLocation;
     private MapView mvRecord;
     private PieChart pcRecord;
-    private ImageView ivForeground;
+    private TabLayout tlRecord;
+    private ViewPager vpRecord;
 
     private Handler progressHandler;
     private LocationManager locationManager;
     private AlertDialog mAlertDialog;
+    private RecordPagerAdapter rpaRecord;
 
     private ArrayList<MyLocation> myLocations = new ArrayList<>();
     private ArrayList<MapPolyline> mapPolylines = new ArrayList<>();
+    private CurrentFragment mCurrentFragment;
+    private CurrentFragment mLeftFragment;
 
     private double mGoal = 0;
-    private int mGoalType = 1;
+    private int mGoalType = GOALTYPE_DISTANCE;
     private float mGoalPercent = 0.f;
 
     private boolean TIMER_RUNNING = false;
@@ -81,32 +91,9 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private float increaseDistance = 0.0f;
     private float velocity = 0.0f;
     private float velocityAvg = 0.0f;
-    private boolean MODE_MAP = false;
 
     private PieDataSet mPieDataSet;
     private PieData mPieData;
-
-    private State mState = new State();
-
-
-
-    public class State {
-        public static final int MODE_PACE = 10;
-        public static final int MODE_PROGRESS = 11;
-        public static final int MODE_DISTANCE = 12;
-        public static final int MODE_TIME = 13;
-        public static final int MODE_VELOCITY = 14;
-
-        private int currentState = MODE_DISTANCE;
-
-        public void setCurrentState(int currentState) {
-            this.currentState = currentState;
-        }
-
-        public int getCurrentState() {
-            return currentState;
-        }
-    }
 
     public class MyLocation {
         double longitude;
@@ -120,7 +107,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         }
     }
 
-    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,18 +114,15 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
         /* findViewByID */
         tvGoal = findViewById(R.id.tv_goal_record);
-        tvProgress = findViewById(R.id.tv_cur_progress_record);
-        tvProgressUnit = findViewById(R.id.tv_cur_progress_unit_record);
-        tvProgressMap = findViewById(R.id.tv_cur_progress_map_record);
-        tvProgressMapUnit = findViewById(R.id.tv_cur_progress_unit_map_record);
         ivStartRecord = findViewById(R.id.iv_start_record);
         ivSubmitRecord = findViewById(R.id.iv_submit_record);
         ivChangeRecord = findViewById(R.id.iv_change_record);
         mvRecord = findViewById(R.id.frame_mapview_record);
         pcRecord = findViewById(R.id.pc_record);
         ivLocation = findViewById(R.id.iv_location_record);
-        ivForeground = findViewById(R.id.iv_foreground_record);
         tbRecord = findViewById(R.id.toolbar_record);
+        tlRecord = findViewById(R.id.tl_record);
+        vpRecord = findViewById(R.id.vp_record);
 
         /* Permission Listener */
         TedPermission.with(this)
@@ -165,7 +148,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         mGoal = challenge.getTime();
         switch (challenge.getObjectUnit()) {
             case "distance":
-                mGoalType = 1;
+                mGoalType = GOALTYPE_DISTANCE;
                 switch (challenge.getExerciseType()) {
                     case "running":
                         tvGoal.setText((int) mGoal + "km 달리기");
@@ -177,7 +160,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 mGoal = mGoal * 1000; // km -> m
                 break;
             case "time":
-                mGoalType = 2;
+                mGoalType = GOALTYPE_TIME;
                 switch (challenge.getExerciseType()) {
                     case "running":
                         tvGoal.setText((int) mGoal + "분 달리기");
@@ -194,7 +177,15 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         abRecord = getSupportActionBar();
         abRecord.setDisplayShowTitleEnabled(false);
         abRecord.setDisplayHomeAsUpEnabled(true);
-        abRecord.setHomeAsUpIndicator(R.drawable.ic_close);
+        abRecord.setHomeAsUpIndicator(R.drawable.ic_back);
+
+        /* TabLayout */
+        tlRecord.addOnTabSelectedListener(this);
+
+        /* ViewPager */
+        rpaRecord = new RecordPagerAdapter(getSupportFragmentManager());
+        vpRecord.setAdapter(rpaRecord);
+        vpRecord.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tlRecord));
 
         /* Get Location - GPS */
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -202,88 +193,12 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         /* Set MapView */
         mvRecord.setZoomLevel(1, false);
 
-        /* Set Progress Handler */
-        progressHandler = new Handler() {
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                switch (mState.getCurrentState()) {
-                    case State.MODE_DISTANCE:
-                        if (totalDistance < 1000) {
-                            tvProgressMap.setText(String.format("%.1f", totalDistance)); // < 1000 : 0.0 m
-                            tvProgress.setText(String.format("%.1f", totalDistance)); // < 1000 : 0.0 m
-                            tvProgressUnit.setText("m");
-                            tvProgressMapUnit.setText("m");
-                        }
-                        else {
-                            tvProgressMap.setText(String.format("%.2f", totalDistance / 1000)); // >= 1000 : 0.00 km
-                            tvProgress.setText(String.format("%.2f", totalDistance / 1000)); // >= 1000 : 0.00 km
-                            tvProgressUnit.setText("km");
-                            tvProgressMapUnit.setText("km");
-                        }
-                        break;
-                    case State.MODE_PACE:
-                        int pace = 0;
-                        if (velocity != 0)
-                            pace = Math.round(60 / velocity);
-                        tvProgress.setText(String.format("%02d'%02d''", pace / 60, pace % 60));
-                        tvProgressMap.setText(String.format("%02d'%02d''", pace / 60, pace % 60));
-                        tvProgressUnit.setText("pace");
-                        tvProgressMapUnit.setText("pace");
-                        break;
-                    case State.MODE_PROGRESS:
-                        tvProgress.setText(String.format("%.1f", mGoalPercent));
-                        tvProgressMap.setText(String.format("%.1f", mGoalPercent));
-                        tvProgressUnit.setText("%");
-                        tvProgressMapUnit.setText("%");
-                        break;
-                    case State.MODE_TIME:
-                        Date date = new Date((long) msg.obj);
-                        tvProgress.setText(TIME_FORMAT.format(date));
-                        tvProgressMap.setText(TIME_FORMAT.format(date));
-                        tvProgressUnit.setText("sec");
-                        tvProgressMapUnit.setText("sec");
-                        break;
-                    case State.MODE_VELOCITY:
-                        tvProgress.setText(String.format("%.2f", velocity));
-                        tvProgressUnit.setText("km/s .avg");
-                        tvProgressMap.setText(String.format("%.2f", velocity));
-                        tvProgressMapUnit.setText("km/s .avg");
-                        break;
-                }
-                switch (mGoalType) {
-                    case 1:
-                        mGoalPercent = (float) (totalDistance / mGoal) * 100;
-                        break;
-                    case 2:
-                        mGoalPercent = (float) (totalTime / mGoal) * 100;
-                        break;
-                }
-
-                List<PieEntry> pieEntryList = new ArrayList<>();
-                PieEntry pieEntry1 = new PieEntry(mGoalPercent / 100);
-                pieEntry1.setLabel("");
-                pieEntryList.add(pieEntry1);
-                PieEntry pieEntry2 = new PieEntry(1 - mGoalPercent / 100);
-                pieEntry2.setLabel("");
-                pieEntryList.add(pieEntry2);
-                mPieDataSet.setValues(pieEntryList);
-                mPieData.setDataSet(mPieDataSet);
-                pcRecord.setData(mPieData);
-                pcRecord.invalidate();
-            }
-        };
-
         /* Set on Click Listener */
         ivStartRecord.setOnClickListener(this);
         ivSubmitRecord.setOnClickListener(this);
         mvRecord.setOnClickListener(this);
         ivChangeRecord.setOnClickListener(this);
         ivLocation.setOnClickListener(this);
-        tvProgressMapUnit.setOnClickListener(this);
-        tvProgressMap.setOnClickListener(this);
-        tvProgressUnit.setOnClickListener(this);
-        tvProgress.setOnClickListener(this);
-
 
         /* Make AlertDialog */
         mAlertDialog = new AlertDialog.Builder(this).setMessage("운동을 저장하지 않고 종료하시겠습니까?")
@@ -322,9 +237,89 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         pcRecord.getLegend().setEnabled(false);
         pcRecord.getDescription().setEnabled(false);
         pcRecord.setTouchEnabled(false);
-        ivForeground.setVisibility(View.VISIBLE);
+    }
 
+    @SuppressLint("HandlerLeak")
+    @Override
+    protected void onStart() {
+        super.onStart();
+        /* Set Progress Handler */
+        progressHandler = new Handler() {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
 
+                switch (mGoalType) {
+                    case GOALTYPE_DISTANCE:
+                        mGoalPercent = (float) (totalDistance / mGoal) * 100;
+                        break;
+                    case GOALTYPE_TIME:
+                        mGoalPercent = (float) (totalTime / mGoal) * 100;
+                        break;
+                }
+
+                /* PieChart */
+                List<PieEntry> pieEntryList = new ArrayList<>();
+                PieEntry pieEntry1 = new PieEntry(mGoalPercent / 100);
+                pieEntry1.setLabel("");
+                pieEntryList.add(pieEntry1);
+                PieEntry pieEntry2 = new PieEntry(1 - mGoalPercent / 100);
+                pieEntry2.setLabel("");
+                pieEntryList.add(pieEntry2);
+                mPieDataSet.setValues(pieEntryList);
+                mPieData.setDataSet(mPieDataSet);
+                pcRecord.setData(mPieData);
+                pcRecord.invalidate();
+
+                /* Current Fragment */
+                String distance = "";
+                String distanceUnit = "";
+                String goalDistance = "";
+                String goalDistanceUnit = "";
+                String goalTime = "";
+                if (totalDistance < 1000) {
+                    distance = String.format("%.1f", totalDistance);
+                    distanceUnit = "m";
+                } else {
+                    distance = String.format("%.1f", totalDistance / 1000);
+                    distanceUnit = "km";
+                }
+                Date date = new Date((long) msg.obj);
+
+                int pace = 0;
+                if (velocityAvg != 0)
+                    pace = Math.round(60 / velocityAvg);
+
+                if (mLeftFragment == null) {
+                    mLeftFragment = (CurrentFragment) getSupportFragmentManager().getFragments().get(0);
+                }
+                if (mCurrentFragment == null) {
+                    mCurrentFragment = (CurrentFragment) getSupportFragmentManager().getFragments().get(1);
+                }
+                switch (mGoalType) {
+                    case GOALTYPE_DISTANCE:
+                        if (mGoal - totalDistance < 1000) {
+                            goalDistanceUnit = "m";
+                            goalDistance = String.format("%.1f", (float) mGoal - totalDistance);
+                        } else {
+                            goalDistanceUnit = "km";
+                            goalDistance = String.format("%.1f", (float) (mGoal - totalDistance) / 1000);
+                        }
+                        mLeftFragment.setCurrentView(goalDistance, goalDistanceUnit,
+                                "--",
+                                String.format("%.1f", mGoalPercent));
+                        break;
+                    case GOALTYPE_TIME:
+                        goalTime = String.valueOf((int) ((mGoal - totalTime) / 60 / 1000)); // mills -> mins
+                        mLeftFragment.setCurrentView("-.-", "m",
+                                goalTime,
+                                String.format("%.1f", mGoalPercent));
+                        break;
+                }
+                mCurrentFragment.setCurrentView(distance, distanceUnit,
+                        CURRENT_TIME_FORMAT.format(date),
+                        String.format("%02d'%02d''", pace / 60, pace % 60));
+            }
+        };
     }
 
     @Override
@@ -367,6 +362,21 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     }
 
     @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        vpRecord.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
     public void onLocationChanged(Location location) {
         if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
             curLocation = location;
@@ -374,7 +384,9 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             double latitude = curLocation.getLatitude();
             double altitude = curLocation.getAltitude();
             myLocations.add(new MyLocation(longitude, latitude, altitude));
-            increaseDistance = curLocation.distanceTo(prevLocation);
+            if (prevLocation != null) {
+                increaseDistance = curLocation.distanceTo(prevLocation);
+            }
             velocity = increaseDistance * 3.6f; // km/h : 러닝 범위 5 km/h ~ 15 km/h
 
             int powerRed;
@@ -400,19 +412,17 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 powerRed = 0;
                 powerGreen = 255;
             }
-
             totalDistance += increaseDistance;
-            if (totalTime != 0 && totalDistance != 0) {
-                velocityAvg = (totalDistance / totalTime) * 3.6f;
+            /* 새로운 polyline 점 추가 */
+            if (prevLocation != null) {
+                MapPolyline mapPolyline = new MapPolyline();
+                mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(prevLocation.getLatitude(), prevLocation.getLongitude()));
+                mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(latitude, longitude));
+                mapPolyline.setLineColor(Color.argb(255, powerRed, powerGreen, 0)); // 색상 범위 : 빨간색 (255, 0, 0) ~ 노란색 (255, 255, 0) ~ 초록색 (0, 255, 0)
+                prevLocation = curLocation;
+                mvRecord.addPolyline(mapPolyline);
+                mapPolylines.add(mapPolyline);
             }
-            /* 새로운 polyline 점 추가*/
-            MapPolyline mapPolyline = new MapPolyline();
-            mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(prevLocation.getLatitude(), prevLocation.getLongitude()));
-            mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(latitude, longitude));
-            mapPolyline.setLineColor(Color.argb(255, powerRed, powerGreen, 0)); // 색상 범위 : 빨간색 (255, 0, 0) ~ 노란색 (255, 255, 0) ~ 초록색 (0, 255, 0)
-            prevLocation = curLocation;
-            mvRecord.addPolyline(mapPolyline);
-            mapPolylines.add(mapPolyline);
         } else {
 
         }
@@ -451,11 +461,14 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                             while (TIMER_RUNNING) {
                                 Message message = new Message();
                                 leftTime = System.currentTimeMillis() - startTime; // 지속시간 누적
-                                totalTime = totalLastLeftTime + leftTime;
+                                totalTime = totalLastLeftTime + leftTime; // 총 시간 계산
+                                if (totalTime != 0 && totalDistance != 0) {
+                                    velocityAvg = (totalDistance / totalTime) * 3.6f;
+                                } // 속도 구하기 (시간 종속)
                                 message.obj = totalTime;
                                 progressHandler.sendMessage(message);
                                 try {
-                                    Thread.sleep(100);
+                                    Thread.sleep(1000);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -493,49 +506,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                             }
                         })
                         .create().show();
-                break;
-
-            case R.id.iv_location_record:
-                if (MODE_MAP) {
-                    ivForeground.setVisibility(View.VISIBLE);
-                    tvProgress.setVisibility(View.VISIBLE);
-                    tvProgressUnit.setVisibility(View.VISIBLE);
-                    tvProgressMap.setVisibility(View.GONE);
-                    tvProgressMapUnit.setVisibility(View.GONE);
-                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-                } else {
-                    ivForeground.setVisibility(View.GONE);
-                    tvProgress.setVisibility(View.GONE);
-                    tvProgressUnit.setVisibility(View.GONE);
-                    tvProgressMap.setVisibility(View.VISIBLE);
-                    tvProgressMapUnit.setVisibility(View.VISIBLE);
-                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
-                }
-                MODE_MAP = !MODE_MAP;
-                break;
-            case R.id.iv_change_record:
-            case R.id.tv_cur_progress_map_record:
-            case R.id.tv_cur_progress_unit_map_record:
-            case R.id.tv_cur_progress_unit_record:
-            case R.id.tv_cur_progress_record:
-                // 모드 변경
-                switch (mState.getCurrentState()) {
-                    case State.MODE_DISTANCE:
-                        mState.setCurrentState(State.MODE_PACE);
-                        break;
-                    case State.MODE_PACE:
-                        mState.setCurrentState(State.MODE_PROGRESS);
-                        break;
-                    case State.MODE_PROGRESS:
-                        mState.setCurrentState(State.MODE_TIME);
-                        break;
-                    case State.MODE_TIME:
-                        mState.setCurrentState(State.MODE_VELOCITY);
-                        break;
-                    case State.MODE_VELOCITY:
-                        mState.setCurrentState(State.MODE_DISTANCE);
-                        break;
-                }
                 break;
         }
     }

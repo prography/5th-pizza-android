@@ -63,11 +63,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.1'
     //implementation 'com.google.firebase:firebase-ads:18.3.0'
     implementation 'com.google.firebase:firebase-core:17.2.1'
-    implementation 'com.google.firebase:firebase-messaging:20.0.1'
+    implementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation 'com.google.firebase:firebase-storage:19.1.0'
 
     // Timeline view
     implementation 'com.github.vipulasri:timelineview:1.1.2'
+
+    // https://developer.android.com/jetpack/androidx/releases/viewpager2
+    implementation 'androidx.viewpager2:viewpager2:1.0.0-beta03'
 }
 
 apply plugin: 'com.google.gms.google-services'

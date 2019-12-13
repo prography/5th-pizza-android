@@ -55,7 +55,8 @@ public class ApplicationClass extends Application {
 
     //날짜 형식
     public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
-    public static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("H:mm:ss.S", Locale.getDefault());
+    public static SimpleDateFormat CURRENT_TIME_FORMAT = new SimpleDateFormat("mm:ss", Locale.getDefault());
+    public static SimpleDateFormat LEFT_TIME_FORMAT = new SimpleDateFormat("m", Locale.getDefault());
 
     // Retrofit 인스턴스
     public static Retrofit retrofit;
@@ -71,7 +72,8 @@ public class ApplicationClass extends Application {
 
         KakaoSDK.init(new KakaoSDKAdapter());
 
-        TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+        CURRENT_TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+        LEFT_TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
     @Override
