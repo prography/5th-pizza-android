@@ -35,6 +35,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.prography.prography_pizza.R;
+import com.prography.prography_pizza.services.GPSRecordService;
 import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.adapter.RecordPagerAdapter;
@@ -76,6 +77,8 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private ArrayList<MapPolyline> mapPolylines = new ArrayList<>();
     private CurrentFragment mCurrentFragment;
     private CurrentFragment mLeftFragment;
+
+    private Intent serviceIntent;
 
     private double mGoal = 0;
     private int mGoalType = GOALTYPE_DISTANCE;
@@ -171,6 +174,14 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         break;
                 }
                 mGoal = mGoal * 60 * 1000; // min -> mills
+        }
+
+        /* Set BackGround Service */
+        if (GPSRecordService.SERVICE == null) {
+            serviceIntent = new Intent(this, GPSRecordService.class);
+            startService(serviceIntent);
+        } else {
+            serviceIntent = GPSRecordService.SERVICE;
         }
 
         /* Toolbar */
@@ -320,6 +331,16 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         String.format("%02d'%02d''", pace / 60, pace % 60));
             }
         };
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (serviceIntent != null) {
+            stopService(GPSRecordService.SERVICE);
+            serviceIntent = null;
+        }
     }
 
     @Override
