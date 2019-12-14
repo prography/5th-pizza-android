@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseFragment;
+import com.prography.prography_pizza.src.record.RecordActivity;
 import com.prography.prography_pizza.src.record.adapter.RecordPagerAdapter;
 import com.prography.prography_pizza.src.record.fragments.interfaces.CurrentFragmentView;
 
@@ -65,9 +66,21 @@ public class CurrentFragment extends BaseFragment implements CurrentFragmentView
                 tvProgressUnit.setText("");
                 break;
             case RecordPagerAdapter.TYPE_LEFT:
-                tvDistance.setText("0.0");
+                int goalType = bundle.getInt("goalType");
+                if (goalType == RecordActivity.GOALTYPE_DISTANCE) {
+                    if (bundle.getDouble("goal") < 1000) {
+                        tvDistance.setText(String.format("%.1f", (float) (bundle.getDouble("goal"))));
+                        tvDistanceUnit.setText("m");
+                    } else {
+                        tvDistance.setText(String.format("%.1f", (float) (bundle.getDouble("goal")) / 1000));
+                        tvDistanceUnit.setText("km");
+                    }
+                    tvTime.setText("--");
+                } else {
+                    tvDistance.setText("-.-");
+                    tvTime.setText(String.valueOf((int) (bundle.getDouble("goal") / 60 / 1000)));
+                }
                 tvDistanceDesc.setText("남은 거리");
-                tvTime.setText("0");
                 tvTimeDesc.setText("남은 시간");
                 tvTimeUnit.setText("min");
                 tvProgress.setText("0.0");

@@ -70,7 +70,10 @@ dependencies {
     implementation 'com.github.vipulasri:timelineview:1.1.2'
 
     // https://developer.android.com/jetpack/androidx/releases/viewpager2
-    implementation 'androidx.viewpager2:viewpager2:1.0.0-beta03'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

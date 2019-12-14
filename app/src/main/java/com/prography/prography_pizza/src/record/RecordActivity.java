@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,13 +26,16 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.tabs.TabLayout;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
-import com.prography.prography_pizza.src.main.MainActivity;
-import com.prography.prography_pizza.src.main.adapter.ChallengeListAdapter;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.adapter.RecordPagerAdapter;
 import com.prography.prography_pizza.src.record.fragments.CurrentFragment;
@@ -46,7 +50,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.prography.prography_pizza.src.ApplicationClass.CURRENT_TIME_FORMAT;
-import static com.prography.prography_pizza.src.ApplicationClass.LEFT_TIME_FORMAT;
 
 public class RecordActivity extends BaseActivity implements RecordActivityView {
 
@@ -58,9 +61,8 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private TextView tvGoal;
     private ImageView ivStartRecord;
     private ImageView ivSubmitRecord;
-    private ImageView ivChangeRecord;
-    private ImageView ivLocation;
     private MapView mvRecord;
+    private GoogleMap mvGoogleRecord;
     private PieChart pcRecord;
     private TabLayout tlRecord;
     private ViewPager vpRecord;
@@ -116,13 +118,12 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         tvGoal = findViewById(R.id.tv_goal_record);
         ivStartRecord = findViewById(R.id.iv_start_record);
         ivSubmitRecord = findViewById(R.id.iv_submit_record);
-        ivChangeRecord = findViewById(R.id.iv_change_record);
-        mvRecord = findViewById(R.id.frame_mapview_record);
+        mvRecord = findViewById(R.id.mv_record);
         pcRecord = findViewById(R.id.pc_record);
-        ivLocation = findViewById(R.id.iv_location_record);
         tbRecord = findViewById(R.id.toolbar_record);
         tlRecord = findViewById(R.id.tl_record);
         vpRecord = findViewById(R.id.vp_record);
+        SupportMapFragment mSupportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fg_map_record);
 
         /* Permission Listener */
         TedPermission.with(this)
@@ -183,7 +184,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         tlRecord.addOnTabSelectedListener(this);
 
         /* ViewPager */
-        rpaRecord = new RecordPagerAdapter(getSupportFragmentManager());
+        rpaRecord = new RecordPagerAdapter(getSupportFragmentManager(), mGoalType, mGoal);
         vpRecord.setAdapter(rpaRecord);
         vpRecord.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tlRecord));
 
@@ -192,13 +193,11 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
         /* Set MapView */
         mvRecord.setZoomLevel(1, false);
+        mSupportMapFragment.getMapAsync(this);
 
         /* Set on Click Listener */
         ivStartRecord.setOnClickListener(this);
         ivSubmitRecord.setOnClickListener(this);
-        mvRecord.setOnClickListener(this);
-        ivChangeRecord.setOnClickListener(this);
-        ivLocation.setOnClickListener(this);
 
         /* Make AlertDialog */
         mAlertDialog = new AlertDialog.Builder(this).setMessage("운동을 저장하지 않고 종료하시겠습니까?")
@@ -289,11 +288,12 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 if (velocityAvg != 0)
                     pace = Math.round(60 / velocityAvg);
 
+                Log.i("FragmentManagerList", getSupportFragmentManager().getFragments().toString());
                 if (mLeftFragment == null) {
-                    mLeftFragment = (CurrentFragment) getSupportFragmentManager().getFragments().get(0);
+                    mLeftFragment = (CurrentFragment) getSupportFragmentManager().getFragments().get(1);
                 }
                 if (mCurrentFragment == null) {
-                    mCurrentFragment = (CurrentFragment) getSupportFragmentManager().getFragments().get(1);
+                    mCurrentFragment = (CurrentFragment) getSupportFragmentManager().getFragments().get(2);
                 }
                 switch (mGoalType) {
                     case GOALTYPE_DISTANCE:
@@ -355,12 +355,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         showToast("업로드에 실패하였습니다.");
     }
 
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         vpRecord.setCurrentItem(tab.getPosition());
@@ -376,6 +370,26 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
     }
 
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mvGoogleRecord = googleMap;
+         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (location == null) {
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
+        mvGoogleRecord.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
+                .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                .zoom(17)
+                .bearing(location.getBearing())
+                .build()));
+        mvGoogleRecord.getUiSettings().setMyLocationButtonEnabled(true);
+        mvGoogleRecord.setMyLocationEnabled(true);
+        mvGoogleRecord.setIndoorEnabled(false);
+        mvGoogleRecord.getUiSettings().setCompassEnabled(true);
+        mvGoogleRecord.getUiSettings().setZoomControlsEnabled(true);
+    }
+
     @Override
     public void onLocationChanged(Location location) {
         if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
@@ -383,6 +397,14 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             double longitude = curLocation.getLongitude();
             double latitude = curLocation.getLatitude();
             double altitude = curLocation.getAltitude();
+
+            /* Google Map */
+            mvGoogleRecord.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
+                    .target(new LatLng(curLocation.getLatitude(), curLocation.getLongitude()))
+                    .zoom(17)
+                    .bearing(location.getBearing())
+                    .build()));
+
             myLocations.add(new MyLocation(longitude, latitude, altitude));
             if (prevLocation != null) {
                 increaseDistance = curLocation.distanceTo(prevLocation);
@@ -480,11 +502,9 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, this);
 
                     ivSubmitRecord.setVisibility(View.INVISIBLE);
-                    ivChangeRecord.setVisibility(View.VISIBLE);
                 } else {
                     TIMER_RUNNING = false;
                     ivStartRecord.setImageResource(R.drawable.ic_start);
-                    ivChangeRecord.setVisibility(View.INVISIBLE);
                     ivSubmitRecord.setVisibility(View.VISIBLE);
                     locationManager.removeUpdates(this);
                 }

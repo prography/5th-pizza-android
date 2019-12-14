@@ -91,8 +91,8 @@
 
     <ImageView
         android:id="@+id/iv_expand_date_addchallenge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_expand"
         app:layout_constraintStart_toEndOf="@+id/tv_date_addchallenge"
@@ -122,8 +122,8 @@
 
     <ImageView
         android:id="@+id/iv_expand_timeordistance_addchallenge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_expand"
         app:layout_constraintStart_toEndOf="@+id/tv_time_addchallenge"
@@ -166,8 +166,8 @@
         app:layout_constraintStart_toStartOf="@+id/tv_main_desc_addchallenge" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_expand"
         android:id="@+id/iv_expand_type_addchallenge"

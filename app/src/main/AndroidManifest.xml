@@ -35,6 +35,13 @@
         <activity android:name=".src.signin.SignInActivity" />
 
         <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDUrCcTe3d0KLiMNOJo2kOXNCmDGsdY5JI" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
     </application>

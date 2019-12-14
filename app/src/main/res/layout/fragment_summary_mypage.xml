@@ -85,8 +85,8 @@
 
                 <ImageView
                     android:id="@+id/imageView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:layout_marginEnd="8dp"
                     android:src="@drawable/ic_best"
                     />
@@ -112,8 +112,8 @@
 
                 <ImageView
                     android:id="@+id/imageView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:layout_marginEnd="8dp"
                     android:src="@drawable/ic_run_shoes" />
 
@@ -136,8 +136,8 @@
                 android:layout_marginBottom="4dp">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:layout_marginEnd="8dp"
                     android:src="@drawable/ic_speed" />
 
