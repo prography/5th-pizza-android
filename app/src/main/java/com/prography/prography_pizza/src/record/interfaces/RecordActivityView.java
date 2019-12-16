@@ -6,7 +6,7 @@ import android.view.View;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.material.tabs.TabLayout;
 
-public interface RecordActivityView extends View.OnClickListener, LocationListener, TabLayout.OnTabSelectedListener, OnMapReadyCallback {
+public interface RecordActivityView extends View.OnClickListener, TabLayout.OnTabSelectedListener, OnMapReadyCallback {
 
     void validateSuccess(String message);
     void validateFailure(String message);

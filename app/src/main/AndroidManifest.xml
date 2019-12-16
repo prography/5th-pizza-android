@@ -46,7 +46,7 @@
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
 
-        <service android:name=".services.GPSRecordService" />
+        <service android:name=".services.LocationRecordService" />
     </application>
 
 </manifest>
