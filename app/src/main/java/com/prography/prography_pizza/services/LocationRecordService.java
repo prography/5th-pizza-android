@@ -21,6 +21,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.prography.prography_pizza.R;
+import com.prography.prography_pizza.services.interfaces.LocationRecordServiceView;
 import com.prography.prography_pizza.src.BaseService;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.RecordActivity;
@@ -28,7 +29,7 @@ import com.prography.prography_pizza.src.record.RecordActivity;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class LocationRecordService extends Service implements LocationListener {
+public class LocationRecordService extends Service implements LocationRecordServiceView {
     public static Intent SERVICE = null;
     public static Context mContext;
 
@@ -37,10 +38,19 @@ public class LocationRecordService extends Service implements LocationListener {
     private float mGoalPercent = 0.f;
 
     private boolean SERVICE_RUNNING = false;
+
+    public boolean isSERVICE_RUNNING() {
+        return SERVICE_RUNNING;
+    }
+
+    public void setSERVICE_RUNNING(boolean SERVICE_RUNNING) {
+        this.SERVICE_RUNNING = SERVICE_RUNNING;
+    }
+
     private Thread timerThread;
 
     private LocationManager locationManager;
-    private LocationDataSet locationDataSet = new LocationDataSet();
+    private LocationDataSet locationDataSet = null;
 
     private MainResponse.Data mChallenge = null;
 
@@ -75,11 +85,16 @@ public class LocationRecordService extends Service implements LocationListener {
     }
 
     public void initData(Intent intent) {
-        locationDataSet = new LocationDataSet();
+        if (intent.getSerializableExtra("locationDataSet") == null) {
+            locationDataSet = new LocationDataSet();
+        } else {
+            locationDataSet = (LocationDataSet) intent.getSerializableExtra("locationDataSet");
+        }
         mChallenge = (MainResponse.Data) intent.getSerializableExtra("challenge");
     }
 
     @SuppressLint("MissingPermission")
+    @Override
     public void runThread() {
         SERVICE_RUNNING = true;
         locationDataSet.startTime = System.currentTimeMillis(); // 현재 서비스 시작시간 고정.
@@ -116,6 +131,7 @@ public class LocationRecordService extends Service implements LocationListener {
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, this);
     }
 
+    @Override
     public void stopThread() {
         SERVICE_RUNNING = false;
         locationManager.removeUpdates(this);
@@ -132,13 +148,13 @@ public class LocationRecordService extends Service implements LocationListener {
     public void onDestroy() {
         super.onDestroy();
         SERVICE = null;
+        stopThread();
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
         SERVICE = null;
-        stopThread();
     }
 
     public void initNotificationChannel() {
@@ -221,6 +237,18 @@ public class LocationRecordService extends Service implements LocationListener {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mBinder;
+    }
+
+    private final IBinder mBinder = new LocationBinder();
+    public class LocationBinder extends Binder {
+        public LocationRecordService getService() {
+            return LocationRecordService.this;
+        }
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        return true;
     }
 }

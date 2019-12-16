@@ -3,16 +3,19 @@ package com.prography.prography_pizza.src.record;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 import android.view.MenuItem;
@@ -41,6 +44,7 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.services.LocationRecordService;
+import com.prography.prography_pizza.services.interfaces.LocationRecordServiceView;
 import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.adapter.RecordPagerAdapter;
@@ -83,12 +87,14 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private CurrentFragment mLeftFragment;
 
     private Intent serviceIntent;
+    private LocationRecordService mLocationRecordService;
+    private ServiceConnection mConnection;
 
     private MainResponse.Data mChallenge;
     private double mGoal = 0;
     private int mGoalType = GOALTYPE_DISTANCE;
     private float mGoalPercent = 0.f;
-    LocationRecordService.LocationDataSet mLocationDataSet;
+    private LocationRecordService.LocationDataSet mLocationDataSet;
 
     private PieDataSet mPieDataSet;
     private PieData mPieData;
@@ -96,7 +102,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
 
@@ -187,6 +193,18 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
         /* Set BackGround Service Receiver */
         LocalBroadcastManager.getInstance(this).registerReceiver(mLocationDataSetReceiver, new IntentFilter("location-data"));
+        mConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                mLocationRecordService = ((LocationRecordService.LocationBinder) service).getService();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+
 
         /* Set on Click Listener */
         ivStartRecord.setOnClickListener(this);
@@ -322,12 +340,21 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     ivSubmitRecord.setVisibility(View.INVISIBLE);
 
                     // 서비스 시작
-                    serviceIntent = new Intent(this, LocationRecordService.class);
-                    serviceIntent.putExtra("challenge", mChallenge);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        startForegroundService(serviceIntent);
+                    if (mLocationRecordService == null || !mLocationRecordService.isSERVICE_RUNNING()) {
+                        // 초기 시작
+                        serviceIntent = new Intent(this, LocationRecordService.class);
+                        serviceIntent.putExtra("challenge", mChallenge);
+                        serviceIntent.putExtra("locationDataSet", mLocationDataSet);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            bindService(serviceIntent, mConnection, BIND_AUTO_CREATE);
+                            startForegroundService(serviceIntent);
+                        } else {
+                            bindService(serviceIntent, mConnection, BIND_AUTO_CREATE);
+                            startService(serviceIntent);
+                        }
                     } else {
-                        startService(serviceIntent);
+                        // 재시작
+                        mLocationRecordService.runThread();
                     }
 
                 } else {
@@ -337,7 +364,9 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     ivSubmitRecord.setVisibility(View.VISIBLE);
 
                     // 서비스 종료
-                    stopService(serviceIntent);
+                    // stopService(serviceIntent);
+                    // unbindService(mConnection);
+                    mLocationRecordService.stopThread();
                 }
                 break;
             case R.id.iv_submit_record:
