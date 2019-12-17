@@ -14,7 +14,8 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.ResultReceiver;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -22,12 +23,12 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.services.interfaces.LocationRecordServiceView;
-import com.prography.prography_pizza.src.BaseService;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.RecordActivity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class LocationRecordService extends Service implements LocationRecordServiceView {
     public static Intent SERVICE = null;
@@ -38,6 +39,7 @@ public class LocationRecordService extends Service implements LocationRecordServ
     private float mGoalPercent = 0.f;
 
     private boolean SERVICE_RUNNING = false;
+    private int COUNT_PAUSE_TIME_IN_SEC = 3;
 
     public boolean isSERVICE_RUNNING() {
         return SERVICE_RUNNING;
@@ -50,18 +52,12 @@ public class LocationRecordService extends Service implements LocationRecordServ
     private Thread timerThread;
 
     private LocationManager locationManager;
-    private LocationDataSet locationDataSet = null;
+    private LocationDataSet mLocationDataSet = null;
 
     private MainResponse.Data mChallenge = null;
 
     public static class LocationDataSet implements Serializable {
-        private ArrayList<Location> locations = new ArrayList<>();
-
-        public long startTime = 0;
-        public long totalLastLeftTime = 0;
-        public long leftTime = 0;
-        public long totalTime = 0;
-
+        public ArrayList<Location> locations = new ArrayList<>();
         public Location prevLocation = null;
         public Location curLocation = null;
         public float totalDistance = 0.0f;
@@ -69,8 +65,15 @@ public class LocationRecordService extends Service implements LocationRecordServ
         public float velocity = 0.0f;
         public float velocityAvg = 0.0f;
 
-        public int powerRed = 0;
-        public int powerGreen = 0;
+        public long startTime = 0;
+        public long totalLastLeftTime = 0;
+        public long leftTime = 0;
+        public long totalTime = 0;
+
+        public ArrayList<ArrayList<Integer>> powerColors = new ArrayList<>();
+        public int curPowerRed = 0;
+        public int curPowerGreen = 0;
+
     }
 
     @Override
@@ -86,9 +89,9 @@ public class LocationRecordService extends Service implements LocationRecordServ
 
     public void initData(Intent intent) {
         if (intent.getSerializableExtra("locationDataSet") == null) {
-            locationDataSet = new LocationDataSet();
+            mLocationDataSet = new LocationDataSet();
         } else {
-            locationDataSet = (LocationDataSet) intent.getSerializableExtra("locationDataSet");
+            mLocationDataSet = (LocationDataSet) intent.getSerializableExtra("locationDataSet");
         }
         mChallenge = (MainResponse.Data) intent.getSerializableExtra("challenge");
     }
@@ -97,31 +100,40 @@ public class LocationRecordService extends Service implements LocationRecordServ
     @Override
     public void runThread() {
         SERVICE_RUNNING = true;
-        locationDataSet.startTime = System.currentTimeMillis(); // 현재 서비스 시작시간 고정.
-        locationDataSet.totalLastLeftTime += locationDataSet.leftTime; // 가장 최근까지 누적 leftTime 더하기.
+        mLocationDataSet.startTime = System.currentTimeMillis(); // 현재 서비스 시작시간 고정.
+        mLocationDataSet.totalLastLeftTime += mLocationDataSet.leftTime; // 가장 최근까지 누적 leftTime 더하기.
         // Thread
         timerThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (SERVICE_RUNNING) {
-                    locationDataSet.leftTime = System.currentTimeMillis() - locationDataSet.startTime; // 지속시간 누적
-                    locationDataSet.totalTime = locationDataSet.totalLastLeftTime + locationDataSet.leftTime; // 총 시간 계산
-                    if (locationDataSet.totalTime != 0 && locationDataSet.totalDistance != 0) {
-                        locationDataSet.velocityAvg = (locationDataSet.totalDistance / locationDataSet.totalTime) * 3.6f;
-                    } // 속도 계산
+                    if (COUNT_PAUSE_TIME_IN_SEC > 0) {
+                        if (COUNT_PAUSE_TIME_IN_SEC == 3) {
+                            // 재시작시 첫 구간
+                            mLocationDataSet.startTime = System.currentTimeMillis(); // 현재 서비스 시작시간 고정.
+                            mLocationDataSet.totalLastLeftTime += mLocationDataSet.leftTime; // 가장 최근까지 누적 leftTime 더하기.
+                        }
+                        COUNT_PAUSE_TIME_IN_SEC--;
+                        mLocationDataSet.leftTime = System.currentTimeMillis() - mLocationDataSet.startTime; // 지속시간 누적
+                        mLocationDataSet.totalTime = mLocationDataSet.totalLastLeftTime + mLocationDataSet.leftTime; // 총 시간 계산
+                        if (mLocationDataSet.totalTime != 0 && mLocationDataSet.totalDistance != 0) {
+                            mLocationDataSet.velocityAvg = (mLocationDataSet.totalDistance / mLocationDataSet.totalTime) * 3.6f;
+                        } // 속도 계산
 
-                    /* Send Intent Back to Activity */
-                    Intent intentToActivity = new Intent("location-data");
-                    intentToActivity.putExtra("locationDataSet", locationDataSet);
-                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(intentToActivity);
+                        /* Send Intent Back to Activity */
+                        Intent intentToActivity = new Intent("location-data");
+                        intentToActivity.putExtra("locationDataSet", mLocationDataSet);
+                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intentToActivity);
 
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        continue;
                     }
                 }
-
             }
         });
         timerThread.start();
@@ -160,10 +172,11 @@ public class LocationRecordService extends Service implements LocationRecordServ
     public void initNotificationChannel() {
         Intent startIntent = new Intent(this, RecordActivity.class);
         startIntent.putExtra("challenge", mChallenge);
+        startIntent.putExtra("locationDataSetInit", mLocationDataSet);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "1")
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle("운동중")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("지금 열심히 운동중!")
                 .setContentText("GPS를 수집중에 있습니다.")
                 .setOngoing(true)
                 .setWhen(0)
@@ -181,42 +194,46 @@ public class LocationRecordService extends Service implements LocationRecordServ
     @Override
     public void onLocationChanged(Location location) {
         if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
-            locationDataSet.curLocation = location;
-
-            locationDataSet.locations.add(location);
-            if (locationDataSet.prevLocation != null) {
-                locationDataSet.increaseDistance = location.distanceTo(locationDataSet.prevLocation);
+            COUNT_PAUSE_TIME_IN_SEC = 3; // PauseTime 초기화
+            mLocationDataSet.curLocation = location;
+            mLocationDataSet.locations.add(location);
+            if (mLocationDataSet.prevLocation != null) {
+                mLocationDataSet.increaseDistance = location.distanceTo(mLocationDataSet.prevLocation);
             } else {
-                locationDataSet.prevLocation = locationDataSet.curLocation;
+                mLocationDataSet.prevLocation = mLocationDataSet.curLocation;
             }
-            locationDataSet.velocity = locationDataSet.increaseDistance * 3.6f; // km/h : 러닝 범위 5 km/h ~ 15 km/h
+            mLocationDataSet.velocity = mLocationDataSet.increaseDistance * 3.6f; // km/h : 러닝 범위 5 km/h ~ 15 km/h
 
-            if (locationDataSet.velocity >= 5.f && locationDataSet.velocity < 10.f) {
-                locationDataSet.powerRed = 255;
-                locationDataSet.powerGreen = 255 - (int) ((locationDataSet.velocity - 5.f) / 10 * 255);
-                if (locationDataSet.powerGreen <= 0)
-                    locationDataSet.powerGreen = 0;
-                else if (locationDataSet.powerGreen >= 255)
-                    locationDataSet.powerGreen = 255;
-            } else if (locationDataSet.velocity >= 10.f && locationDataSet.velocity <= 15.f) {
-                locationDataSet.powerRed = 255 - (int) ((locationDataSet.velocity - 10.f) / 10 * 255);
-                if (locationDataSet.powerRed <= 0)
-                    locationDataSet.powerRed = 0;
-                else if (locationDataSet.powerRed >= 255)
-                    locationDataSet.powerRed = 255;
-                locationDataSet.powerGreen = 255;
-            } else if (locationDataSet.velocity < 5.f) {
-                locationDataSet.powerRed = 255;
-                locationDataSet.powerGreen = 0;
+            if (mLocationDataSet.velocity >= 5.f && mLocationDataSet.velocity < 10.f) {
+                mLocationDataSet.curPowerRed = 255;
+                mLocationDataSet.curPowerGreen = 255 - (int) ((mLocationDataSet.velocity - 5.f) / 10 * 255);
+                if (mLocationDataSet.curPowerGreen <= 0)
+                    mLocationDataSet.curPowerGreen = 0;
+                else if (mLocationDataSet.curPowerGreen >= 255)
+                    mLocationDataSet.curPowerGreen = 255;
+            } else if (mLocationDataSet.velocity >= 10.f && mLocationDataSet.velocity <= 15.f) {
+                mLocationDataSet.curPowerRed = 255 - (int) ((mLocationDataSet.velocity - 10.f) / 10 * 255);
+                if (mLocationDataSet.curPowerRed <= 0)
+                    mLocationDataSet.curPowerRed = 0;
+                else if (mLocationDataSet.curPowerRed >= 255)
+                    mLocationDataSet.curPowerRed = 255;
+                mLocationDataSet.curPowerGreen = 255;
+            } else if (mLocationDataSet.velocity < 5.f) {
+                mLocationDataSet.curPowerRed = 255;
+                mLocationDataSet.curPowerGreen = 0;
             } else {
-                locationDataSet.powerRed = 0;
-                locationDataSet.powerGreen = 255;
+                mLocationDataSet.curPowerRed = 0;
+                mLocationDataSet.curPowerGreen = 255;
             }
-            locationDataSet.totalDistance += locationDataSet.increaseDistance;
+            ArrayList<Integer> powers = new ArrayList<>();
+            powers.add(mLocationDataSet.curPowerRed);
+            powers.add(mLocationDataSet.curPowerGreen);
+            mLocationDataSet.powerColors.add(powers);
+            mLocationDataSet.totalDistance += mLocationDataSet.increaseDistance;
         } else {
             // Provider가 Network일때는 연산하지 않음. -> Toast를 띄워줄까?
         }
-        locationDataSet.prevLocation = locationDataSet.curLocation;
+        mLocationDataSet.prevLocation = mLocationDataSet.curLocation;
     }
 
     @Override

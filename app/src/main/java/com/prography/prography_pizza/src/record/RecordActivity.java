@@ -14,10 +14,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -44,7 +41,6 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.services.LocationRecordService;
-import com.prography.prography_pizza.services.interfaces.LocationRecordServiceView;
 import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.adapter.RecordPagerAdapter;
@@ -168,6 +164,21 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 }
                 mGoal = mGoal * 60 * 1000; // min -> mills
         }
+        /* 액티비티 재시작일경우 기존 location 데이터로부터 polyline 다시 그리기 */
+        if (intent.getExtras().getSerializable("locationDataSetInit") != null) {
+            mLocationDataSet = (LocationRecordService.LocationDataSet) intent.getExtras().getSerializable("locationDataSetInit");
+            for (int i = 0; i < mLocationDataSet.locations.size() - 1; i++) {
+                MapPolyline mapPolyline = new MapPolyline();
+                Location prev = mLocationDataSet.locations.get(i);
+                Location cur = mLocationDataSet.locations.get(i + 1);
+                mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(prev.getLatitude(), prev.getLongitude()));
+                mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(cur.getLatitude(), cur.getLongitude()));
+                mapPolyline.setLineColor(Color.argb(255, mLocationDataSet.powerColors.get(i).get(0), mLocationDataSet.powerColors.get(i).get(1), 0)); // 색상 범위 : 빨간색 (255, 0, 0) ~ 노란색 (255, 255, 0) ~ 초록색 (0, 255, 0)
+                mvRecord.addPolyline(mapPolyline);
+                mapPolylines.add(mapPolyline);
+            }
+        }
+
 
         /* Toolbar */
         setSupportActionBar(tbRecord);
@@ -255,6 +266,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
         if (serviceIntent != null) {
             stopService(serviceIntent);
+            unbindService(mConnection);
             serviceIntent = null;
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocationDataSetReceiver);
@@ -364,8 +376,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     ivSubmitRecord.setVisibility(View.VISIBLE);
 
                     // 서비스 종료
-                    // stopService(serviceIntent);
-                    // unbindService(mConnection);
                     mLocationRecordService.stopThread();
                 }
                 break;
@@ -390,6 +400,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         }
     }
 
+
     private BroadcastReceiver mLocationDataSetReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -411,7 +422,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     MapPolyline mapPolyline = new MapPolyline();
                     mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(mLocationDataSet.prevLocation.getLatitude(), mLocationDataSet.prevLocation.getLongitude()));
                     mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(mLocationDataSet.curLocation.getLatitude(), mLocationDataSet.curLocation.getLongitude()));
-                    mapPolyline.setLineColor(Color.argb(255, mLocationDataSet.powerRed, mLocationDataSet.powerGreen, 0)); // 색상 범위 : 빨간색 (255, 0, 0) ~ 노란색 (255, 255, 0) ~ 초록색 (0, 255, 0)
+                    mapPolyline.setLineColor(Color.argb(255, mLocationDataSet.curPowerRed, mLocationDataSet.curPowerGreen, 0)); // 색상 범위 : 빨간색 (255, 0, 0) ~ 노란색 (255, 255, 0) ~ 초록색 (0, 255, 0)
                     mvRecord.addPolyline(mapPolyline);
                     mapPolylines.add(mapPolyline);
                 }
