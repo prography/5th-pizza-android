@@ -1,5 +1,8 @@
 package com.prography.prography_pizza.src.main.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -13,7 +16,7 @@ public class MainResponse {
     @SerializedName("data") private ArrayList<Data> data;
 
     @Entity
-    public static class Data implements Serializable {
+    public static class Data implements Parcelable {
         @PrimaryKey
         @SerializedName("id")
         private int challengeId;
@@ -27,6 +30,27 @@ public class MainResponse {
         private String exerciseType;
         @SerializedName("created_at")
         private String createdAt;
+
+        protected Data(Parcel in) {
+            challengeId = in.readInt();
+            routineType = in.readString();
+            time = in.readDouble();
+            objectUnit = in.readString();
+            exerciseType = in.readString();
+            createdAt = in.readString();
+        }
+
+        public static final Creator<Data> CREATOR = new Creator<Data>() {
+            @Override
+            public Data createFromParcel(Parcel in) {
+                return new Data(in);
+            }
+
+            @Override
+            public Data[] newArray(int size) {
+                return new Data[size];
+            }
+        };
 
         public String getRoutineType() {
             return routineType;
@@ -68,6 +92,21 @@ public class MainResponse {
             this.routineType = datum.getRoutineType();
             this.objectUnit = datum.getObjectUnit();
             this.time = datum.getTime();
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(challengeId);
+            dest.writeString(routineType);
+            dest.writeDouble(time);
+            dest.writeString(objectUnit);
+            dest.writeString(exerciseType);
+            dest.writeString(createdAt);
         }
     }
 

@@ -11,10 +11,10 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -31,16 +31,16 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.material.tabs.TabLayout;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.services.LocationRecordService;
+import com.prography.prography_pizza.services.models.LocationDataSet;
 import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.adapter.RecordPagerAdapter;
@@ -68,16 +68,13 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private ImageView ivStartRecord;
     private ImageView ivSubmitRecord;
     private MapView mvRecord;
-    private GoogleMap mvGoogleRecord;
     private PieChart pcRecord;
     private TabLayout tlRecord;
     private ViewPager vpRecord;
 
-    private LocationManager locationManager;
     private AlertDialog mAlertDialog;
     private RecordPagerAdapter rpaRecord;
 
-    private ArrayList<Location> myLocations = new ArrayList<>();
     private ArrayList<MapPolyline> mapPolylines = new ArrayList<>();
     private CurrentFragment mCurrentFragment;
     private CurrentFragment mLeftFragment;
@@ -85,12 +82,13 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private Intent serviceIntent;
     private LocationRecordService mLocationRecordService;
     private ServiceConnection mConnection;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
 
     private MainResponse.Data mChallenge;
     private double mGoal = 0;
     private int mGoalType = GOALTYPE_DISTANCE;
     private float mGoalPercent = 0.f;
-    private LocationRecordService.LocationDataSet mLocationDataSet;
+    private LocationDataSet mLocationDataSet;
 
     private PieDataSet mPieDataSet;
     private PieData mPieData;
@@ -111,7 +109,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         tbRecord = findViewById(R.id.toolbar_record);
         tlRecord = findViewById(R.id.tl_record);
         vpRecord = findViewById(R.id.vp_record);
-        SupportMapFragment mSupportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fg_map_record);
 
         /* Permission Listener */
         TedPermission.with(this)
@@ -133,11 +130,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
         /* Get Intent */
         Intent intent = getIntent();
-        mChallenge = (MainResponse.Data) intent.getSerializableExtra("challenge"); // ISSUE: Service에서 시작시 data == null
-        if (mChallenge == null) {
-            // Service에서 받았을 땐 bundle을 거침.
-            mChallenge = (MainResponse.Data) intent.getExtras().getSerializable("challenge");
-        }
+        mChallenge = intent.getParcelableExtra("challenge");
         mGoal = mChallenge.getTime();
         switch (mChallenge.getObjectUnit()) {
             case "distance":
@@ -165,8 +158,8 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 mGoal = mGoal * 60 * 1000; // min -> mills
         }
         /* 액티비티 재시작일경우 기존 location 데이터로부터 polyline 다시 그리기 */
-        if (intent.getExtras().getSerializable("locationDataSetInit") != null) {
-            mLocationDataSet = (LocationRecordService.LocationDataSet) intent.getExtras().getSerializable("locationDataSetInit");
+        if (intent.getParcelableExtra("locationDataSetInit") != null) {
+            mLocationDataSet = intent.getParcelableExtra("locationDataSetInit");
             for (int i = 0; i < mLocationDataSet.locations.size() - 1; i++) {
                 MapPolyline mapPolyline = new MapPolyline();
                 Location prev = mLocationDataSet.locations.get(i);
@@ -178,7 +171,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 mapPolylines.add(mapPolyline);
             }
         }
-
 
         /* Toolbar */
         setSupportActionBar(tbRecord);
@@ -195,12 +187,11 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         vpRecord.setAdapter(rpaRecord);
         vpRecord.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tlRecord));
 
-        /* Get Location - GPS */
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        /* Get Location Provider Client */
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         /* Set MapView */
         mvRecord.setZoomLevel(1, false);
-        mSupportMapFragment.getMapAsync(this);
 
         /* Set BackGround Service Receiver */
         LocalBroadcastManager.getInstance(this).registerReceiver(mLocationDataSetReceiver, new IntentFilter("location-data"));
@@ -212,7 +203,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
-
             }
         };
 
@@ -322,26 +312,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
     @SuppressLint("MissingPermission")
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mvGoogleRecord = googleMap;
-         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (location == null) {
-            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        }
-        mvGoogleRecord.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
-                .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                .zoom(17)
-                .bearing(location.getBearing())
-                .build()));
-        mvGoogleRecord.getUiSettings().setMyLocationButtonEnabled(true);
-        mvGoogleRecord.setMyLocationEnabled(true);
-        mvGoogleRecord.setIndoorEnabled(false);
-        mvGoogleRecord.getUiSettings().setCompassEnabled(true);
-        mvGoogleRecord.getUiSettings().setZoomControlsEnabled(true);
-    }
-
-    @SuppressLint("MissingPermission")
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_start_record:
@@ -356,12 +326,10 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         // 초기 시작
                         serviceIntent = new Intent(this, LocationRecordService.class);
                         serviceIntent.putExtra("challenge", mChallenge);
-                        serviceIntent.putExtra("locationDataSet", mLocationDataSet);
+                        bindService(serviceIntent, mConnection, BIND_AUTO_CREATE);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            bindService(serviceIntent, mConnection, BIND_AUTO_CREATE);
                             startForegroundService(serviceIntent);
                         } else {
-                            bindService(serviceIntent, mConnection, BIND_AUTO_CREATE);
                             startService(serviceIntent);
                         }
                     } else {
@@ -404,7 +372,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private BroadcastReceiver mLocationDataSetReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mLocationDataSet = (LocationRecordService.LocationDataSet) intent.getSerializableExtra("locationDataSet");
+            mLocationDataSet = intent.getParcelableExtra("locationDataSet");
 
             /* Set View */
             if (mLocationDataSet != null) {
@@ -418,13 +386,27 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 }
 
                 /* 새로운 polyline 점 추가 */
-                if (mLocationDataSet.prevLocation != null) {
+                int lastIndex = mLocationDataSet.locations.size() - 1;
+                if (lastIndex > 0) {
+                    // location에 저장된 데이터셋이 2개 이상일 때만 직선 그림.
+                    Location prev = mLocationDataSet.locations.get(lastIndex - 1);
+                    Location cur = mLocationDataSet.locations.get(lastIndex);
+                    ArrayList<Integer> curPower = mLocationDataSet.powerColors.get(mLocationDataSet.powerColors.size() - 1);
+
                     MapPolyline mapPolyline = new MapPolyline();
-                    mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(mLocationDataSet.prevLocation.getLatitude(), mLocationDataSet.prevLocation.getLongitude()));
-                    mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(mLocationDataSet.curLocation.getLatitude(), mLocationDataSet.curLocation.getLongitude()));
-                    mapPolyline.setLineColor(Color.argb(255, mLocationDataSet.curPowerRed, mLocationDataSet.curPowerGreen, 0)); // 색상 범위 : 빨간색 (255, 0, 0) ~ 노란색 (255, 255, 0) ~ 초록색 (0, 255, 0)
+                    mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(prev.getLatitude(), prev.getLongitude()));
+                    mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(cur.getLatitude(), cur.getLongitude()));
+                    mapPolyline.setLineColor(Color.argb(255, curPower.get(0), curPower.get(1), 0)); // 색상 범위 : 빨간색 (255, 0, 0) ~ 노란색 (255, 255, 0) ~ 초록색 (0, 255, 0)
                     mvRecord.addPolyline(mapPolyline);
                     mapPolylines.add(mapPolyline);
+
+                    /* Debug Text View */
+                    ((TextView) findViewById(R.id.tv_debug))
+                            .setText("Proider" + cur.getProvider() + "\n"
+                                    + "PrevLocation: " + prev.getLatitude() + ", " + prev.getLongitude() + "\n"
+                                    + "CurLocation: " + cur.getLatitude() + ", " + cur.getLongitude() + "\n"
+                                    + "Color: " + curPower.get(0) + ", " + curPower.get(1) + ", 0" + "\n"
+                                    + "velocity: " + cur.getSpeed());
                 }
 
                 /* Current Fragment */
@@ -444,7 +426,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
                 int pace = 0;
                 if (mLocationDataSet.velocityAvg != 0)
-                    pace = Math.round(60 / mLocationDataSet.velocityAvg);
+                    pace = Math.round(60f / mLocationDataSet.velocityAvg);
 
                 if (mLeftFragment == null) {
                     mLeftFragment = (CurrentFragment) getSupportFragmentManager().getFragments().get(1);

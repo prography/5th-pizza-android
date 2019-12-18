@@ -1,8 +1,6 @@
 package com.prography.prography_pizza.services.interfaces;
 
-import android.location.LocationListener;
-
-public interface LocationRecordServiceView extends LocationListener {
+public interface LocationRecordServiceView {
     void runThread();
     void stopThread();
 }

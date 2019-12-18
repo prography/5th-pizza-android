@@ -51,22 +51,6 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-
-
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="128dp"
-        android:id="@+id/fg_map_record"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_record"
-        app:layout_constraintBottom_toTopOf="@+id/vp_record"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone"
-        tools:visibility="gone"/>
-
     <net.daum.mf.map.api.MapView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -77,6 +61,16 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar_record"
         app:layout_constraintBottom_toTopOf="@+id/vp_record"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_debug"
+        android:textSize="10sp"
+        android:text="DEBUG DATA"
+        android:textColor="@android:color/black"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_record"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
