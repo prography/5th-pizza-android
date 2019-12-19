@@ -2,6 +2,8 @@ package com.prography.prography_pizza.src.splash;
 
 import android.os.Bundle;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.util.exception.KakaoException;
@@ -10,6 +12,7 @@ import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.main.MainActivity;
 import com.prography.prography_pizza.src.signin.SignInActivity;
 import com.prography.prography_pizza.src.splash.interfaces.SplashActivityView;
+import com.prography.prography_pizza.src.splash.models.SplashParams;
 import com.prography.prography_pizza.src.splash.models.SplashResponse;
 
 import static com.prography.prography_pizza.src.ApplicationClass.X_ACCESS_TOKEN;
@@ -27,8 +30,12 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
         callback = new SessionCallback();
         Session.getCurrentSession().addCallback(callback);
         if (Session.getCurrentSession().checkAndImplicitOpen()) {
-
-        } else {
+            // Kakao session check
+        } /*else if (GoogleSignIn.getLastSignedInAccount(this) != null) {
+            // Google session check
+            String googleToken = GoogleSignIn.getLastSignedInAccount(this).getIdToken();
+            trySignIn(googleToken, SplashParams.TYPE_GOOGLE);
+        } */else {
             startNextActivity(SignInActivity.class);
             overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
             finish();
@@ -51,9 +58,9 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
 
     }
 
-    public void trySignIn(String kakaoToken) {
+    public void trySignIn(String token, int type) {
         final SplashService splashService = new SplashService(this);
-        splashService.trySignIn(kakaoToken);
+        splashService.trySignIn(token, type);
     }
 
     private class SessionCallback implements ISessionCallback {
@@ -62,7 +69,7 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
         public void onSessionOpened() {
             String token = Session.getCurrentSession().getAccessToken();
             if (token != null && !token.equals("")) {
-                trySignIn(token);
+                trySignIn(token, SplashParams.TYPE_KAKAO);
             }
         }
 

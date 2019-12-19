@@ -4,7 +4,7 @@ import android.view.View;
 
 public interface SignInActivityView extends View.OnClickListener {
 
-    void validateKakaoSuccess(String token);
+    void validateSuccess(String token);
 
-    void validateKakaoFailure();
+    void validateFailure();
 }
