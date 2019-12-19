@@ -52,7 +52,7 @@ public class MainService {
                     return;
                 }
                 mMainActivityView.validateDeleteSuccess(challengeId);
-                Log.i("MAIN SERVICE", "DELETED");
+                Log.i("MAIN sSERVICE", "DELETED");
             }
 
             @Override

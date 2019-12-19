@@ -8,5 +8,6 @@ import java.util.ArrayList;
 
 public interface ChallengeDetailActivityView extends View.OnClickListener {
     void validateSuccess(ArrayList<ChallengeDetailResponse.Data> data);
+
     void validateFailure();
 }

@@ -19,12 +19,12 @@ public class ChallengeDetailService {
 
     public void getDetail(int cid) {
         final ChallengeDetailRetrofitInterface challengeDetailRetrofitInterface = getRetrofit().create(ChallengeDetailRetrofitInterface.class);
-        challengeDetailRetrofitInterface.getChallengeDetail(cid).enqueue(new Callback<ChallengeDetailResponse>(){
+        challengeDetailRetrofitInterface.getChallengeDetail(cid).enqueue(new Callback<ChallengeDetailResponse>() {
 
             @Override
             public void onResponse(Call<ChallengeDetailResponse> call, Response<ChallengeDetailResponse> response) {
-                final ChallengeDetailResponse challengeDetailResponse=response.body();
-                if(challengeDetailResponse==null){
+                final ChallengeDetailResponse challengeDetailResponse = response.body();
+                if (challengeDetailResponse == null) {
                     mChallengeDetailActivityView.validateFailure();
                     return;
                 }

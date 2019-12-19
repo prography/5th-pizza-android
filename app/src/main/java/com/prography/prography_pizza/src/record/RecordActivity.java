@@ -14,7 +14,6 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,9 +31,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.material.tabs.TabLayout;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
@@ -52,6 +49,7 @@ import net.daum.mf.map.api.MapPolyline;
 import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -164,9 +162,11 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 MapPolyline mapPolyline = new MapPolyline();
                 Location prev = mLocationDataSet.locations.get(i);
                 Location cur = mLocationDataSet.locations.get(i + 1);
+                ArrayList<Integer> colors = mLocationDataSet.powerColors.get(i);
+
                 mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(prev.getLatitude(), prev.getLongitude()));
                 mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(cur.getLatitude(), cur.getLongitude()));
-                mapPolyline.setLineColor(Color.argb(255, mLocationDataSet.powerColors.get(i).get(0), mLocationDataSet.powerColors.get(i).get(1), 0)); // 색상 범위 : 빨간색 (255, 0, 0) ~ 노란색 (255, 255, 0) ~ 초록색 (0, 255, 0)
+                mapPolyline.setLineColor(Color.argb(255, colors.get(0), colors.get(1), 0)); // 색상 범위 : 빨간색 (255, 0, 0) ~ 노란색 (255, 255, 0) ~ 초록색 (0, 255, 0)
                 mvRecord.addPolyline(mapPolyline);
                 mapPolylines.add(mapPolyline);
             }
@@ -206,7 +206,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             }
         };
 
-
         /* Set on Click Listener */
         ivStartRecord.setOnClickListener(this);
         ivSubmitRecord.setOnClickListener(this);
@@ -219,24 +218,19 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         finish();
                     }
                 }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        }).create();
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).create();
 
         /* Init View */
         /* PieChart */
-        List<PieEntry> pieEntryList = new ArrayList<>();
-        PieEntry pieEntry1 = new PieEntry(0.0f);
-        pieEntry1.setLabel("");
-        pieEntryList.add(pieEntry1);
-        PieEntry pieEntry2 = new PieEntry(0.1f);
-        pieEntry2.setLabel("");
-        pieEntryList.add(pieEntry2);
+        List<PieEntry> pieEntryList = new ArrayList<>(Arrays.asList(
+                new PieEntry(0.0f, ""),
+                new PieEntry(0.1f, "")));
         mPieDataSet = new PieDataSet(pieEntryList, "");
-        mPieDataSet.setColors(new int[] {R.color.piechart_record, R.color.transparent}, this);
-        mPieDataSet.setLabel("");
+        mPieDataSet.setColors(new int[]{R.color.piechart_record, R.color.transparent}, this);
         mPieDataSet.setDrawValues(false);
 
         mPieData = new PieData(mPieDataSet);
@@ -348,6 +342,8 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 }
                 break;
             case R.id.iv_submit_record:
+                // 1. 목표를 달성했을 때.
+                // 2. 충분한 거리를 달렸지만 목표를 달성하지 못했을 때.
                 new AlertDialog.Builder(this).setMessage("목표를 아직 달성하지 못했습니다.\n여기까지만 저장하고 잠시 쉴까요?")
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
@@ -364,6 +360,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                             }
                         })
                         .create().show();
+                // 3. 달린 거리나 시간이 너무 부족할 때,
                 break;
         }
     }
@@ -400,6 +397,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     mvRecord.addPolyline(mapPolyline);
                     mapPolylines.add(mapPolyline);
 
+                    /* TestOnly */
                     /* Debug Text View */
                     ((TextView) findViewById(R.id.tv_debug))
                             .setText("Proider" + cur.getProvider() + "\n"
@@ -426,7 +424,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
                 int pace = 0;
                 if (mLocationDataSet.velocityAvg != 0)
-                    pace = Math.round(60f / mLocationDataSet.velocityAvg);
+                    pace = Math.round(1 / mLocationDataSet.velocityAvg); // meter/sec -> sec/meter
 
                 if (mLeftFragment == null) {
                     mLeftFragment = (CurrentFragment) getSupportFragmentManager().getFragments().get(1);
@@ -458,14 +456,11 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         CURRENT_TIME_FORMAT.format(date),
                         String.format("%02d'%02d''", pace / 60, pace % 60));
             }
+
             /* PieChart */
-            List<PieEntry> pieEntryList = new ArrayList<>();
-            PieEntry pieEntry1 = new PieEntry(mGoalPercent / 100);
-            pieEntry1.setLabel("");
-            pieEntryList.add(pieEntry1);
-            PieEntry pieEntry2 = new PieEntry(1 - mGoalPercent / 100);
-            pieEntry2.setLabel("");
-            pieEntryList.add(pieEntry2);
+            List<PieEntry> pieEntryList = new ArrayList<>(Arrays.asList(
+                    new PieEntry(mGoalPercent / 100, ""),
+                    new PieEntry(1 - mGoalPercent / 100, "")));
             mPieDataSet.setValues(pieEntryList);
             mPieData.setDataSet(mPieDataSet);
             pcRecord.setData(mPieData);

@@ -30,8 +30,6 @@ import com.prography.prography_pizza.src.record.RecordActivity;
 import java.util.ArrayList;
 
 public class LocationRecordService extends Service implements LocationRecordServiceView {
-    public static Intent SERVICE = null;
-    public static Context mContext;
     public static final int DEFAULT_PAUSETIME = 3;
     public static final float MINIMUM_SPEED = 1.f;
     public static final float MAXIMUM_SPEED = 36.f;
@@ -41,30 +39,25 @@ public class LocationRecordService extends Service implements LocationRecordServ
     public static final int MINIMUM_INTERVAL_TIME = 1000;
     public static final float MINIMUM_INTERVAL_DISTANCE = 2.f;
 
-
+    public static Intent sSERVICE = null;
+    public static Context sContext;
+    private final IBinder mBinder = new LocationBinder();
     private boolean SERVICE_RUNNING = false;
     private int COUNT_PAUSE_TIME_IN_SEC = 3;
+    private Thread timerThread;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private LocationRequest mLocationRequest;
+    private LocationCallback mLocationCallback;
+    private LocationDataSet mLocationDataSet;
+    private MainResponse.Data mChallenge;
 
     public boolean isSERVICE_RUNNING() {
         return SERVICE_RUNNING;
     }
 
-    public void setSERVICE_RUNNING(boolean SERVICE_RUNNING) {
-        this.SERVICE_RUNNING = SERVICE_RUNNING;
-    }
-
-    private Thread timerThread;
-
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    private LocationRequest mLocationRequest;
-    private LocationCallback mLocationCallback;
-
-    private LocationDataSet mLocationDataSet;
-    private MainResponse.Data mChallenge;
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        SERVICE = intent;
+        sSERVICE = intent;
 
         initData(intent);
         initNotificationChannel();
@@ -77,7 +70,7 @@ public class LocationRecordService extends Service implements LocationRecordServ
         if (intent.getParcelableExtra("locationDataSet") == null) {
             mLocationDataSet = new LocationDataSet();
         } else {
-            mLocationDataSet =  intent.getParcelableExtra("locationDataSet");
+            mLocationDataSet = intent.getParcelableExtra("locationDataSet");
         }
         mChallenge = intent.getParcelableExtra("challenge");
     }
@@ -104,7 +97,7 @@ public class LocationRecordService extends Service implements LocationRecordServ
                         /* Send Intent Back to Activity */
                         Intent intentToActivity = new Intent("location-data");
                         intentToActivity.putExtra("locationDataSet", mLocationDataSet);
-                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intentToActivity);
+                        LocalBroadcastManager.getInstance(sContext).sendBroadcast(intentToActivity);
                     }
 
                     try {
@@ -130,7 +123,7 @@ public class LocationRecordService extends Service implements LocationRecordServ
     @Override
     public void onCreate() {
         super.onCreate();
-        mContext = this;
+        sContext = this;
 
         /* Fused Location Provider Init */
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -150,10 +143,10 @@ public class LocationRecordService extends Service implements LocationRecordServ
 
                 Location lastLocation = locationResult.getLastLocation();
                 if (lastLocation != null) {
-                    /* Speed가 지정한 속력 범위가 아닐 때는 아무것도 안하고 return */
-                    if (lastLocation.getSpeed() < MINIMUM_SPEED || lastLocation.getSpeed() > MAXIMUM_SPEED) {
+                    /* Speed가 지정한 속력 범위가 아닐 때는 아무것도 안하고 return -> Test 일때는 무시*/
+                    /*if (lastLocation.getSpeed() < MINIMUM_SPEED || lastLocation.getSpeed() > MAXIMUM_SPEED) {
                         return;
-                    }
+                    }*/
                     COUNT_PAUSE_TIME_IN_SEC = DEFAULT_PAUSETIME; // PauseTime 초기화
 
                     mLocationDataSet.locations.add(lastLocation);
@@ -171,6 +164,11 @@ public class LocationRecordService extends Service implements LocationRecordServ
 
     }
 
+    /**
+     * @param vel velocity of the location
+     * @return the value of color of red and green
+     * with ArrayList<Integer>
+     */
     public ArrayList<Integer> getColors(float vel) {
         ArrayList<Integer> colors = new ArrayList<>();
         int red, green;
@@ -203,14 +201,14 @@ public class LocationRecordService extends Service implements LocationRecordServ
     @Override
     public void onDestroy() {
         super.onDestroy();
-        SERVICE = null;
+        sSERVICE = null;
         stopThread();
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        SERVICE = null;
+        sSERVICE = null;
     }
 
     public void initNotificationChannel() {
@@ -241,15 +239,14 @@ public class LocationRecordService extends Service implements LocationRecordServ
         return mBinder;
     }
 
-    private final IBinder mBinder = new LocationBinder();
+    @Override
+    public boolean onUnbind(Intent intent) {
+        return true;
+    }
+
     public class LocationBinder extends Binder {
         public LocationRecordService getService() {
             return LocationRecordService.this;
         }
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        return true;
     }
 }

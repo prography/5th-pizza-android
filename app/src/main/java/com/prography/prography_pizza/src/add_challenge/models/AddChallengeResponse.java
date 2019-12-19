@@ -5,16 +5,24 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class AddChallengeResponse {
-    @SerializedName("data") private Data datum;
+    @SerializedName("data")
+    private Data datum;
 
     public static class Data implements Serializable {
-        @SerializedName("id") private int challengeId;
-        @SerializedName("userId") private int userId;
-        @SerializedName("routine_type") private String routineType;
-        @SerializedName("quota") private double time;
-        @SerializedName("object_unit") private String objectUnit;
-        @SerializedName("exercise_type") private String exerciseType;
-        @SerializedName("created_at") private String createdAt;
+        @SerializedName("id")
+        private int challengeId;
+        @SerializedName("userId")
+        private int userId;
+        @SerializedName("routine_type")
+        private String routineType;
+        @SerializedName("quota")
+        private double time;
+        @SerializedName("object_unit")
+        private String objectUnit;
+        @SerializedName("exercise_type")
+        private String exerciseType;
+        @SerializedName("created_at")
+        private String createdAt;
 
         public String getRoutineType() {
             return routineType;

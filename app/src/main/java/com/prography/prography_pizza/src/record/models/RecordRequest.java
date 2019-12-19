@@ -3,8 +3,10 @@ package com.prography.prography_pizza.src.record.models;
 import com.google.gson.annotations.SerializedName;
 
 public class RecordRequest {
-    @SerializedName("running_time") private double totalTime;
-    @SerializedName("distance") private double distance;
+    @SerializedName("running_time")
+    private double totalTime;
+    @SerializedName("distance")
+    private double distance;
 
     public RecordRequest(double totalTime, double distance) {
         this.totalTime = totalTime;

@@ -3,11 +3,11 @@ package com.prography.prography_pizza.src.challenge_detail.adapter;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.vipulasri.timelineview.TimelineView;
-import com.prography.prography_pizza.R;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.github.vipulasri.timelineview.TimelineView;
+import com.prography.prography_pizza.R;
 
 public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter {
     @NonNull

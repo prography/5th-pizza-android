@@ -56,7 +56,7 @@ public class SelectorListAdapter extends RecyclerView.Adapter<SelectorListAdapte
         return selectorLists.size();
     }
 
-    public class SelectorViewHolder extends RecyclerView.ViewHolder{
+    public class SelectorViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvItem;
 

@@ -169,7 +169,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                 break;
             case R.id.abl_main:
             case R.id.toolbar_main:
-                ablMain.setExpanded(true,true);
+                ablMain.setExpanded(true, true);
                 break;
             case R.id.iv_next_profile_main:
             case R.id.iv_profile_expanded_main:

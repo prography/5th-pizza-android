@@ -4,8 +4,9 @@ import android.view.View;
 
 import com.prography.prography_pizza.src.add_challenge.models.AddChallengeResponse;
 
-public interface AddChallengeActivityView extends View.OnClickListener{
+public interface AddChallengeActivityView extends View.OnClickListener {
     void postvalidateSuccess(AddChallengeResponse.Data datum);
+
     void postvalidateFailure();
 
     void onPickerItemSelected(int which, String selected);

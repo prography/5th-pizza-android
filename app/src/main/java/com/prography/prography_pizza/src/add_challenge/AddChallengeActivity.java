@@ -9,6 +9,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.add_challenge.fragments.SelectorBottomSheetFragment;
@@ -16,12 +22,6 @@ import com.prography.prography_pizza.src.add_challenge.interfaces.AddChallengeAc
 import com.prography.prography_pizza.src.add_challenge.models.AddChallengeResponse;
 
 import java.util.ArrayList;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 
 import static com.prography.prography_pizza.src.ApplicationClass.KAKAO_USERNAME;
 import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
@@ -120,7 +120,6 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
         }
         return true;
     }
-
 
 
     @Override

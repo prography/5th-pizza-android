@@ -17,6 +17,7 @@ public class PickerLayoutManager extends LinearLayoutManager {
     SelectorBotomSheetFragmentView mSelectorBotomSheetFragmentView = null;
     private int mIndex;
     private RecyclerView recyclerView;
+
     public PickerLayoutManager(Context context) {
         super(context);
     }

@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.prography.prography_pizza.R;
 
-public class BaseActivity extends AppCompatActivity{
+public class BaseActivity extends AppCompatActivity {
     public ProgressDialog mProgressDialog;
 
     protected final String TAG = getClass().getSimpleName();

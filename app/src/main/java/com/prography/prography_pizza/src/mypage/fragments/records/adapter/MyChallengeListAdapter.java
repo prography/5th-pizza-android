@@ -88,7 +88,7 @@ public class MyChallengeListAdapter extends RecyclerView.Adapter<MyChallengeList
         return mChallenges.size();
     }
 
-    public class ChallengeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ChallengeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView tvTitle;
         TextView tvCreatedAt;

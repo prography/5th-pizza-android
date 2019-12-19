@@ -7,10 +7,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.prography.prography_pizza.src.challenge_detail.ChallengeDetailActivity;
-import com.prography.prography_pizza.src.main.adapter.ChallengeListAdapter;
-import com.prography.prography_pizza.src.mypage.MyPageActivity;
-import com.prography.prography_pizza.src.mypage.fragments.records.adapter.MyChallengeListAdapter;
 import com.prography.prography_pizza.src.record.RecordActivity;
 import com.prography.prography_pizza.src.record.fragments.CurrentFragment;
 

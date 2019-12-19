@@ -13,8 +13,10 @@ import java.util.ArrayList;
 public interface MainActivityView extends View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener {
 
     void validateSuccess(ArrayList<MainResponse.Data> data);
+
     void validateFailure();
 
     void validateDeleteSuccess(int challengeId);
+
     void startDeleteProcess(int challengeId);
 }

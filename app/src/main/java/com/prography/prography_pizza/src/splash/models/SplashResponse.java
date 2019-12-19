@@ -4,11 +4,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class SplashResponse {
     public static class Data {
-        @SerializedName("id") private int userUniqueId;
-        @SerializedName("user_id") private int userId;
-        @SerializedName("email") private String userEmail;
-        @SerializedName("nickname") private String userNickname;
-        @SerializedName("created_at") private String createdAt;
+        @SerializedName("id")
+        private int userUniqueId;
+        @SerializedName("user_id")
+        private int userId;
+        @SerializedName("email")
+        private String userEmail;
+        @SerializedName("nickname")
+        private String userNickname;
+        @SerializedName("created_at")
+        private String createdAt;
 
         public int getUserUniqueId() {
             return userUniqueId;
@@ -31,9 +36,11 @@ public class SplashResponse {
         }
     }
 
-    @SerializedName("data") private Data data;
+    @SerializedName("data")
+    private Data data;
 
-    @SerializedName("access_token") private String accessToken;
+    @SerializedName("access_token")
+    private String accessToken;
 
     public Data getData() {
         return data;
