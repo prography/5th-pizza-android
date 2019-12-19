@@ -21,8 +21,8 @@ import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.mypage.adapter.MyPagePager;
 import com.prography.prography_pizza.src.mypage.interfaces.MyPageActivityView;
 
-import static com.prography.prography_pizza.src.ApplicationClass.KAKAO_PROFILE;
-import static com.prography.prography_pizza.src.ApplicationClass.KAKAO_USERNAME;
+import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
+import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
 import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
 
 public class MyPageActivity extends BaseActivity implements MyPageActivityView {
@@ -73,10 +73,10 @@ public class MyPageActivity extends BaseActivity implements MyPageActivityView {
         ablMypage.setOnClickListener(this);
 
         /* Init View */
-        tvUserName.setText(sSharedPreferences.getString(KAKAO_USERNAME, "USERName") + "님");
+        tvUserName.setText(sSharedPreferences.getString(USER_NAME, "USERName") + "님");
         tvToolbarTitleCollapsed.setText("마이페이지");
         Glide.with(this)
-                .load(sSharedPreferences.getString(KAKAO_PROFILE, null))
+                .load(sSharedPreferences.getString(USER_PROFILE, null))
                 .centerCrop()
                 .error(R.drawable.kakao_default_profile_image)
                 .placeholder(R.drawable.kakao_default_profile_image)

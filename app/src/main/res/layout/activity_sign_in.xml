@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:id="@+id/btn_kakao_signin_signin"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_simpleLogin_signIn" />
@@ -89,6 +89,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_simpleLogin_signIn" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btn_google_signin_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_kakao_signin_impl_signin" />
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/btn_facebook_signin_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@+id/btn_google_signin_signin" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

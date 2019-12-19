@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.kakao.auth.ApprovalType;
 import com.kakao.auth.AuthType;
 import com.kakao.auth.IApplicationConfig;
@@ -48,10 +50,10 @@ public class ApplicationClass extends Application {
     // JWT Token 값
     public static String X_ACCESS_TOKEN = "X-ACCESS-TOKEN";
 
-    // 카카오 USER INFO 값
-    public static String KAKAO_PROFILE = "KAKAO-PROFILE";
-    public static String KAKAO_USERNAME = "KAKAO-USERNAME";
-    public static String KAKAO_USEREMAIL = "KAKAO-USEREMAIL";
+    // USER INFO 값
+    public static String USER_PROFILE = "USER-PROFILE";
+    public static String USER_NAME = "USER-NAME";
+    public static String USER_EMAIL = "USER-EMAIL";
 
     //날짜 형식
     public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA);
@@ -69,7 +71,14 @@ public class ApplicationClass extends Application {
             sSharedPreferences = getApplicationContext().getSharedPreferences(TAG, Context.MODE_PRIVATE);
         }
 
+        /* Kakao SDK Init*/
         KakaoSDK.init(new KakaoSDKAdapter());
+
+        /* Facebook SDK Init */
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+
+
 
         CURRENT_TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     }

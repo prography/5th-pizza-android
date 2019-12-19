@@ -36,7 +36,7 @@ import com.prography.prography_pizza.src.mypage.MyPageActivity;
 
 import java.util.ArrayList;
 
-import static com.prography.prography_pizza.src.ApplicationClass.KAKAO_PROFILE;
+import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
 import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
 
 public class MainActivity extends BaseActivity implements MainActivityView {
@@ -104,7 +104,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         ivProfile.setBackground(new ShapeDrawable(new OvalShape()));
         ivProfile.setClipToOutline(true);
         Glide.with(this)
-                .load(sSharedPreferences.getString(KAKAO_PROFILE, ""))
+                .load(sSharedPreferences.getString(USER_PROFILE, ""))
                 .placeholder(R.drawable.kakao_default_profile_image)
                 .error(R.drawable.kakao_default_profile_image)
                 .centerCrop()

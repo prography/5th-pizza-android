@@ -23,7 +23,7 @@ import com.prography.prography_pizza.src.add_challenge.models.AddChallengeRespon
 
 import java.util.ArrayList;
 
-import static com.prography.prography_pizza.src.ApplicationClass.KAKAO_USERNAME;
+import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
 import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
 
 public class AddChallengeActivity extends BaseActivity implements AddChallengeActivityView {
@@ -108,7 +108,7 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
 
         /* Init View */
         selectorBottomSheetFragment.show(getSupportFragmentManager(), "selector");
-        tvUserName.setText(sSharedPreferences.getString(KAKAO_USERNAME, "USERNAME"));
+        tvUserName.setText(sSharedPreferences.getString(USER_NAME, "USERNAME"));
     }
 
     @Override

@@ -20,7 +20,7 @@ import com.prography.prography_pizza.src.mypage.fragments.summary.adapter.BadgeL
 
 import java.util.ArrayList;
 
-import static com.prography.prography_pizza.src.ApplicationClass.KAKAO_USERNAME;
+import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
 import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
 
 public class SummaryFragment extends BaseFragment {
@@ -64,7 +64,7 @@ public class SummaryFragment extends BaseFragment {
         badgeListAdapter.setItems(badges);
 
         /* init View */
-        tvUserName.setText(sSharedPreferences.getString(KAKAO_USERNAME, "UserName"));
+        tvUserName.setText(sSharedPreferences.getString(USER_NAME, "UserName"));
         ivType.setBackground(new ShapeDrawable(new OvalShape()));
         ivType.setClipToOutline(true);
 
