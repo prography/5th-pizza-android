@@ -27,7 +27,9 @@ import com.prography.prography_pizza.services.models.LocationDataSet;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.RecordActivity;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class LocationRecordService extends Service implements LocationRecordServiceView {
     public static final int DEFAULT_PAUSETIME = 3;
@@ -156,6 +158,8 @@ public class LocationRecordService extends Service implements LocationRecordServ
                     mLocationDataSet.powerColors.add(powers);
                     if (mLocationDataSet.locations.size() > 1) {
                         mLocationDataSet.increaseDistance = mLocationDataSet.locations.get(mLocationDataSet.locations.size() - 2).distanceTo(lastLocation);
+                    } else {
+                        mLocationDataSet.increaseDistance = 0;
                     }
                     mLocationDataSet.totalDistance += mLocationDataSet.increaseDistance;
                 }
@@ -167,7 +171,7 @@ public class LocationRecordService extends Service implements LocationRecordServ
     /**
      * @param vel velocity of the location
      * @return the value of color of red and green
-     * with ArrayList<Integer>
+     * with ArrayList<Integer> colors
      */
     public ArrayList<Integer> getColors(float vel) {
         ArrayList<Integer> colors = new ArrayList<>();
@@ -175,9 +179,9 @@ public class LocationRecordService extends Service implements LocationRecordServ
 
         if (vel >= SPEED_RANGE0 && vel < SPEED_RANGE1) {
             red = 255;
-            green = 255 - (int) (vel - SPEED_RANGE0) / 10 * 255;
+            green = 255 - (int) ((vel - SPEED_RANGE0) / (SPEED_RANGE1 - SPEED_RANGE0)) * 255;
         } else if (vel >= SPEED_RANGE1 && vel < SPEED_RANGE2) {
-            red = 255 - (int) (vel - SPEED_RANGE1) / 10 * 255;
+            red = 255 - (int) ((vel - SPEED_RANGE1) / (SPEED_RANGE2 - SPEED_RANGE1)) * 255;
             green = 255;
         } else if (vel < SPEED_RANGE0) {
             red = 255;

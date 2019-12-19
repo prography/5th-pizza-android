@@ -86,7 +86,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private double mGoal = 0;
     private int mGoalType = GOALTYPE_DISTANCE;
     private float mGoalPercent = 0.f;
-    private LocationDataSet mLocationDataSet;
+    private LocationDataSet mLocationDataSet = null;
 
     private PieDataSet mPieDataSet;
     private PieData mPieData;
@@ -320,6 +320,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         // 초기 시작
                         serviceIntent = new Intent(this, LocationRecordService.class);
                         serviceIntent.putExtra("challenge", mChallenge);
+                        serviceIntent.putExtra("locationDataSet", mLocationDataSet);
                         bindService(serviceIntent, mConnection, BIND_AUTO_CREATE);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             startForegroundService(serviceIntent);
@@ -400,11 +401,12 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     /* TestOnly */
                     /* Debug Text View */
                     ((TextView) findViewById(R.id.tv_debug))
-                            .setText("Proider" + cur.getProvider() + "\n"
+                            .setText("Provider: " + cur.getProvider() + "\n"
                                     + "PrevLocation: " + prev.getLatitude() + ", " + prev.getLongitude() + "\n"
                                     + "CurLocation: " + cur.getLatitude() + ", " + cur.getLongitude() + "\n"
                                     + "Color: " + curPower.get(0) + ", " + curPower.get(1) + ", 0" + "\n"
-                                    + "velocity: " + cur.getSpeed());
+                                    + "Velocity: " + cur.getSpeed() + "\n"
+                                    + "Accuracy: " + cur.getAccuracy());
                 }
 
                 /* Current Fragment */
