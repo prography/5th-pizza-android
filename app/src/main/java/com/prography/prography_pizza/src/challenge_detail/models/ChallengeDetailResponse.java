@@ -46,9 +46,22 @@ public class ChallengeDetailResponse {
         public String getCreatedAt() {
             return createdAt;
         }
+
+        public Data(int challengeId, String routineType, double time, String objectUnit, String exerciseType, String createdAt) {
+            this.challengeId = challengeId;
+            this.routineType = routineType;
+            this.time = time;
+            this.objectUnit = objectUnit;
+            this.exerciseType = exerciseType;
+            this.createdAt = createdAt;
+        }
     }
 
     public ArrayList<Data> getData() {
         return data;
+    }
+
+    public ChallengeDetailResponse(ArrayList<Data> data) {
+        this.data = data;
     }
 }

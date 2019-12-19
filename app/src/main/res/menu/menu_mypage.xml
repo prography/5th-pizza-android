@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/ti_setting_mypage"
-        android:icon="@drawable/ic_settings_black"
+        android:icon="@drawable/ic_settings"
         app:showAsAction="always"
         android:title="SETTINGS" />
 
