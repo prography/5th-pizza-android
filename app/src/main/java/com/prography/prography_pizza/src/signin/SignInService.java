@@ -41,7 +41,6 @@ public class SignInService {
             case SignInParams.TYPE_NAVER:
                 tokenName = "x-naver-token";
                 break;
-
         }
 
         OkHttpClient client = new OkHttpClient.Builder()

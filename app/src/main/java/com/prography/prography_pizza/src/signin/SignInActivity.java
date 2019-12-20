@@ -8,14 +8,20 @@ import android.widget.Button;
 
 import androidx.annotation.Nullable;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
@@ -34,7 +40,11 @@ import com.prography.prography_pizza.src.main.MainActivity;
 import com.prography.prography_pizza.src.signin.interfaces.SignInActivityView;
 import com.prography.prography_pizza.src.signin.models.SignInParams;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
@@ -75,17 +85,39 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
         /* Google Session */
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
         /* Facebook Session */
         mFacebookCallback = CallbackManager.Factory.create();
-        btnFacebook.setReadPermissions("email");
+        btnFacebook.setReadPermissions(Arrays.asList("email"));
         btnFacebook.registerCallback(mFacebookCallback, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                String token = loginResult.getAccessToken().getToken();
-                tryGetToken(token, SignInParams.TYPE_FACEBOOK);
+                final AccessToken accessToken = loginResult.getAccessToken();
+
+                GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        try {
+                            sSharedPreferences.edit().putString(USER_NAME, object.getString("name"))
+                                    .putString(USER_EMAIL, object.getString("email"))
+                                    .putString(USER_PROFILE , object.getJSONObject("picture").getJSONObject("data").getString("url"))
+                                    .apply();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        String token = accessToken.getToken();
+                        tryGetToken(token, SignInParams.TYPE_FACEBOOK);
+
+                    }
+                });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,gender,picture");
+                request.setParameters(parameters);
+                request.executeAsync();
             }
 
             @Override
@@ -98,7 +130,6 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
 
             }
         });
-
 
         /* Set OnClick Listener */
         btnKakaoImpl.setOnClickListener(this);
@@ -123,6 +154,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
 
             return;
         }
+        mFacebookCallback.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_GOOGLE) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -151,9 +183,12 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
                         .putString(USER_PROFILE, account.getPhotoUrl().toString())
                         .apply();
 
+                Log.i("GOOGLE TOKEN", account.getIdToken());
+
                 tryGetToken(account.getIdToken(), SignInParams.TYPE_GOOGLE);
             }
         } catch (ApiException e) {
+            Log.w("GOOGLE FAIL", "handleGoogleSignInResult: " + e.getStatusCode());
             e.printStackTrace();
         }
     }

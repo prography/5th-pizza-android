@@ -1,6 +1,7 @@
 package com.prography.prography_pizza.src.splash;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -29,13 +30,16 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
 
         callback = new SessionCallback();
         Session.getCurrentSession().addCallback(callback);
+        GoogleSignInAccount googleSession = GoogleSignIn.getLastSignedInAccount(this);
         if (Session.getCurrentSession().checkAndImplicitOpen()) {
             // Kakao session check
-        } /*else if (GoogleSignIn.getLastSignedInAccount(this) != null) {
+        } else if (googleSession != null) {
             // Google session check
-            String googleToken = GoogleSignIn.getLastSignedInAccount(this).getIdToken();
+            String googleToken = googleSession.getIdToken();
+
+            Log.i("GOOGLE TOKEN", googleToken);
             trySignIn(googleToken, SplashParams.TYPE_GOOGLE);
-        } */else {
+        } else {
             startNextActivity(SignInActivity.class);
             overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
             finish();

@@ -19,6 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kakao.usermgmt.UserManagement;
@@ -220,12 +225,26 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                // Kakao 로그아웃
                                 UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
                                     @Override
                                     public void onCompleteLogout() {
                                         finish();
                                     }
                                 });
+                                // Google 로그아웃
+                                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getParent(), new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                        .requestEmail()
+                                        .requestIdToken(getString(R.string.default_web_client_id))
+                                        .build());
+                                googleSignInClient.signOut().addOnCompleteListener(getParent(), new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        finish();
+                                    }
+                                });
+                                // Facebook 로그아웃
+
                             }
                         }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
                     @Override

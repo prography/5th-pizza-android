@@ -20,6 +20,7 @@ import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.add_challenge.fragments.SelectorBottomSheetFragment;
 import com.prography.prography_pizza.src.add_challenge.interfaces.AddChallengeActivityView;
 import com.prography.prography_pizza.src.add_challenge.models.AddChallengeResponse;
+import com.prography.prography_pizza.src.main.models.MainResponse;
 
 import java.util.ArrayList;
 
@@ -126,6 +127,11 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
     public void postvalidateSuccess(AddChallengeResponse.Data datum) {
         hideProgressDialog();
         showToast("postSuccess");
+        datum.setExerciseType(mExerceiseType);
+        datum.setObjectUnit(mObjectUnit);
+        datum.setRoutineType(mRoutineType);
+        datum.setTime(mQuota);
+
         Intent intent = new Intent();
         intent.putExtra("item", datum);
         setResult(RESULT_OK, intent);

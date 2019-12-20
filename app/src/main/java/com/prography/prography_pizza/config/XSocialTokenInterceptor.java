@@ -14,8 +14,8 @@ import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferen
 
 public class XSocialTokenInterceptor implements Interceptor {
 
-    private String token = null;
-    private String tokenName = null;
+    private String tokenName;
+    private String token;
 
     public XSocialTokenInterceptor(String tokenName, String token) {
         this.token = token;
