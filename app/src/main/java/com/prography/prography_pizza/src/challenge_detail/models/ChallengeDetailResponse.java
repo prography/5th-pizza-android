@@ -11,55 +11,50 @@ public class ChallengeDetailResponse {
 
     public static class Data implements Serializable {
         @SerializedName("id")
-        private int challengeId;
-        @SerializedName("routine_type")
-        private String routineType;
-        @SerializedName("quota")
-        private double time;
-        @SerializedName("object_unit")
-        private String objectUnit;
+        private int recordId;
         @SerializedName("exercise_type")
         private String exerciseType;
+        @SerializedName("running_time")
+        private double runningTime;
+        @SerializedName("distance")
+        private double totalDistance;
         @SerializedName("created_at")
         private String createdAt;
 
-        public int getChallengeId() {
-            return challengeId;
-        }
-
-        public String getRoutineType() {
-            return routineType;
-        }
-
-        public double getTime() {
-            return time;
-        }
-
-        public String getObjectUnit() {
-            return objectUnit;
+        public int getRecordId() {
+            return recordId;
         }
 
         public String getExerciseType() {
             return exerciseType;
         }
 
+        public double getRunningTime() {
+            return runningTime;
+        }
+
+        public double getTotalDistance() {
+            return totalDistance;
+        }
+
         public String getCreatedAt() {
             return createdAt;
         }
 
-        public Data(int challengeId, String routineType, double time, String objectUnit, String exerciseType, String createdAt) {
-            this.challengeId = challengeId;
-            this.routineType = routineType;
-            this.time = time;
-            this.objectUnit = objectUnit;
+        public Data(int recordId, String exerciseType, double runningTime, double totalDistance, String createdAt) {
+            this.recordId = recordId;
             this.exerciseType = exerciseType;
+            this.runningTime = runningTime;
+            this.totalDistance = totalDistance;
             this.createdAt = createdAt;
         }
     }
 
+
     public ArrayList<Data> getData() {
         return data;
     }
+
 
     public ChallengeDetailResponse(ArrayList<Data> data) {
         this.data = data;

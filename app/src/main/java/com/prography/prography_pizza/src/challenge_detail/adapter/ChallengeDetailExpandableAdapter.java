@@ -1,8 +1,10 @@
 package com.prography.prography_pizza.src.challenge_detail.adapter;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.vipulasri.timelineview.TimelineView;
@@ -10,30 +12,36 @@ import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.challenge_detail.models.ChallengeDetailResponse;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static android.provider.Settings.System.DATE_FORMAT;
+import static com.prography.prography_pizza.src.ApplicationClass.CURRENT_TIME_FORMAT;
 
 public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<ChallengeDetailExpandableAdapter.TimeLineViewHolder> {
     private ArrayList<ChallengeDetailResponse.Data> mList;
-    private String routineType;
-    private String objectUnit;
-    private String exerciseType;
-
+    private LayoutInflater layoutInflater;
     private Context mContext;
     private RecyclerView mRecyclerView;
+
+    private String date;
+    private int recordId;
+    private String exerciseType;
+    private String runningTime;
+    private double distance;
 
     public ChallengeDetailExpandableAdapter(ArrayList<ChallengeDetailResponse.Data> mList, Context context) {
         this.mList = mList;
         mContext = context;
+        layoutInflater = LayoutInflater.from(context);
     }
 
     @NonNull
     @Override
     public TimeLineViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = View.inflate(parent.getContext(), R.layout.item_timeline, null);
+//        View view=View.inflate(parent.getContext(),  R.layout.item_timeline, null);
+        View view = layoutInflater.inflate(R.layout.item_timeline, parent, false);
         TimeLineViewHolder timeLineViewHolder = new TimeLineViewHolder(view, viewType);
         return timeLineViewHolder;
     }
@@ -43,43 +51,37 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
         ChallengeDetailResponse.Data timeLineModel = mList.get(position);
 
         if (timeLineModel != null) {
-            routineType = "";
-            objectUnit = "";
-            exerciseType = "";
-            // 변환 필요.
-            switch (timeLineModel.getRoutineType()) {
-                case "daily":
-                    routineType = "매일";
-                    break;
-                case "weekly":
-                    routineType = "매주";
-                    break;
-                case "monthly":
-                    routineType = "매달";
-                    break;
-            }
+            date = String.format(timeLineModel.getCreatedAt(), "yyyy-MM-dd");
+            holder.tvDate.setText(date);
 
-            switch (timeLineModel.getObjectUnit()) {
-                case "distance":
-                    objectUnit = "km";
-                    break;
-                case "time":
-                    objectUnit = "분";
-            }
-
+            recordId = timeLineModel.getRecordId();
             switch (timeLineModel.getExerciseType()) {
                 case "running":
-                    exerciseType = "뛰기";
+                    exerciseType = "러닝";
                     break;
                 case "cycling":
-                    exerciseType = "자전거 타기";
+                    exerciseType = "사이클";
                     break;
             }
-            String title = routineType + " " + (int) timeLineModel.getTime() + objectUnit + " " + exerciseType;
-            holder.tvTitle.setText(title);
+            holder.tvTitle.setText(recordId + "일차 " + exerciseType);
 
-            String date = String.format(DATE_FORMAT); // 날짜 형식 parse
-            holder.tvDate.setText(date);
+            if (timeLineModel.getTotalDistance() > 1000) {
+                distance = timeLineModel.getTotalDistance() / 1000;
+                holder.tvDistance.setText(String.format("%.2f", (float) distance) + "km");
+            } else {
+                distance = timeLineModel.getTotalDistance();
+                holder.tvDistance.setText(String.format("%.0f", (float) distance) + "m");
+            }
+
+            Date d = new Date(Double.valueOf(timeLineModel.getRunningTime()).longValue());
+            runningTime = CURRENT_TIME_FORMAT.format(d);
+            holder.tvTime.setText(runningTime);
+
+            double tmp = timeLineModel.getRunningTime() / timeLineModel.getTotalDistance(); // sec/km
+            int min = (int) (tmp / 60);
+            int sec = (int) (tmp - min * 60);
+            holder.tvSpeed.setText(min + "'" + sec + "''/km");
+
         }
     }
 
@@ -96,8 +98,12 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
 
     public class TimeLineViewHolder extends RecyclerView.ViewHolder {
         TimelineView mTimelineView;
+        ImageView ivMap;
         TextView tvDate;
         TextView tvTitle;
+        TextView tvDistance;
+        TextView tvSpeed;
+        TextView tvTime;
 
 
         public TimeLineViewHolder(@NonNull final View itemView, int viewType) {
@@ -105,8 +111,13 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
 
             /* findViewByID */
             mTimelineView = itemView.findViewById(R.id.timeline);
-            tvDate = itemView.findViewById(R.id.tv_timeline_date);
-            tvTitle = itemView.findViewById(R.id.tv_timeline_title);
+            ivMap = itemView.findViewById(R.id.iv_map_detail);
+            tvDate = itemView.findViewById(R.id.tv_date_detail);
+            tvTitle = itemView.findViewById(R.id.tv_title_detail);
+            tvDistance = itemView.findViewById(R.id.tv_distance_detail);
+            tvSpeed = itemView.findViewById(R.id.tv_speed_detail);
+            tvTime = itemView.findViewById(R.id.tv_time_detail);
+
 
             mTimelineView.initLine(viewType);
 
@@ -114,8 +125,8 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(v==itemView){
-                        // show savedRecord
+                    if (v == itemView) {
+
                     }
                 }
             });

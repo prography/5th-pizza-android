@@ -30,6 +30,7 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,18 +39,19 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         /* findViewByID */
         rvDetail=findViewById(R.id.recyclerView_detail);
         tbDetail=findViewById(R.id.toolbar_detail);
-        tvTitle=findViewById(R.id.tv_timeline_title);
-        tvDate=findViewById(R.id.tv_timeline_date);
+//        tvTitle=findViewById(R.id.tv_timeline_title);
+//        tvDate=findViewById(R.id.tv_timeline_date);
 
         /* Toolbar */
         setSupportActionBar(tbDetail);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
 
         /* RecyclerView */
-        mList.add(new ChallengeDetailResponse.Data(0,"매일",30,"분","뛰기","2019-12-19"));
-        mList.add(new ChallengeDetailResponse.Data(1,"매주",1,"시간","자전거 타기","2019-12-19"));
+        mList.add(new ChallengeDetailResponse.Data(1,"running",612000,1200,"2019-12-19"));
+        mList.add(new ChallengeDetailResponse.Data(2,"running",306000,600,"2019-12-20"));
 
         cdAdapter=new ChallengeDetailExpandableAdapter(mList,this);
         rvDetail.setAdapter(cdAdapter);
