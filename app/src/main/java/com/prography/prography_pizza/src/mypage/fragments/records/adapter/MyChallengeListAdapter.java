@@ -9,15 +9,20 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.challenge_detail.ChallengeDetailActivity;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.mypage.MyPageActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import static com.prography.prography_pizza.src.ApplicationClass.DATE_FORMAT;
 
 public class MyChallengeListAdapter extends RecyclerView.Adapter<MyChallengeListAdapter.ChallengeViewHolder> {
 
@@ -76,7 +81,14 @@ public class MyChallengeListAdapter extends RecyclerView.Adapter<MyChallengeList
             }
             String title = routineType + " " + (int) data.getTime() + objectUnit + " " + exerciseType;
             holder.tvTitle.setText(title);
-            holder.tvCreatedAt.setText(data.getCreatedAt());
+
+            try {
+                Date date=DATE_FORMAT.parse(data.getCreatedAt());
+                holder.tvCreatedAt.setText(new SimpleDateFormat("yyyy.MM.dd").format(date) + " 부터 지금까지");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
             if (data.getAchievement() < 100) {
                 holder.pbChallenge.setProgress(data.getAchievement());
                 holder.tvPercentage.setText(data.getAchievement() + "%");
