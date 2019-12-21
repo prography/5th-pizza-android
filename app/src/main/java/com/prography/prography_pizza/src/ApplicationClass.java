@@ -50,6 +50,9 @@ public class ApplicationClass extends Application {
     // JWT Token 값
     public static String X_ACCESS_TOKEN = "X-ACCESS-TOKEN";
 
+    // LOGIN Type 값
+    public static String LOGIN_TYPE = "LOGIN-TYPE";
+
     // USER INFO 값
     public static String USER_PROFILE = "USER-PROFILE";
     public static String USER_NAME = "USER-NAME";

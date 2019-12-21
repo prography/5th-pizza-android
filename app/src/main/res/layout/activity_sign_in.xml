@@ -37,10 +37,11 @@
 
 
     <View
+        android:id="@+id/view"
         android:layout_width="100dp"
         android:layout_height="1dp"
-        android:background="@android:color/white"
         android:layout_marginTop="115dp"
+        android:background="@android:color/white"
         app:layout_constraintEnd_toStartOf="@+id/tv_simpleLogin_signIn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_subTitle_singIn" />
@@ -79,25 +80,61 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_simpleLogin_signIn" />
 
-    <Button
-        android:id="@+id/btn_kakao_signin_impl_signin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:foreground="?attr/selectableItemBackground"
-        android:background="@drawable/kakao_login_btn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_simpleLogin_signIn" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/btn_google_signin_signin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_kakao_signin_impl_signin" />
+
+    <ImageView
+        android:id="@+id/btn_kakao_signin_impl_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_signin_kakao"
+        android:layout_marginTop="30dp"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintEnd_toStartOf="@+id/btn_facebook_signin_impl_signin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_simpleLogin_signIn" />
+
+    <ImageView
+        android:id="@+id/btn_facebook_signin_impl_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_signin_facebook"
+        android:layout_marginStart="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_kakao_signin_impl_signin"
+        app:layout_constraintEnd_toStartOf="@+id/btn_naver_signin_impl_signin"
+        app:layout_constraintStart_toEndOf="@+id/btn_kakao_signin_impl_signin"
+        app:layout_constraintTop_toTopOf="@+id/btn_kakao_signin_impl_signin" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_naver_signin_impl_signin"
+        android:src="@mipmap/ic_signin_naver"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toEndOf="@id/btn_facebook_signin_impl_signin"
+        app:layout_constraintEnd_toStartOf="@id/btn_google_signin_impl_signin"
+        app:layout_constraintTop_toTopOf="@id/btn_facebook_signin_impl_signin"
+        app:layout_constraintBottom_toBottomOf="@id/btn_facebook_signin_impl_signin" />
+
+
+    <ImageView
+        android:id="@+id/btn_google_signin_impl_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_signin_google"
+        android:layout_marginStart="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_naver_signin_impl_signin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_naver_signin_impl_signin"
+        app:layout_constraintTop_toTopOf="@+id/btn_naver_signin_impl_signin" />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/btn_facebook_signin_signin"
@@ -105,6 +142,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
         android:layout_marginTop="30dp"
         app:layout_constraintTop_toBottomOf="@+id/btn_google_signin_signin" />
 

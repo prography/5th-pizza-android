@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.prography.prography_pizza.src.ApplicationClass.LOGIN_TYPE;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_EMAIL;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
@@ -57,10 +59,13 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
 
     public static final int REQUEST_GOOGLE = 0;
 
-    private Button btnKakaoImpl;
+    private ImageView btnKakaoImpl;
     private LoginButton btnKakao;
     private SignInButton btnGoogle;
+    private ImageView btnGoogleImpl;
     private com.facebook.login.widget.LoginButton btnFacebook;
+    private ImageView btnFacebookImpl;
+    private ImageView btnNaverImpl;
 
     private SessionCallback mKakaoCallback;
     private GoogleSignInClient mGoogleSignInClient;
@@ -75,7 +80,10 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
         btnKakao = findViewById(R.id.btn_kakao_signin_signin);
         btnKakaoImpl = findViewById(R.id.btn_kakao_signin_impl_signin);
         btnGoogle = findViewById(R.id.btn_google_signin_signin);
+        btnGoogleImpl = findViewById(R.id.btn_google_signin_impl_signin);
         btnFacebook = findViewById(R.id.btn_facebook_signin_signin);
+        btnFacebookImpl = findViewById(R.id.btn_facebook_signin_impl_signin);
+        btnNaverImpl = findViewById(R.id.btn_naver_signin_impl_signin);
 
         /* Kakao Session */
         mKakaoCallback = new SessionCallback();
@@ -104,6 +112,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
                             sSharedPreferences.edit().putString(USER_NAME, object.getString("name"))
                                     .putString(USER_EMAIL, object.getString("email"))
                                     .putString(USER_PROFILE , object.getJSONObject("picture").getJSONObject("data").getString("url"))
+                                    .putInt(LOGIN_TYPE, SignInParams.TYPE_FACEBOOK)
                                     .apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -134,6 +143,9 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
         /* Set OnClick Listener */
         btnKakaoImpl.setOnClickListener(this);
         btnGoogle.setOnClickListener(this);
+        btnGoogleImpl.setOnClickListener(this);
+        btnFacebookImpl.setOnClickListener(this);
+        btnNaverImpl.setOnClickListener(this);
     }
 
     @Override
@@ -142,8 +154,15 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
             case R.id.btn_kakao_signin_impl_signin:
                 btnKakao.performClick();
                 break;
+            case R.id.btn_google_signin_impl_signin:
             case R.id.btn_google_signin_signin:
                 startActivityForResult(mGoogleSignInClient.getSignInIntent(), REQUEST_GOOGLE);
+                break;
+            case R.id.btn_facebook_signin_impl_signin:
+                btnFacebook.performClick();
+                break;
+            case R.id.btn_naver_signin_impl_signin:
+                showToast(getString(R.string.not_implemented));
                 break;
         }
     }
@@ -181,6 +200,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
                 sSharedPreferences.edit().putString(USER_EMAIL, account.getEmail())
                         .putString(USER_NAME, account.getDisplayName())
                         .putString(USER_PROFILE, account.getPhotoUrl().toString())
+                        .putInt(LOGIN_TYPE, SignInParams.TYPE_GOOGLE)
                         .apply();
 
                 Log.i("GOOGLE TOKEN", account.getIdToken());
@@ -235,9 +255,11 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
 
             @Override
             public void onSuccess(MeV2Response response) {
-                sSharedPreferences.edit().putString(USER_PROFILE, response.getKakaoAccount().getProfile().getProfileImageUrl()).apply();
-                sSharedPreferences.edit().putString(USER_NAME, response.getKakaoAccount().getProfile().getNickname()).apply();
-                sSharedPreferences.edit().putString(USER_EMAIL, response.getKakaoAccount().getEmail()).apply();
+                sSharedPreferences.edit().putString(USER_PROFILE, response.getKakaoAccount().getProfile().getProfileImageUrl())
+                        .putString(USER_NAME, response.getKakaoAccount().getProfile().getNickname())
+                        .putString(USER_EMAIL, response.getKakaoAccount().getEmail())
+                        .putInt(LOGIN_TYPE, SignInParams.TYPE_KAKAO)
+                        .apply();
                 String token = Session.getCurrentSession().getAccessToken();
                 Log.i("KAKAO TOKEN", token);
                 tryGetToken(token, SignInParams.TYPE_KAKAO);

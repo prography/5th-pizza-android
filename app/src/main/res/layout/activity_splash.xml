@@ -14,5 +14,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_prographylogo1" />
+        app:srcCompat="@drawable/logo_prography" />
 </androidx.constraintlayout.widget.ConstraintLayout>

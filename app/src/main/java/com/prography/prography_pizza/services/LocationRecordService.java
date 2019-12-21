@@ -142,7 +142,7 @@ public class LocationRecordService extends Service implements LocationRecordServ
                 Location lastLocation = locationResult.getLastLocation();
                 if (lastLocation != null) {
                     /* Speed가 지정한 속력 범위가 아닐 때는 아무것도 안하고 return -> Test 일때는 무시*/
-                    /*if (lastLocation.getSpeed() < MINIMUM_SPEED || lastLocation.getSpeed() > MAXIMUM_SPEED) {
+                    /*if (lastLocation.getSpeed() * 3.6f < MINIMUM_SPEED || lastLocation.getSpeed() * 3.6f > MAXIMUM_SPEED) {
                         return;
                     }*/
                     COUNT_PAUSE_TIME_IN_SEC = DEFAULT_PAUSETIME; // PauseTime 초기화

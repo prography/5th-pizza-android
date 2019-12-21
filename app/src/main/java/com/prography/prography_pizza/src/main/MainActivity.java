@@ -38,9 +38,14 @@ import com.prography.prography_pizza.src.main.adapter.ChallengeListAdapter;
 import com.prography.prography_pizza.src.main.interfaces.MainActivityView;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.mypage.MyPageActivity;
+import com.prography.prography_pizza.src.signin.models.SignInParams;
+import com.prography.prography_pizza.src.splash.models.SplashParams;
 
 import java.util.ArrayList;
 
+import static com.prography.prography_pizza.src.ApplicationClass.LOGIN_TYPE;
+import static com.prography.prography_pizza.src.ApplicationClass.USER_EMAIL;
+import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
 import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
 
@@ -225,25 +230,43 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // Kakao 로그아웃
-                                UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
-                                    @Override
-                                    public void onCompleteLogout() {
-                                        finish();
-                                    }
-                                });
-                                // Google 로그아웃
-                                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getParent(), new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                        .requestEmail()
-                                        .requestIdToken(getString(R.string.default_web_client_id))
-                                        .build());
-                                googleSignInClient.signOut().addOnCompleteListener(getParent(), new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        finish();
-                                    }
-                                });
-                                // Facebook 로그아웃
+                                switch (sSharedPreferences.getInt(LOGIN_TYPE, SignInParams.TYPE_KAKAO)) {
+                                    case SignInParams.TYPE_GOOGLE:
+                                        // Google 로그아웃
+                                        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getParent(), new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                                .requestEmail()
+                                                .requestIdToken(getString(R.string.default_web_client_id))
+                                                .build());
+                                        googleSignInClient.signOut().addOnCompleteListener(getParent(), new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                finish();
+                                            }
+                                        });
+                                        break;
+                                    case SplashParams.TYPE_KAKAO:
+                                        // Kakao 로그아웃
+                                        UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
+                                            @Override
+                                            public void onCompleteLogout() {
+                                                finish();
+                                            }
+                                        });
+                                        break;
+                                    case SplashParams.TYPE_FACEBOOK:
+                                        // Facebook 로그아웃
+                                        showToast(getString(R.string.not_implemented));
+                                        break;
+                                    case SplashParams.TYPE_NAVER:
+                                        showToast(getString(R.string.not_implemented));
+                                        break;
+                                }
+                                sSharedPreferences.edit()
+                                        .remove(LOGIN_TYPE)
+                                        .remove(USER_EMAIL)
+                                        .remove(USER_NAME)
+                                        .remove(USER_PROFILE).apply();
+
 
                             }
                         }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
