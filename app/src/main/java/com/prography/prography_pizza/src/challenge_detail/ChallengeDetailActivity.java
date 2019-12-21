@@ -2,6 +2,7 @@ package com.prography.prography_pizza.src.challenge_detail;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import com.prography.prography_pizza.src.challenge_detail.models.ChallengeDetail
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -54,7 +56,13 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         /* RecyclerView */
         mList.add(new ChallengeDetailResponse.Data(1,"running",612000,1200,"2019-12-20T00:00:00.000Z"));
         mList.add(new ChallengeDetailResponse.Data(2,"running",306000,600,"2019-12-21T00:00:00.000Z"));
-        
+
+        // RecyclerView 역순으로 출력
+       /* mLayoutManager=new LinearLayoutManager(this);
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
+        rvDetail.setLayoutManager(mLayoutManager);*/
+
         cdAdapter=new ChallengeDetailExpandableAdapter(mList,this);
         rvDetail.setAdapter(cdAdapter);
 
@@ -62,7 +70,16 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         Intent intent = getIntent();
         mChallengeId = intent.getIntExtra("challengeId", 0);
 
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -75,10 +92,10 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
 
     }
 
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
 
-        }
     }
+
 }
