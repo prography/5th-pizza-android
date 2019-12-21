@@ -428,7 +428,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
                 int pace = 0;
                 if (mLocationDataSet.velocityAvg != 0)
-                    pace = Math.round(1 / mLocationDataSet.velocityAvg); // m/s -> sec/meter
+                    pace = Math.round(1000 / mLocationDataSet.velocityAvg); // m/s -> sec/km
 
                 if (mLeftFragment == null) {
                     mLeftFragment = (CurrentFragment) getSupportFragmentManager().getFragments().get(1);

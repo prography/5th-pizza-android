@@ -40,34 +40,34 @@
         android:id="@+id/view"
         android:layout_width="100dp"
         android:layout_height="1dp"
-        android:layout_marginTop="115dp"
         android:background="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_simpleLogin_signIn"
         app:layout_constraintEnd_toStartOf="@+id/tv_simpleLogin_signIn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_subTitle_singIn" />
+        app:layout_constraintTop_toTopOf="@+id/tv_simpleLogin_signIn" />
 
     <View
         android:layout_width="100dp"
         android:layout_height="1dp"
         android:background="@android:color/white"
-        android:layout_marginTop="115dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_simpleLogin_signIn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_simpleLogin_signIn"
-        app:layout_constraintTop_toBottomOf="@id/tv_subTitle_singIn" />
+        app:layout_constraintTop_toTopOf="@+id/tv_simpleLogin_signIn" />
 
 
     <TextView
         android:id="@+id/tv_simpleLogin_signIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
         android:fontFamily="@font/nanumsquare_regular"
         android:text="간편 로그인"
         android:textColor="@android:color/white"
-        android:textSize="20dp"
+        android:textSize="20sp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_kakao_signin_impl_signin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_subTitle_singIn" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <com.kakao.usermgmt.LoginButton
@@ -93,32 +93,33 @@
 
     <ImageView
         android:id="@+id/btn_kakao_signin_impl_signin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:src="@mipmap/ic_signin_kakao"
-        android:layout_marginTop="30dp"
-        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="60dp"
         app:layout_constraintEnd_toStartOf="@+id/btn_facebook_signin_impl_signin"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_simpleLogin_signIn" />
+        />
 
     <ImageView
         android:id="@+id/btn_facebook_signin_impl_signin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:src="@mipmap/ic_signin_facebook"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="28dp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_kakao_signin_impl_signin"
         app:layout_constraintEnd_toStartOf="@+id/btn_naver_signin_impl_signin"
         app:layout_constraintStart_toEndOf="@+id/btn_kakao_signin_impl_signin"
         app:layout_constraintTop_toTopOf="@+id/btn_kakao_signin_impl_signin" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:id="@+id/btn_naver_signin_impl_signin"
         android:src="@mipmap/ic_signin_naver"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="28dp"
         app:layout_constraintStart_toEndOf="@id/btn_facebook_signin_impl_signin"
         app:layout_constraintEnd_toStartOf="@id/btn_google_signin_impl_signin"
         app:layout_constraintTop_toTopOf="@id/btn_facebook_signin_impl_signin"
@@ -127,10 +128,10 @@
 
     <ImageView
         android:id="@+id/btn_google_signin_impl_signin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:src="@mipmap/ic_signin_google"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="28dp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_naver_signin_impl_signin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btn_naver_signin_impl_signin"

@@ -154,7 +154,7 @@ public class LocationRecordService extends Service implements LocationRecordServ
                     mLocationDataSet.powerColors.add(powers);
                     if (mLocationDataSet.locations.size() > 1) {
                         // distanceTo랑 speed기반 연산 병행
-                        if (lastLocation.getSpeed() < SPEED_RANGE1) {
+                        if (lastLocation.getSpeed() * 3.6f < SPEED_RANGE1) {
                             mLocationDataSet.increaseDistance = lastLocation.getSpeed(); // Speed 활용
                         } else {
                             mLocationDataSet.increaseDistance = mLocationDataSet.locations.get(mLocationDataSet.locations.size() - 2).distanceTo(lastLocation); // DistanceTo활용
