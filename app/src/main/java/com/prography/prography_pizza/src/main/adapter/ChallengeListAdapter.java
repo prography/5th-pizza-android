@@ -10,17 +10,19 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.main.interfaces.MainActivityView;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.RecordActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdapter.ViewHolder> {
@@ -95,7 +97,7 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
             }
             String title = routineType + " " + (int) data.getTime() + objectUnit + " " + exerciseType;
             holder.tvTitle.setText(title);
-            holder.tvCreatedAt.setText(data.getCreatedAt());
+            holder.tvCreatedAt.setText(new SimpleDateFormat("yyyy.MM.dd").format(new Date())+" 오늘 목표 달성률");
             holder.pbChallenge.setProgress(data.getAchievement());
             holder.tvPercentage.setText(data.getAchievement() + "%");
             // holder.ivMore

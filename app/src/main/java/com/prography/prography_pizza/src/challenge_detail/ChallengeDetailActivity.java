@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ChallengeDetailActivity extends BaseActivity implements ChallengeDetailActivityView {
@@ -23,6 +24,7 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
     private RecyclerView rvDetail;
     private Toolbar tbDetail;
     private ArrayList<ChallengeDetailResponse.Data> mList=new ArrayList<>();
+    private LinearLayoutManager mLayoutManager;
     private ChallengeDetailExpandableAdapter cdAdapter;
     private TimelineView timelineView;
     private TextView tvTitle;
@@ -50,9 +52,9 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
 
         /* RecyclerView */
-        mList.add(new ChallengeDetailResponse.Data(1,"running",612000,1200,"2019-12-19"));
-        mList.add(new ChallengeDetailResponse.Data(2,"running",306000,600,"2019-12-20"));
-
+        mList.add(new ChallengeDetailResponse.Data(1,"running",612000,1200,"2019-12-20T00:00:00.000Z"));
+        mList.add(new ChallengeDetailResponse.Data(2,"running",306000,600,"2019-12-21T00:00:00.000Z"));
+        
         cdAdapter=new ChallengeDetailExpandableAdapter(mList,this);
         rvDetail.setAdapter(cdAdapter);
 

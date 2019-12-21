@@ -11,6 +11,8 @@ import com.github.vipulasri.timelineview.TimelineView;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.challenge_detail.models.ChallengeDetailResponse;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -18,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.prography.prography_pizza.src.ApplicationClass.CURRENT_TIME_FORMAT;
+import static com.prography.prography_pizza.src.ApplicationClass.DATE_FORMAT;
 
 public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<ChallengeDetailExpandableAdapter.TimeLineViewHolder> {
     private ArrayList<ChallengeDetailResponse.Data> mList;
@@ -40,7 +43,6 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
     @NonNull
     @Override
     public TimeLineViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        View view=View.inflate(parent.getContext(),  R.layout.item_timeline, null);
         View view = layoutInflater.inflate(R.layout.item_timeline, parent, false);
         TimeLineViewHolder timeLineViewHolder = new TimeLineViewHolder(view, viewType);
         return timeLineViewHolder;
@@ -51,8 +53,13 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
         ChallengeDetailResponse.Data timeLineModel = mList.get(position);
 
         if (timeLineModel != null) {
-            date = String.format(timeLineModel.getCreatedAt(), "yyyy-MM-dd");
-            holder.tvDate.setText(date);
+            try {
+                Date date = DATE_FORMAT.parse(timeLineModel.getCreatedAt());
+                holder.tvDate.setText(new SimpleDateFormat("yyyy.MM.dd").format(date));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
 
             recordId = timeLineModel.getRecordId();
             switch (timeLineModel.getExerciseType()) {
