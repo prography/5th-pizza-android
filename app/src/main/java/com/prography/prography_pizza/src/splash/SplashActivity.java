@@ -1,5 +1,6 @@
 package com.prography.prography_pizza.src.splash;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -46,8 +47,10 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
                 }
                 break;
             case SplashParams.TYPE_FACEBOOK:
+                // TODO: facebook accesstoken 얻어서 로그인하기
                 break;
             case SplashParams.TYPE_NAVER:
+                // TODO: naver accesstoken 얻어서 로그인하기
                 break;
     }
 
@@ -73,7 +76,6 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
     @Override
     public void validateFailure(String message) {
         hideProgressDialog();
-
     }
 
     public void trySignIn(String token, int type) {

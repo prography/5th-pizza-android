@@ -35,6 +35,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.material.tabs.TabLayout;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.prography.prography_pizza.BuildConfig;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.services.LocationRecordService;
 import com.prography.prography_pizza.services.models.LocationDataSet;
@@ -398,17 +399,20 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     mvRecord.addPolyline(mapPolyline);
                     mapPolylines.add(mapPolyline);
 
-                    /* TestOnly */
-                    /* Debug Text View */
-                    ((TextView) findViewById(R.id.tv_debug))
-                            .setText("Provider: " + cur.getProvider() + "\n"
-                                    + "PrevLocation: " + prev.getLatitude() + ", " + prev.getLongitude() + "\n"
-                                    + "CurLocation: " + cur.getLatitude() + ", " + cur.getLongitude() + "\n"
-                                    + "Color: " + curPower.get(0) + ", " + curPower.get(1) + ", 0" + "\n"
-                                    + "Velocity: " + cur.getSpeed() + " m/s\n"
-                                    + "Accuracy: " + cur.getAccuracy() + "\n"
-                                    + "DistanceTo: " + cur.distanceTo(prev) + " m\n"
-                                    + "Distance(Vel): " + cur.getSpeed() * 1 + "m");
+                    /* Debug TextView */
+                    if (BuildConfig.DEBUG) {
+                        ((TextView) findViewById(R.id.tv_debug))
+                                .setText("Provider: " + cur.getProvider() + "\n"
+                                        + "PrevLocation: " + prev.getLatitude() + ", " + prev.getLongitude() + "\n"
+                                        + "CurLocation: " + cur.getLatitude() + ", " + cur.getLongitude() + "\n"
+                                        + "Color: " + curPower.get(0) + ", " + curPower.get(1) + ", 0" + "\n"
+                                        + "Velocity: " + cur.getSpeed() + " m/s\n"
+                                        + "Accuracy: " + cur.getAccuracy() + "\n"
+                                        + "DistanceTo: " + cur.distanceTo(prev) + " m\n"
+                                        + "Distance(Vel): " + cur.getSpeed() * 1 + "m");
+                    } else {
+                        ((TextView) findViewById(R.id.tv_debug)).setVisibility(View.GONE);
+                    }
                 }
 
                 /* Current Fragment */

@@ -28,6 +28,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
+import com.nhn.android.naverlogin.OAuthLogin;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.db.ChallengeModel;
 import com.prography.prography_pizza.src.BaseActivity;
@@ -139,7 +140,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     @Override
     public void validateFailure() {
         hideProgressDialog();
-        Log.i("GET", "getvalidateFauilure");
+        Log.i("GET", "gvalidateFauilure");
     }
 
     @Override
@@ -254,18 +255,16 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                                         });
                                         break;
                                     case SplashParams.TYPE_FACEBOOK:
-                                        // Facebook 로그아웃
-                                        showToast(getString(R.string.not_implemented));
+                                        // Facebook 로그아웃은 api에서 제공하지 않음. -> 앱 내에서 로그인 정보만 삭제.
                                         break;
                                     case SplashParams.TYPE_NAVER:
-                                        showToast(getString(R.string.not_implemented));
+                                        OAuthLogin mOauthLoginModule = OAuthLogin.getInstance();
+                                        mOauthLoginModule.init(getApplicationContext(),"0Ei9c5O7korykmJUa4_B","wpRd5BChYw",getString(R.string.app_name));
+                                        mOauthLoginModule.logout(getApplicationContext());
                                         break;
                                 }
-                                sSharedPreferences.edit()
-                                        .remove(LOGIN_TYPE)
-                                        .remove(USER_EMAIL)
-                                        .remove(USER_NAME)
-                                        .remove(USER_PROFILE).apply();
+                                // 앱 내 정보 삭제
+                                sSharedPreferences.edit().remove(LOGIN_TYPE).remove(USER_EMAIL).remove(USER_NAME).remove(USER_PROFILE).apply();
 
 
                             }
