@@ -316,7 +316,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     ivSubmitRecord.setVisibility(View.INVISIBLE);
 
                     // 서비스 시작
-                    if (mLocationRecordService == null || !mLocationRecordService.isSERVICE_RUNNING()) {
+                    if (mLocationRecordService == null) {
                         // 초기 시작
                         serviceIntent = new Intent(this, LocationRecordService.class);
                         serviceIntent.putExtra("challenge", mChallenge);
@@ -405,8 +405,10 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                                     + "PrevLocation: " + prev.getLatitude() + ", " + prev.getLongitude() + "\n"
                                     + "CurLocation: " + cur.getLatitude() + ", " + cur.getLongitude() + "\n"
                                     + "Color: " + curPower.get(0) + ", " + curPower.get(1) + ", 0" + "\n"
-                                    + "Velocity: " + cur.getSpeed() + "\n"
-                                    + "Accuracy: " + cur.getAccuracy());
+                                    + "Velocity: " + cur.getSpeed() + " m/s\n"
+                                    + "Accuracy: " + cur.getAccuracy() + "\n"
+                                    + "DistanceTo: " + cur.distanceTo(prev) + " m\n"
+                                    + "Distance(Vel): " + cur.getSpeed() * 1 + "m");
                 }
 
                 /* Current Fragment */
@@ -426,7 +428,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
                 int pace = 0;
                 if (mLocationDataSet.velocityAvg != 0)
-                    pace = Math.round(1 / mLocationDataSet.velocityAvg); // meter/sec -> sec/meter
+                    pace = Math.round(1 / mLocationDataSet.velocityAvg); // m/s -> sec/meter
 
                 if (mLeftFragment == null) {
                     mLeftFragment = (CurrentFragment) getSupportFragmentManager().getFragments().get(1);

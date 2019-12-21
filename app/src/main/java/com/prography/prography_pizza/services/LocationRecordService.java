@@ -53,10 +53,6 @@ public class LocationRecordService extends Service implements LocationRecordServ
     private LocationDataSet mLocationDataSet;
     private MainResponse.Data mChallenge;
 
-    public boolean isSERVICE_RUNNING() {
-        return SERVICE_RUNNING;
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         sSERVICE = intent;
@@ -90,7 +86,7 @@ public class LocationRecordService extends Service implements LocationRecordServ
                         COUNT_PAUSE_TIME_IN_SEC--;
                         mLocationDataSet.totalTime += 1000; // 총 시간 계산 (매 쓰레드마다 1000ms 씩 증가
                         if (mLocationDataSet.totalTime != 0 && mLocationDataSet.totalDistance != 0) {
-                            mLocationDataSet.velocityAvg = (mLocationDataSet.totalDistance / mLocationDataSet.totalTime) * 3600; // m/ms -> km/h
+                            mLocationDataSet.velocityAvg = (mLocationDataSet.totalDistance / mLocationDataSet.totalTime) * 1000; // m/ms -> m/s
                         } else {
                             mLocationDataSet.velocityAvg = 0.f;
                         }
@@ -157,7 +153,12 @@ public class LocationRecordService extends Service implements LocationRecordServ
                     ArrayList<Integer> powers = getColors(mLocationDataSet.velocity);
                     mLocationDataSet.powerColors.add(powers);
                     if (mLocationDataSet.locations.size() > 1) {
-                        mLocationDataSet.increaseDistance = mLocationDataSet.locations.get(mLocationDataSet.locations.size() - 2).distanceTo(lastLocation);
+                        // distanceTo랑 speed기반 연산 병행
+                        if (lastLocation.getSpeed() < SPEED_RANGE1) {
+                            mLocationDataSet.increaseDistance = lastLocation.getSpeed(); // Speed 활용
+                        } else {
+                            mLocationDataSet.increaseDistance = mLocationDataSet.locations.get(mLocationDataSet.locations.size() - 2).distanceTo(lastLocation); // DistanceTo활용
+                        }
                     } else {
                         mLocationDataSet.increaseDistance = 0;
                     }
