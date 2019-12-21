@@ -18,6 +18,12 @@ public interface ChallengeDao {
     @Query("SELECT * FROM Data ORDER BY challengeId DESC")
     List<MainResponse.Data> getAll();
 
+    @Query("SELECT * FROM Data WHERE achievement < 100 ORDER BY challengeId DESC")
+    List<MainResponse.Data> getAllUnCompleted();
+
+    @Query("SELECT * FROM Data WHERE achievement >= 100 ORDER BY challengeId DESC")
+    List<MainResponse.Data> getAllCompleted();
+
     @Query("SELECT * FROM Data WHERE challengeId = :id")
     List<MainResponse.Data> findDatum(int id);
 

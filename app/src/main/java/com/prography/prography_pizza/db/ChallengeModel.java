@@ -53,6 +53,46 @@ public class ChallengeModel {
         return data;
     }
 
+    public ArrayList<MainResponse.Data> getAllCompleted() {
+        final ArrayList<MainResponse.Data> data = new ArrayList<>();
+
+        Thread getThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                data.addAll(challengeDao.getAllCompleted());
+            }
+        });
+        getThread.start();
+
+        try {
+            getThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return data;
+    }
+
+    public ArrayList<MainResponse.Data> getAllUnCompleted() {
+        final ArrayList<MainResponse.Data> data = new ArrayList<>();
+
+        Thread getThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                data.addAll(challengeDao.getAllUnCompleted());
+            }
+        });
+        getThread.start();
+
+        try {
+            getThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return data;
+    }
+
     public MainResponse.Data findDatum(final int cid) {
         final ArrayList<MainResponse.Data> data = new ArrayList<>();
         Thread getThread = new Thread(new Runnable() {

@@ -31,7 +31,8 @@ public class RecordsFragment extends BaseFragment implements RecordsFragmentView
     private MyChallengeListAdapter mclAdapterComplete;
 
 
-    private ArrayList<MainResponse.Data> mChallengeData = new ArrayList<>();
+    private ArrayList<MainResponse.Data> mChallengeDataIng = new ArrayList<>();
+    private ArrayList<MainResponse.Data> mChallengeDataCompleted = new ArrayList<>();
 
     @Override
     public void onAttach(Context context) {
@@ -50,13 +51,14 @@ public class RecordsFragment extends BaseFragment implements RecordsFragmentView
 
         /* From Local DB... */
         ChallengeModel challengeModel = new ChallengeModel(mContext);
-        mChallengeData = challengeModel.getAll();
+        mChallengeDataIng = challengeModel.getAllUnCompleted();
+        mChallengeDataCompleted = challengeModel.getAllCompleted();
 
         /* RecyclerView */
-        mclAdapterIng = new MyChallengeListAdapter(mContext, mChallengeData);
+        mclAdapterIng = new MyChallengeListAdapter(mContext, mChallengeDataIng);
         rvChallengeIng.setAdapter(mclAdapterIng);
         rvChallengeIng.addItemDecoration(new RecyclerViewDecoration(30));
-        mclAdapterComplete = new MyChallengeListAdapter(mContext, mChallengeData);
+        mclAdapterComplete = new MyChallengeListAdapter(mContext, mChallengeDataCompleted);
         rvChallengeComplete.setAdapter(mclAdapterComplete);
         rvChallengeComplete.addItemDecoration(new RecyclerViewDecoration(30));
 

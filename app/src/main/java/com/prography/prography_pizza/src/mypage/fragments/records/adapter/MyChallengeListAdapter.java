@@ -77,8 +77,13 @@ public class MyChallengeListAdapter extends RecyclerView.Adapter<MyChallengeList
             String title = routineType + " " + (int) data.getTime() + objectUnit + " " + exerciseType;
             holder.tvTitle.setText(title);
             holder.tvCreatedAt.setText(data.getCreatedAt());
-            // holder.pbChallenge
-            // holder.tvPercentage
+            if (data.getAchievement() < 100) {
+                holder.pbChallenge.setProgress(data.getAchievement());
+                holder.tvPercentage.setText(data.getAchievement() + "%");
+            } else {
+                holder.pbChallenge.setVisibility(View.INVISIBLE);
+                holder.pbChallenge.setVisibility(View.INVISIBLE);
+            }
             // holder.ivMore
         }
     }
