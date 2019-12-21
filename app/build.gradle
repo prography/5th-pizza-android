@@ -7,14 +7,18 @@ android {
         applicationId "com.prography.prography_pizza"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 1
+        versionCode 2
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            buildConfigField "boolean", "debug", "true"
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "boolean", "debug", "false"
         }
     }
 }
@@ -45,12 +49,12 @@ dependencies {
     implementation 'gun0912.ted:tedpermission:2.2.2'
 
     // Android Room
-    implementation 'androidx.room:room-runtime:2.2.2'
-    annotationProcessor 'androidx.room:room-compiler:2.2.2'
-    implementation 'androidx.room:room-ktx:2.2.2'
-    implementation "androidx.room:room-rxjava2:2.2.2"
-    implementation "androidx.room:room-guava:2.2.2"
-    testImplementation "androidx.room:room-testing:2.2.2"
+    implementation 'androidx.room:room-runtime:2.2.3'
+    annotationProcessor 'androidx.room:room-compiler:2.2.3'
+    implementation 'androidx.room:room-ktx:2.2.3'
+    implementation "androidx.room:room-rxjava2:2.2.3"
+    implementation "androidx.room:room-guava:2.2.3"
+    testImplementation "androidx.room:room-testing:2.2.3"
 
     // Kakao Developers
     implementation files('src\\main\\jniLibs\\libDaumMapAndroid.jar')
@@ -79,6 +83,9 @@ dependencies {
 
     // https://developers.facebook.com/docs/facebook-login/android
     implementation 'com.facebook.android:facebook-login:4.42.0'
+
+    // https://developers.naver.com/docs/login/android/
+    implementation 'com.naver.nid:naveridlogin-android-sdk:4.2.5'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -12,6 +12,8 @@ import com.kakao.auth.IApplicationConfig;
 import com.kakao.auth.ISessionConfig;
 import com.kakao.auth.KakaoAdapter;
 import com.kakao.auth.KakaoSDK;
+import com.nhn.android.naverlogin.OAuthLogin;
+import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.config.XAccessTokenInterceptor;
 
 import java.text.SimpleDateFormat;
@@ -80,7 +82,6 @@ public class ApplicationClass extends Application {
         /* Facebook SDK Init */
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
-
 
 
         CURRENT_TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));

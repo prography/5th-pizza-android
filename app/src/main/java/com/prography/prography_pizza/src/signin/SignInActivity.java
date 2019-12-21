@@ -1,5 +1,6 @@
 package com.prography.prography_pizza.src.signin;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,6 +36,9 @@ import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
+import com.nhn.android.naverlogin.OAuthLogin;
+import com.nhn.android.naverlogin.OAuthLoginHandler;
+import com.nhn.android.naverlogin.ui.view.OAuthLoginButton;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.main.MainActivity;
@@ -65,11 +69,13 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
     private ImageView btnGoogleImpl;
     private com.facebook.login.widget.LoginButton btnFacebook;
     private ImageView btnFacebookImpl;
+    private OAuthLoginButton btnNaver;
     private ImageView btnNaverImpl;
 
     private SessionCallback mKakaoCallback;
     private GoogleSignInClient mGoogleSignInClient;
     private CallbackManager mFacebookCallback;
+    public OAuthLogin mOAuthLoginModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +89,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
         btnGoogleImpl = findViewById(R.id.btn_google_signin_impl_signin);
         btnFacebook = findViewById(R.id.btn_facebook_signin_signin);
         btnFacebookImpl = findViewById(R.id.btn_facebook_signin_impl_signin);
+        btnNaver = findViewById(R.id.btn_naver_signin_signin);
         btnNaverImpl = findViewById(R.id.btn_naver_signin_impl_signin);
 
         /* Kakao Session */
@@ -140,11 +147,16 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
             }
         });
 
+        /* Naver Session */
+        mOAuthLoginModule = OAuthLogin.getInstance();
+        mOAuthLoginModule.init(this,"0Ei9c5O7korykmJUa4_B","wpRd5BChYw",getString(R.string.app_name));
+
         /* Set OnClick Listener */
         btnKakaoImpl.setOnClickListener(this);
         btnGoogle.setOnClickListener(this);
         btnGoogleImpl.setOnClickListener(this);
         btnFacebookImpl.setOnClickListener(this);
+        btnNaver.setOAuthLoginHandler(mOAuthLoginHandler);
         btnNaverImpl.setOnClickListener(this);
     }
 
@@ -162,7 +174,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
                 btnFacebook.performClick();
                 break;
             case R.id.btn_naver_signin_impl_signin:
-                showToast(getString(R.string.not_implemented));
+                btnNaver.performClick();
                 break;
         }
     }
@@ -192,6 +204,49 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
         super.onDestroy();
         Session.getCurrentSession().removeCallback(mKakaoCallback);
     }
+
+    @SuppressLint("HandlerLeak")
+    private OAuthLoginHandler mOAuthLoginHandler = new OAuthLoginHandler() {
+        @Override
+        public void run(boolean success) {
+            if (success) {
+                final String accessToken = mOAuthLoginModule.getAccessToken(getApplicationContext());
+                final String refreshToken = mOAuthLoginModule.getRefreshToken(getParent());
+
+                Log.i("NAVER LOGIN", accessToken);
+                Thread getProfileThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONObject jsonObject = new JSONObject(mOAuthLoginModule.requestApi(getApplicationContext(), accessToken, "https://openapi.naver.com/v1/nid/me"))
+                                    .getJSONObject("response");
+                            sSharedPreferences.edit().putString(USER_PROFILE, jsonObject.getString("profile_image"))
+                                    .putString(USER_EMAIL, jsonObject.getString("email"))
+                                    .putString(USER_NAME, jsonObject.getString("name"))
+                                    .putInt(LOGIN_TYPE, SignInParams.TYPE_NAVER)
+                                    .apply();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+                getProfileThread.start();
+                try {
+                    getProfileThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                tryGetToken(accessToken, SignInParams.TYPE_NAVER);
+
+            } else {
+                String errorCode = mOAuthLoginModule.getLastErrorCode(getParent()).getCode();
+                String errorDesc = mOAuthLoginModule.getLastErrorDesc(getParent());
+                showToast("errorCode:" + errorCode + ", errorDesc:" + errorDesc);
+            }
+        };
+    };
 
     private void handleGoogleSignInResult(Task<GoogleSignInAccount> task) {
         try {

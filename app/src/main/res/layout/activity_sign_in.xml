@@ -137,6 +137,14 @@
         app:layout_constraintStart_toEndOf="@id/btn_naver_signin_impl_signin"
         app:layout_constraintTop_toTopOf="@+id/btn_naver_signin_impl_signin" />
 
+    <com.nhn.android.naverlogin.ui.view.OAuthLoginButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_naver_signin_signin"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.facebook.login.widget.LoginButton
         android:id="@+id/btn_facebook_signin_signin"
         android:layout_width="wrap_content"
