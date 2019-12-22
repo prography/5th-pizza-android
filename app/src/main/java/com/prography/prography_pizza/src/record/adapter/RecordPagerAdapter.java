@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.prography.prography_pizza.src.record.RecordActivity;
-import com.prography.prography_pizza.src.record.fragments.CurrentFragment;
+import com.prography.prography_pizza.src.record.fragments.current.CurrentFragment;
 
 public class RecordPagerAdapter extends FragmentStatePagerAdapter {
 

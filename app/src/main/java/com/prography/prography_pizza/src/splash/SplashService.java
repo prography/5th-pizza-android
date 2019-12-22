@@ -1,10 +1,8 @@
 package com.prography.prography_pizza.src.splash;
 
 import com.prography.prography_pizza.config.XSocialTokenInterceptor;
-import com.prography.prography_pizza.src.signin.models.SignInParams;
 import com.prography.prography_pizza.src.splash.interfaces.SplashActivityView;
 import com.prography.prography_pizza.src.splash.interfaces.SplashRetrofitInterface;
-import com.prography.prography_pizza.src.splash.models.SplashParams;
 import com.prography.prography_pizza.src.splash.models.SplashResponse;
 
 import java.util.concurrent.TimeUnit;
@@ -26,28 +24,12 @@ public class SplashService {
         this.mSplashActivityView = mSplashActivityView;
     }
 
-    public void trySignIn(String token, int type) {
-
-        String tokenName = "";
-        switch (type) {
-            case SignInParams.TYPE_GOOGLE:
-                tokenName = "x-google-token";
-                break;
-            case SignInParams.TYPE_KAKAO:
-                tokenName = "x-kakao-token";
-                break;
-            case SignInParams.TYPE_FACEBOOK:
-                tokenName = "x-facebook-token";
-                break;
-            case SignInParams.TYPE_NAVER:
-                tokenName = "x-naver-token";
-                break;
-        }
+    public void trySignIn(String token, String type) {
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .readTimeout(5000, TimeUnit.MILLISECONDS)
                 .connectTimeout(5000, TimeUnit.MILLISECONDS)
-                .addNetworkInterceptor(new XSocialTokenInterceptor(tokenName, token)) // JWT 자동 헤더 전송
+                .addNetworkInterceptor(new XSocialTokenInterceptor(token)) // JWT 자동 헤더 전송
                 .build();
 
         final SplashRetrofitInterface splashRetrofitInterface = new Retrofit.Builder()
@@ -57,7 +39,7 @@ public class SplashService {
                 .build()
                 .create(SplashRetrofitInterface.class);
 
-        splashRetrofitInterface.trySignIn(new SplashParams(token, type)).enqueue(new Callback<SplashResponse>() {
+        splashRetrofitInterface.trySignIn(type).enqueue(new Callback<SplashResponse>() {
             @Override
             public void onResponse(Call<SplashResponse> call, Response<SplashResponse> response) {
                 SplashResponse splashResponse = response.body();

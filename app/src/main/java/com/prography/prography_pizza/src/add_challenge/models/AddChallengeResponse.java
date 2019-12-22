@@ -1,5 +1,8 @@
 package com.prography.prography_pizza.src.add_challenge.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -9,23 +12,40 @@ public class AddChallengeResponse {
     @SerializedName("data")
     private ArrayList<Data> data;
 
-    public static class Data implements Serializable {
-        @SerializedName("ChallengeId")
+    public static class Data implements Parcelable {
+        @SerializedName("id")
         private int challengeId;
-        @SerializedName("UserId")
-        private int userId;
         @SerializedName("routine_type")
         private String routineType;
-        @SerializedName("quota")
-        private double time;
         @SerializedName("object_unit")
         private String objectUnit;
+        @SerializedName("quota")
+        private double time;
         @SerializedName("exercise_type")
         private String exerciseType;
-        @SerializedName("createdAt")
+        @SerializedName("created_at")
         private String createdAt;
-        @SerializedName("updatedAt")
-        private String updatedAt;
+
+        protected Data(Parcel in) {
+            challengeId = in.readInt();
+            routineType = in.readString();
+            objectUnit = in.readString();
+            time = in.readDouble();
+            exerciseType = in.readString();
+            createdAt = in.readString();
+        }
+
+        public static final Creator<Data> CREATOR = new Creator<Data>() {
+            @Override
+            public Data createFromParcel(Parcel in) {
+                return new Data(in);
+            }
+
+            @Override
+            public Data[] newArray(int size) {
+                return new Data[size];
+            }
+        };
 
         public String getRoutineType() {
             return routineType;
@@ -41,10 +61,6 @@ public class AddChallengeResponse {
 
         public String getExerciseType() {
             return exerciseType;
-        }
-
-        public String getUpdatedAt() {
-            return updatedAt;
         }
 
         public void setRoutineType(String routineType) {
@@ -71,18 +87,67 @@ public class AddChallengeResponse {
             return createdAt;
         }
 
-        public int getUserId() {
-            return userId;
-        }
-
-        public Data(int challengeId, String userId, String routineType, double time, String objectUnit, String exerciseType, String createdAt, String updatedAt) {
+        public Data(int challengeId, String routineType, double time, String objectUnit, String exerciseType, String createdAt) {
             this.challengeId = challengeId;
             this.routineType = routineType;
             this.time = time;
             this.objectUnit = objectUnit;
             this.exerciseType = exerciseType;
             this.createdAt = createdAt;
-            this.updatedAt = updatedAt;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(challengeId);
+            dest.writeString(routineType);
+            dest.writeString(objectUnit);
+            dest.writeDouble(time);
+            dest.writeString(exerciseType);
+            dest.writeString(createdAt);
+        }
+
+        public static class userChallenges implements Parcelable {
+            @SerializedName("createdAt") private String createdAt;
+            @SerializedName("updatedAt") private String updatedAt;
+            @SerializedName("ChallengeId") private int challengeId;
+            @SerializedName("UserId") private int userId;
+
+            protected userChallenges(Parcel in) {
+                createdAt = in.readString();
+                updatedAt = in.readString();
+                challengeId = in.readInt();
+                userId = in.readInt();
+            }
+
+            public static final Creator<userChallenges> CREATOR = new Creator<userChallenges>() {
+                @Override
+                public userChallenges createFromParcel(Parcel in) {
+                    return new userChallenges(in);
+                }
+
+                @Override
+                public userChallenges[] newArray(int size) {
+                    return new userChallenges[size];
+                }
+            };
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(createdAt);
+                dest.writeString(updatedAt);
+                dest.writeInt(challengeId);
+                dest.writeInt(userId);
+            }
         }
     }
 

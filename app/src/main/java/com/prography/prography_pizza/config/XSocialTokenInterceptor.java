@@ -14,12 +14,10 @@ import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferen
 
 public class XSocialTokenInterceptor implements Interceptor {
 
-    private String tokenName;
     private String token;
 
-    public XSocialTokenInterceptor(String tokenName, String token) {
+    public XSocialTokenInterceptor(String token) {
         this.token = token;
-        this.tokenName = tokenName;
     }
 
     @NotNull
@@ -27,7 +25,7 @@ public class XSocialTokenInterceptor implements Interceptor {
     public Response intercept(@NotNull Chain chain) throws IOException {
         final Request.Builder builder = chain.request().newBuilder();
 
-        builder.addHeader(tokenName, token);
+        builder.addHeader("x-social-token", token);
         return chain.proceed(builder.build());
     }
 }

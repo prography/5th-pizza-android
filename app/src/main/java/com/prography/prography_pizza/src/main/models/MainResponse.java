@@ -37,28 +37,31 @@ public class MainResponse {
         private int challengeId;
         @SerializedName("routine_type")
         private String routineType;
-        @SerializedName("quota")
-        private double time;
         @SerializedName("object_unit")
         private String objectUnit;
+        @SerializedName("quota")
+        private double time;
         @SerializedName("exercise_type")
         private String exerciseType;
         @SerializedName("created_at")
         private String createdAt;
         @SerializedName("achievement")
         private int achievement;
+        @SerializedName("challengersNumber")
+        private int challengersConut;
 
         protected Data(Parcel in) {
             challengeId = in.readInt();
             routineType = in.readString();
-            time = in.readDouble();
             objectUnit = in.readString();
+            time = in.readDouble();
             exerciseType = in.readString();
             createdAt = in.readString();
             achievement = in.readInt();
+            challengersConut = in.readInt();
         }
 
-        public Data(int challengeId, String routineType, double time, String objectUnit, String exerciseType, String createdAt, int achievement) {
+        public Data(int challengeId, String routineType, double time, String objectUnit, String exerciseType, String createdAt, int achievement, int challengersConut) {
             this.challengeId = challengeId;
             this.routineType = routineType;
             this.time = time;
@@ -66,6 +69,7 @@ public class MainResponse {
             this.exerciseType = exerciseType;
             this.createdAt = createdAt;
             this.achievement = achievement;
+            this.challengersConut = challengersConut;
         }
 
         public Data(AddChallengeResponse.Data datum) {
@@ -76,6 +80,7 @@ public class MainResponse {
             this.objectUnit = datum.getObjectUnit();
             this.time = datum.getTime();
             this.achievement = 0;
+            this.challengersConut = 0;
         }
 
         public String getRoutineType() {
@@ -106,6 +111,10 @@ public class MainResponse {
             return achievement;
         }
 
+        public int getChallengersConut() {
+            return challengersConut;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -115,11 +124,12 @@ public class MainResponse {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(challengeId);
             dest.writeString(routineType);
-            dest.writeDouble(time);
             dest.writeString(objectUnit);
+            dest.writeDouble(time);
             dest.writeString(exerciseType);
             dest.writeString(createdAt);
             dest.writeInt(achievement);
+            dest.writeInt(challengersConut);
         }
     }
 }

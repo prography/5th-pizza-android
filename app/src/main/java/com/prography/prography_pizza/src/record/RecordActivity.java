@@ -42,7 +42,7 @@ import com.prography.prography_pizza.services.models.LocationDataSet;
 import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.adapter.RecordPagerAdapter;
-import com.prography.prography_pizza.src.record.fragments.CurrentFragment;
+import com.prography.prography_pizza.src.record.fragments.current.CurrentFragment;
 import com.prography.prography_pizza.src.record.interfaces.RecordActivityView;
 
 import net.daum.mf.map.api.MapPoint;

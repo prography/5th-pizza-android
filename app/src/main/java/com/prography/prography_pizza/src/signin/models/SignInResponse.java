@@ -20,20 +20,22 @@ public class SignInResponse {
     public static class Data {
         @SerializedName("id")
         private int userUniqueId;
+        @SerializedName("type")
+        private String socialType;
+        @SerializedName("created_at")
+        private String createdAt;
         @SerializedName("user_id")
-        private int userId;
+        private String userId;
         @SerializedName("email")
         private String userEmail;
         @SerializedName("nickname")
         private String userNickname;
-        @SerializedName("created_at")
-        private String createdAt;
 
         public int getUserUniqueId() {
             return userUniqueId;
         }
 
-        public int getUserId() {
+        public String getUserId() {
             return userId;
         }
 

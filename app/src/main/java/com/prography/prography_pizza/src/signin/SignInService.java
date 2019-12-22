@@ -3,7 +3,6 @@ package com.prography.prography_pizza.src.signin;
 import com.prography.prography_pizza.config.XSocialTokenInterceptor;
 import com.prography.prography_pizza.src.signin.interfaces.SignInActivityView;
 import com.prography.prography_pizza.src.signin.interfaces.SignInRetrofitInterface;
-import com.prography.prography_pizza.src.signin.models.SignInParams;
 import com.prography.prography_pizza.src.signin.models.SignInResponse;
 
 import java.util.concurrent.TimeUnit;
@@ -25,28 +24,12 @@ public class SignInService {
         this.mSignInActivityView = mSignInActivityView;
     }
 
-    public void getSignIn(String token, int type) {
-
-        String tokenName = "";
-        switch (type) {
-            case SignInParams.TYPE_GOOGLE:
-                tokenName = "x-google-token";
-                break;
-            case SignInParams.TYPE_KAKAO:
-                tokenName = "x-kakao-token";
-                break;
-            case SignInParams.TYPE_FACEBOOK:
-                tokenName = "x-facebook-token";
-                break;
-            case SignInParams.TYPE_NAVER:
-                tokenName = "x-naver-token";
-                break;
-        }
+    public void getSignIn(String token, String type) {
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .readTimeout(5000, TimeUnit.MILLISECONDS)
                 .connectTimeout(5000, TimeUnit.MILLISECONDS)
-                .addNetworkInterceptor(new XSocialTokenInterceptor(tokenName, token)) // JWT 자동 헤더 전송
+                .addNetworkInterceptor(new XSocialTokenInterceptor(token)) // JWT 자동 헤더 전송
                 .build();
 
         final SignInRetrofitInterface signInRetrofitInterface = new Retrofit.Builder()
@@ -56,7 +39,7 @@ public class SignInService {
                 .build()
                 .create(SignInRetrofitInterface.class);
 
-        signInRetrofitInterface.postTokenFromKakao().enqueue(new Callback<SignInResponse>() {
+        signInRetrofitInterface.postSocialToken(type).enqueue(new Callback<SignInResponse>() {
             @Override
             public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
                 SignInResponse signInResponse = response.body();
@@ -64,6 +47,7 @@ public class SignInService {
                     mSignInActivityView.validateFailure();
                 }
 
+                assert signInResponse != null;
                 mSignInActivityView.validateSuccess(signInResponse.getAccessToken());
             }
 

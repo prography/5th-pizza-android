@@ -1,5 +1,6 @@
 package com.prography.prography_pizza.src.main;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -39,12 +41,14 @@ import com.prography.prography_pizza.src.main.adapter.ChallengeListAdapter;
 import com.prography.prography_pizza.src.main.interfaces.MainActivityView;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.mypage.MyPageActivity;
-import com.prography.prography_pizza.src.signin.models.SignInParams;
-import com.prography.prography_pizza.src.splash.models.SplashParams;
 
 import java.util.ArrayList;
 
 import static com.prography.prography_pizza.src.ApplicationClass.LOGIN_TYPE;
+import static com.prography.prography_pizza.src.ApplicationClass.TYPE_FACEBOOK;
+import static com.prography.prography_pizza.src.ApplicationClass.TYPE_GOOGLE;
+import static com.prography.prography_pizza.src.ApplicationClass.TYPE_KAKAO;
+import static com.prography.prography_pizza.src.ApplicationClass.TYPE_NAVER;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_EMAIL;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
@@ -53,6 +57,7 @@ import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferen
 public class MainActivity extends BaseActivity implements MainActivityView {
 
     private static final int REQUEST_CODE = 1;
+    private static Activity sActivity;
     private FloatingActionButton fbtnAddChallenge;
     private RecyclerView rvMain;
     private Toolbar tbMain;
@@ -81,6 +86,8 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         ivProfile = findViewById(R.id.iv_profile_expanded_main);
         ivProfileNext = findViewById(R.id.iv_next_profile_main);
 
+        /* Set static Activity */
+        sActivity = this;
 
         /* Get Contents From Server... */
         tryGetChallenge();
@@ -219,7 +226,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     public void onRefresh() {
         tryGetChallenge();
         srlMain.setRefreshing(false);
-
     }
 
     @Override
@@ -231,21 +237,25 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                switch (sSharedPreferences.getInt(LOGIN_TYPE, SignInParams.TYPE_KAKAO)) {
-                                    case SignInParams.TYPE_GOOGLE:
+                                // 앱 내 정보 삭제
+                                sSharedPreferences.edit().remove(LOGIN_TYPE).remove(USER_EMAIL).remove(USER_NAME).remove(USER_PROFILE).apply();
+
+                                switch (sSharedPreferences.getString(LOGIN_TYPE, TYPE_KAKAO)) {
+                                    case TYPE_GOOGLE:
                                         // Google 로그아웃
-                                        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getParent(), new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                                .requestEmail()
-                                                .requestIdToken(getString(R.string.default_web_client_id))
-                                                .build());
-                                        googleSignInClient.signOut().addOnCompleteListener(getParent(), new OnCompleteListener<Void>() {
+                                        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getApplicationContext(),
+                                                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                                        .requestEmail()
+                                                        .requestIdToken(getString(R.string.google_client_key))
+                                                        .build());
+                                        googleSignInClient.signOut().addOnCompleteListener(sActivity, new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 finish();
                                             }
                                         });
                                         break;
-                                    case SplashParams.TYPE_KAKAO:
+                                    case TYPE_KAKAO:
                                         // Kakao 로그아웃
                                         UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
                                             @Override
@@ -254,19 +264,19 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                                             }
                                         });
                                         break;
-                                    case SplashParams.TYPE_FACEBOOK:
-                                        // Facebook 로그아웃은 api에서 제공하지 않음. -> 앱 내에서 로그인 정보만 삭제.
+                                    case TYPE_FACEBOOK:
+                                        // Facebook 로그아웃
+                                        LoginManager.getInstance().logOut();
+                                        finish();
                                         break;
-                                    case SplashParams.TYPE_NAVER:
+                                    case TYPE_NAVER:
+                                        // Naver 로그아웃
                                         OAuthLogin mOauthLoginModule = OAuthLogin.getInstance();
-                                        mOauthLoginModule.init(getApplicationContext(),"0Ei9c5O7korykmJUa4_B","wpRd5BChYw",getString(R.string.app_name));
-                                        mOauthLoginModule.logout(getApplicationContext());
+                                        mOauthLoginModule.init(getApplicationContext(),getString(R.string.naver_client_id),getString(R.string.naver_client_key),getString(R.string.app_name));
+                                        mOauthLoginModule.logoutAndDeleteToken(getApplicationContext());
+                                        finish();
                                         break;
                                 }
-                                // 앱 내 정보 삭제
-                                sSharedPreferences.edit().remove(LOGIN_TYPE).remove(USER_EMAIL).remove(USER_NAME).remove(USER_PROFILE).apply();
-
-
                             }
                         }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
                     @Override
@@ -297,6 +307,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         ivProfileNext.setAlpha(expandedTitleAlpha);
         tvTitleCollapsed.setAlpha(collapsedTitleAlpha);
     }
+
 
 
 }

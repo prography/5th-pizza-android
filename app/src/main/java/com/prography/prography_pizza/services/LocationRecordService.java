@@ -21,6 +21,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.prography.prography_pizza.BuildConfig;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.services.interfaces.LocationRecordServiceView;
 import com.prography.prography_pizza.services.models.LocationDataSet;
@@ -141,10 +142,10 @@ public class LocationRecordService extends Service implements LocationRecordServ
 
                 Location lastLocation = locationResult.getLastLocation();
                 if (lastLocation != null) {
-                    /* Speed가 지정한 속력 범위가 아닐 때는 아무것도 안하고 return -> Test 일때는 무시*/
-                    /*if (lastLocation.getSpeed() * 3.6f < MINIMUM_SPEED || lastLocation.getSpeed() * 3.6f > MAXIMUM_SPEED) {
+                    /* Speed가 지정한 속력 범위가 아닐 때는 아무것도 안하고 return */
+                    if (lastLocation.getSpeed() * 3.6f < MINIMUM_SPEED || lastLocation.getSpeed() * 3.6f > MAXIMUM_SPEED) {
                         return;
-                    }*/
+                    }
                     COUNT_PAUSE_TIME_IN_SEC = DEFAULT_PAUSETIME; // PauseTime 초기화
 
                     mLocationDataSet.locations.add(lastLocation);
@@ -208,6 +209,16 @@ public class LocationRecordService extends Service implements LocationRecordServ
         super.onDestroy();
         sSERVICE = null;
         stopThread();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
     }
 
     @Override

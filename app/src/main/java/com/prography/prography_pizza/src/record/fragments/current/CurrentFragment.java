@@ -1,4 +1,4 @@
-package com.prography.prography_pizza.src.record.fragments;
+package com.prography.prography_pizza.src.record.fragments.current;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseFragment;
 import com.prography.prography_pizza.src.record.RecordActivity;
 import com.prography.prography_pizza.src.record.adapter.RecordPagerAdapter;
-import com.prography.prography_pizza.src.record.fragments.interfaces.CurrentFragmentView;
+import com.prography.prography_pizza.src.record.fragments.current.interfaces.CurrentFragmentView;
 
 public class CurrentFragment extends BaseFragment implements CurrentFragmentView {
 

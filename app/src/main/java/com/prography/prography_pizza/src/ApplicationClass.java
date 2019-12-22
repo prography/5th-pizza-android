@@ -54,6 +54,10 @@ public class ApplicationClass extends Application {
 
     // LOGIN Type 값
     public static String LOGIN_TYPE = "LOGIN-TYPE";
+    public static final String TYPE_GOOGLE = "google";
+    public static final String TYPE_NAVER = "naver";
+    public static final String TYPE_FACEBOOK = "facebook";
+    public static final String TYPE_KAKAO = "kakao";
 
     // USER INFO 값
     public static String USER_PROFILE = "USER-PROFILE";

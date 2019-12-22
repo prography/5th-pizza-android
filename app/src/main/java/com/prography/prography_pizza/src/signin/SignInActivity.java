@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
@@ -16,14 +15,11 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.Profile;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
@@ -43,7 +39,6 @@ import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.main.MainActivity;
 import com.prography.prography_pizza.src.signin.interfaces.SignInActivityView;
-import com.prography.prography_pizza.src.signin.models.SignInParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,6 +48,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.prography.prography_pizza.src.ApplicationClass.LOGIN_TYPE;
+import static com.prography.prography_pizza.src.ApplicationClass.TYPE_FACEBOOK;
+import static com.prography.prography_pizza.src.ApplicationClass.TYPE_GOOGLE;
+import static com.prography.prography_pizza.src.ApplicationClass.TYPE_KAKAO;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_EMAIL;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
@@ -100,7 +98,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
         /* Google Session */
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken(getString(R.string.google_client_key))
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
@@ -119,14 +117,15 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
                             sSharedPreferences.edit().putString(USER_NAME, object.getString("name"))
                                     .putString(USER_EMAIL, object.getString("email"))
                                     .putString(USER_PROFILE , object.getJSONObject("picture").getJSONObject("data").getString("url"))
-                                    .putInt(LOGIN_TYPE, SignInParams.TYPE_FACEBOOK)
+                                    .putString(LOGIN_TYPE, TYPE_FACEBOOK)
                                     .apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
                         String token = accessToken.getToken();
-                        tryGetToken(token, SignInParams.TYPE_FACEBOOK);
+                        Log.i("FACEBOOK TOKEN", token);
+                        tryGetToken(token, TYPE_FACEBOOK);
 
                     }
                 });
@@ -149,7 +148,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
 
         /* Naver Session */
         mOAuthLoginModule = OAuthLogin.getInstance();
-        mOAuthLoginModule.init(this,"0Ei9c5O7korykmJUa4_B","wpRd5BChYw",getString(R.string.app_name));
+        mOAuthLoginModule.init(this,getString(R.string.naver_client_id),getString(R.string.naver_client_key), getString(R.string.app_name));
 
         /* Set OnClick Listener */
         btnKakaoImpl.setOnClickListener(this);
@@ -213,7 +212,8 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
                 final String accessToken = mOAuthLoginModule.getAccessToken(getApplicationContext());
                 final String refreshToken = mOAuthLoginModule.getRefreshToken(getParent());
 
-                Log.i("NAVER LOGIN", accessToken);
+                Log.i("NAVER TOKEN", accessToken);
+
                 Thread getProfileThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -223,7 +223,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
                             sSharedPreferences.edit().putString(USER_PROFILE, jsonObject.getString("profile_image"))
                                     .putString(USER_EMAIL, jsonObject.getString("email"))
                                     .putString(USER_NAME, jsonObject.getString("name"))
-                                    .putInt(LOGIN_TYPE, SignInParams.TYPE_NAVER)
+                                    .putString(LOGIN_TYPE, "naver")
                                     .apply();
 
                         } catch (JSONException e) {
@@ -238,7 +238,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                tryGetToken(accessToken, SignInParams.TYPE_NAVER);
+                tryGetToken(accessToken, "naver");
 
             } else {
                 String errorCode = mOAuthLoginModule.getLastErrorCode(getParent()).getCode();
@@ -255,12 +255,13 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
                 sSharedPreferences.edit().putString(USER_EMAIL, account.getEmail())
                         .putString(USER_NAME, account.getDisplayName())
                         .putString(USER_PROFILE, account.getPhotoUrl().toString())
-                        .putInt(LOGIN_TYPE, SignInParams.TYPE_GOOGLE)
+                        .putString(LOGIN_TYPE, TYPE_GOOGLE)
                         .apply();
 
-                Log.i("GOOGLE TOKEN", account.getIdToken());
+                String token = account.getIdToken();
+                Log.i("GOOGLE TOKEN", token);
 
-                tryGetToken(account.getIdToken(), SignInParams.TYPE_GOOGLE);
+                tryGetToken(token, TYPE_GOOGLE);
             }
         } catch (ApiException e) {
             Log.w("GOOGLE FAIL", "handleGoogleSignInResult: " + e.getStatusCode());
@@ -283,7 +284,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
         showToast("Failure");
     }
 
-    public void tryGetToken(String token, int type) {
+    public void tryGetToken(String token, String type) {
         showProgressDialog();
         final SignInService signInService = new SignInService(this);
         signInService.getSignIn(token, type);
@@ -295,7 +296,6 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
         keys.add("kakao_account.profile");
         keys.add("kakao_account.email");
 
-        Log.i("KAKAO TOKEN", "requestMe: ");
         UserManagement.getInstance().me(keys, new MeV2ResponseCallback() {
             @Override
             public void onFailure(ErrorResult errorResult) {
@@ -313,11 +313,11 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
                 sSharedPreferences.edit().putString(USER_PROFILE, response.getKakaoAccount().getProfile().getProfileImageUrl())
                         .putString(USER_NAME, response.getKakaoAccount().getProfile().getNickname())
                         .putString(USER_EMAIL, response.getKakaoAccount().getEmail())
-                        .putInt(LOGIN_TYPE, SignInParams.TYPE_KAKAO)
+                        .putString(LOGIN_TYPE, TYPE_KAKAO)
                         .apply();
                 String token = Session.getCurrentSession().getAccessToken();
                 Log.i("KAKAO TOKEN", token);
-                tryGetToken(token, SignInParams.TYPE_KAKAO);
+                tryGetToken(token, TYPE_KAKAO);
             }
         });
     }

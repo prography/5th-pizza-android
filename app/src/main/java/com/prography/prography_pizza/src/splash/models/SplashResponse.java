@@ -7,7 +7,7 @@ public class SplashResponse {
         @SerializedName("id")
         private int userUniqueId;
         @SerializedName("user_id")
-        private int userId;
+        private String userId;
         @SerializedName("email")
         private String userEmail;
         @SerializedName("nickname")
@@ -19,7 +19,7 @@ public class SplashResponse {
             return userUniqueId;
         }
 
-        public int getUserId() {
+        public String getUserId() {
             return userId;
         }
 

@@ -7,6 +7,9 @@
     <string name="kakao_app_key">4e1f3abef3128af5765f1bc592d8534b</string>
     <string name="facebook_app_id">565790517546396</string>
     <string name="fb_login_protocol_scheme">fb565790517546396</string>
+    <string name="google_client_key">1040046491707-l3egtlg5n72alvpb4ft8gqrru03g5j7m.apps.googleusercontent.com</string>
+    <string name="naver_client_id">0Ei9c5O7korykmJUa4_B</string>
+    <string name="naver_client_key">wpRd5BChYw</string>
 
 
     <!-- AddChallenge Activity -->
