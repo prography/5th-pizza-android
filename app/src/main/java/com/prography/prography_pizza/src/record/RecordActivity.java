@@ -14,17 +14,20 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.viewpager.widget.ViewPager;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -32,7 +35,6 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.material.tabs.TabLayout;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.prography.prography_pizza.BuildConfig;
@@ -41,8 +43,6 @@ import com.prography.prography_pizza.services.LocationRecordService;
 import com.prography.prography_pizza.services.models.LocationDataSet;
 import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.main.models.MainResponse;
-import com.prography.prography_pizza.src.record.adapter.RecordPagerAdapter;
-import com.prography.prography_pizza.src.record.fragments.current.CurrentFragment;
 import com.prography.prography_pizza.src.record.interfaces.RecordActivityView;
 
 import net.daum.mf.map.api.MapPoint;
@@ -61,22 +61,31 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     public static final int GOALTYPE_DISTANCE = 1;
     public static final int GOALTYPE_TIME = 2;
 
+    public static float dpUnit;
+
     private Toolbar tbRecord;
     private ActionBar abRecord;
     private TextView tvGoal;
     private ImageView ivStartRecord;
-    private ImageView ivSubmitRecord;
+    private TextView tvSubmitRecord;
     private MapView mvRecord;
     private PieChart pcRecord;
-    private TabLayout tlRecord;
-    private ViewPager vpRecord;
+    private ConstraintLayout clBottomUpperContainer;
+    private TextView tvProgress;
+    private TextView tvProgressUnit;
+    private TextView tvProgressDesc;
+    private ImageView ivStar1;
+    private ImageView ivStar2;
+    private ImageView ivStar3;
+    private TextView tvDistance;
+    private TextView tvDistanceUnit;
+    private TextView tvTime;
+    private TextView tvPace;
+    private TableLayout tblRecord;
 
     private AlertDialog mAlertDialog;
-    private RecordPagerAdapter rpaRecord;
 
     private ArrayList<MapPolyline> mapPolylines = new ArrayList<>();
-    private CurrentFragment mCurrentFragment;
-    private CurrentFragment mLeftFragment;
 
     private Intent serviceIntent;
     private LocationRecordService mLocationRecordService;
@@ -102,12 +111,22 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         /* findViewByID */
         tvGoal = findViewById(R.id.tv_goal_record);
         ivStartRecord = findViewById(R.id.iv_start_record);
-        ivSubmitRecord = findViewById(R.id.iv_submit_record);
+        tvSubmitRecord = findViewById(R.id.tv_submit_record);
         mvRecord = findViewById(R.id.mv_record);
         pcRecord = findViewById(R.id.pc_record);
         tbRecord = findViewById(R.id.toolbar_record);
-        tlRecord = findViewById(R.id.tl_record);
-        vpRecord = findViewById(R.id.vp_record);
+        clBottomUpperContainer = findViewById(R.id.cl_bottom_upper_container_record);
+        tvProgress = findViewById(R.id.tv_progress_record);
+        tvProgressUnit = findViewById(R.id.tv_progress_unit_record);
+        tvProgressDesc = findViewById(R.id.tv_progress_desc_record);
+        ivStar1 = findViewById(R.id.iv_star1_record);
+        ivStar2 = findViewById(R.id.iv_star2_record);
+        ivStar3 = findViewById(R.id.iv_star3_record);
+        tvDistance = findViewById(R.id.tv_distance_record);
+        tvDistanceUnit = findViewById(R.id.tv_distance_unit_record);
+        tvTime = findViewById(R.id.tv_time_record);
+        tvPace = findViewById(R.id.tv_pace_record);
+        tblRecord = findViewById(R.id.tbl_record);
 
         /* Permission Listener */
         TedPermission.with(this)
@@ -173,20 +192,17 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             }
         }
 
+        /* Set Constants */
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        dpUnit = displayMetrics.densityDpi / (float) 160;
+
         /* Toolbar */
         setSupportActionBar(tbRecord);
         abRecord = getSupportActionBar();
         abRecord.setDisplayShowTitleEnabled(false);
         abRecord.setDisplayHomeAsUpEnabled(true);
         abRecord.setHomeAsUpIndicator(R.drawable.ic_back);
-
-        /* TabLayout */
-        tlRecord.addOnTabSelectedListener(this);
-
-        /* ViewPager */
-        rpaRecord = new RecordPagerAdapter(getSupportFragmentManager(), mGoalType, mGoal);
-        vpRecord.setAdapter(rpaRecord);
-        vpRecord.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tlRecord));
 
         /* Get Location Provider Client */
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -209,7 +225,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
         /* Set on Click Listener */
         ivStartRecord.setOnClickListener(this);
-        ivSubmitRecord.setOnClickListener(this);
+        tvSubmitRecord.setOnClickListener(this);
 
         /* Make AlertDialog */
         mAlertDialog = new AlertDialog.Builder(this).setMessage("운동을 저장하지 않고 종료하시겠습니까?")
@@ -226,6 +242,8 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 }).create();
 
         /* Init View */
+        clBottomUpperContainer.setTranslationY(100 * dpUnit);
+        tblRecord.setTranslationY(100 * dpUnit);
         /* PieChart */
         List<PieEntry> pieEntryList = new ArrayList<>(Arrays.asList(
                 new PieEntry(0.0f, ""),
@@ -290,21 +308,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         showToast("업로드에 실패하였습니다.");
     }
 
-    @Override
-    public void onTabSelected(TabLayout.Tab tab) {
-        vpRecord.setCurrentItem(tab.getPosition());
-    }
-
-    @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
-
-    }
-
-    @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-
-    }
-
     @SuppressLint("MissingPermission")
     @Override
     public void onClick(View v) {
@@ -314,7 +317,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     // 운동 시작
                     SERVICE_RUNNING = true;
                     ivStartRecord.setImageResource(R.drawable.ic_pause);
-                    ivSubmitRecord.setVisibility(View.INVISIBLE);
 
                     // 서비스 시작
                     if (mLocationRecordService == null) {
@@ -331,19 +333,51 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     } else {
                         // 재시작
                         mLocationRecordService.runThread();
+
+                        // bottomUpper result Animation (내려가기)
+                        AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
+                        tblRecord.animate().translationY(100 * dpUnit).setStartDelay(20).setInterpolator(interpolator).setDuration(500).start();
+                        clBottomUpperContainer.animate().translationY(100 * dpUnit).setStartDelay(20).setInterpolator(interpolator).setDuration(500).start();
+                        tvProgress.animate().alpha(0.f).setInterpolator(interpolator).setDuration(500).start();
+                        tvProgressUnit.animate().alpha(0.f).setInterpolator(interpolator).setDuration(500).start();
+                        tvProgressDesc.animate().alpha(0.f).setInterpolator(interpolator).setDuration(500).start();
+                        tvSubmitRecord.animate().alpha(0.f).setInterpolator(interpolator).setDuration(500).start();
+                        ivStar1.animate().alpha(0.f).setInterpolator(interpolator).setDuration(200).start();
+                        ivStar2.animate().alpha(0.f).setInterpolator(interpolator).setDuration(200).start();
+                        ivStar3.animate().alpha(0.f).setInterpolator(interpolator).setDuration(200).start();
                     }
 
                 } else {
                     // 운동 정지
                     SERVICE_RUNNING = false;
                     ivStartRecord.setImageResource(R.drawable.ic_start);
-                    ivSubmitRecord.setVisibility(View.VISIBLE);
 
                     // 서비스 종료
                     mLocationRecordService.stopThread();
+
+                    // bottomUpper result View 구성
+                    tvProgress.setText(String.format("%.1f", mGoalPercent));
+
+                    // bottomUpper result Animation (나타나기)
+                    AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
+                    tblRecord.animate().translationY(0).setStartDelay(20).setInterpolator(interpolator).setDuration(500).start();
+                    clBottomUpperContainer.animate().translationY(0).setStartDelay(20).setInterpolator(interpolator).setDuration(500).start();
+                    tvProgress.animate().alpha(1.f).setInterpolator(interpolator).setDuration(500).start();
+                    tvProgressUnit.animate().alpha(1.f).setInterpolator(interpolator).setDuration(500).start();
+                    tvProgressDesc.animate().alpha(1.f).setInterpolator(interpolator).setDuration(500).start();
+                    tvSubmitRecord.animate().alpha(1.f).setInterpolator(interpolator).setDuration(500).start();
+                    if (mGoalPercent >= 30) {
+                        ivStar1.animate().alpha(1.f).setStartDelay(500).setDuration(200).start();
+                    }
+                    if (mGoalPercent >= 60){
+                        ivStar2.animate().alpha(1.f).setStartDelay(600).setDuration(200).start();
+                    }
+                    if (mGoalPercent >= 90) {
+                        ivStar3.animate().alpha(1.f).setStartDelay(700).setDuration(200).start();
+                    }
                 }
                 break;
-            case R.id.iv_submit_record:
+            case R.id.tv_submit_record:
                 // 1. 목표를 달성했을 때.
                 // 2. 충분한 거리를 달렸지만 목표를 달성하지 못했을 때.
                 new AlertDialog.Builder(this).setMessage("목표를 아직 달성하지 못했습니다.\n여기까지만 저장하고 잠시 쉴까요?")
@@ -383,6 +417,8 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         mGoalPercent = (float) (mLocationDataSet.totalTime / mGoal) * 100;
                         break;
                 }
+                if (mGoalPercent >= 100)
+                    mGoalPercent = 100;
 
                 /* 새로운 polyline 점 추가 */
                 int lastIndex = mLocationDataSet.locations.size() - 1;
@@ -415,12 +451,9 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     }
                 }
 
-                /* Current Fragment */
+                /* Set TextView */
                 String distance = "";
                 String distanceUnit = "";
-                String goalDistance = "";
-                String goalDistanceUnit = "";
-                String goalTime = "";
                 if (mLocationDataSet.totalDistance < 1000) {
                     distance = String.format("%.1f", mLocationDataSet.totalDistance);
                     distanceUnit = "m";
@@ -428,41 +461,15 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     distance = String.format("%.1f", mLocationDataSet.totalDistance / 1000);
                     distanceUnit = "km";
                 }
-                Date date = new Date(mLocationDataSet.totalTime);
-
+                Date date = new Date(mLocationDataSet.totalTime); // Time
                 int pace = 0;
                 if (mLocationDataSet.velocityAvg != 0)
                     pace = Math.round(1000 / mLocationDataSet.velocityAvg); // m/s -> sec/km
 
-                if (mLeftFragment == null) {
-                    mLeftFragment = (CurrentFragment) getSupportFragmentManager().getFragments().get(1);
-                }
-                if (mCurrentFragment == null) {
-                    mCurrentFragment = (CurrentFragment) getSupportFragmentManager().getFragments().get(2);
-                }
-                switch (mGoalType) {
-                    case GOALTYPE_DISTANCE:
-                        if (mGoal - mLocationDataSet.totalDistance < 1000) {
-                            goalDistanceUnit = "m";
-                            goalDistance = String.format("%.1f", (float) mGoal - mLocationDataSet.totalDistance);
-                        } else {
-                            goalDistanceUnit = "km";
-                            goalDistance = String.format("%.1f", (float) (mGoal - mLocationDataSet.totalDistance) / 1000);
-                        }
-                        mLeftFragment.setCurrentView(goalDistance, goalDistanceUnit,
-                                "--",
-                                String.format("%.1f", mGoalPercent));
-                        break;
-                    case GOALTYPE_TIME:
-                        goalTime = String.valueOf((int) ((mGoal - mLocationDataSet.totalTime) / 60 / 1000)); // mills -> mins
-                        mLeftFragment.setCurrentView("-.-", "m",
-                                goalTime,
-                                String.format("%.1f", mGoalPercent));
-                        break;
-                }
-                mCurrentFragment.setCurrentView(distance, distanceUnit,
-                        CURRENT_TIME_FORMAT.format(date),
-                        String.format("%02d'%02d''", pace / 60, pace % 60));
+                tvDistance.setText(distance);
+                tvDistanceUnit.setText(distanceUnit);
+                tvTime.setText(CURRENT_TIME_FORMAT.format(date));
+                tvPace.setText(String.format("%02d'%02d''", pace / 60, pace % 60));
             }
 
             /* PieChart */

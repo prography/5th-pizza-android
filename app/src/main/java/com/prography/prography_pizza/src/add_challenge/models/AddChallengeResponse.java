@@ -25,6 +25,8 @@ public class AddChallengeResponse {
         private String exerciseType;
         @SerializedName("created_at")
         private String createdAt;
+        @SerializedName("UserChallenges")
+        private UserChallenges userChallenges;
 
         protected Data(Parcel in) {
             challengeId = in.readInt();
@@ -33,6 +35,7 @@ public class AddChallengeResponse {
             time = in.readDouble();
             exerciseType = in.readString();
             createdAt = in.readString();
+            userChallenges = in.readParcelable(UserChallenges.class.getClassLoader());
         }
 
         public static final Creator<Data> CREATOR = new Creator<Data>() {
@@ -87,6 +90,10 @@ public class AddChallengeResponse {
             return createdAt;
         }
 
+        public UserChallenges getUserChallenges() {
+            return userChallenges;
+        }
+
         public Data(int challengeId, String routineType, double time, String objectUnit, String exerciseType, String createdAt) {
             this.challengeId = challengeId;
             this.routineType = routineType;
@@ -109,30 +116,32 @@ public class AddChallengeResponse {
             dest.writeDouble(time);
             dest.writeString(exerciseType);
             dest.writeString(createdAt);
+            dest.writeParcelable(userChallenges, flags);
         }
 
-        public static class userChallenges implements Parcelable {
+
+        public static class UserChallenges implements Parcelable {
             @SerializedName("createdAt") private String createdAt;
             @SerializedName("updatedAt") private String updatedAt;
             @SerializedName("ChallengeId") private int challengeId;
-            @SerializedName("UserId") private int userId;
+            @SerializedName("UserId") private String userId;
 
-            protected userChallenges(Parcel in) {
+            protected UserChallenges(Parcel in) {
                 createdAt = in.readString();
                 updatedAt = in.readString();
                 challengeId = in.readInt();
-                userId = in.readInt();
+                userId = in.readString();
             }
 
-            public static final Creator<userChallenges> CREATOR = new Creator<userChallenges>() {
+            public static final Creator<UserChallenges> CREATOR = new Creator<UserChallenges>() {
                 @Override
-                public userChallenges createFromParcel(Parcel in) {
-                    return new userChallenges(in);
+                public UserChallenges createFromParcel(Parcel in) {
+                    return new UserChallenges(in);
                 }
 
                 @Override
-                public userChallenges[] newArray(int size) {
-                    return new userChallenges[size];
+                public UserChallenges[] newArray(int size) {
+                    return new UserChallenges[size];
                 }
             };
 
@@ -146,7 +155,7 @@ public class AddChallengeResponse {
                 dest.writeString(createdAt);
                 dest.writeString(updatedAt);
                 dest.writeInt(challengeId);
-                dest.writeInt(userId);
+                dest.writeString(userId);
             }
         }
     }
