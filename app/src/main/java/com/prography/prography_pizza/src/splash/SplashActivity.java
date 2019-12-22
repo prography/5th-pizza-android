@@ -62,11 +62,22 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
                 }
                 break;
             case TYPE_NAVER:
-                OAuthLogin mOAuthLoginModule = OAuthLogin.getInstance();
+                final OAuthLogin mOAuthLoginModule = OAuthLogin.getInstance();
                 mOAuthLoginModule.init(this, getString(R.string.naver_client_id), getString(R.string.naver_client_key), getString(R.string.app_name));
-                mOAuthLoginModule.refreshAccessToken(this);
-                String naverToken = mOAuthLoginModule.getAccessToken(this);
-                trySignIn(naverToken, TYPE_NAVER);
+                final String[] naverToken = new String[1];
+                Thread naverThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        naverToken[0] = mOAuthLoginModule.refreshAccessToken(getApplicationContext());
+                    }
+                });
+                naverThread.start();
+                try {
+                    naverThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                trySignIn(naverToken[0], TYPE_NAVER);
                 break;
         }
     }
