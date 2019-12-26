@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -51,23 +52,26 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <net.daum.mf.map.api.MapView
+    <com.mapbox.mapboxsdk.maps.MapView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="68dp"
         android:id="@+id/mv_record"
         android:foreground="@drawable/foreground_gradient_white_center"
         app:layout_constraintTop_toBottomOf="@id/toolbar_record"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        mapbox:mapbox_cameraZoom="16"/>
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_debug"
         android:textSize="10sp"
-        android:text="DEBUG DATA"
+        tools:text="DEBUG DATA"
         android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_record"
         app:layout_constraintStart_toStartOf="parent" />
@@ -100,7 +104,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nanumsquare_bold"
                     android:text="0.0"
-                    android:textColor="@android:color/black"
+                    android:textColor="@android:color/white"
                     android:textSize="25sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/tv_distance_unit_record"
@@ -114,10 +118,9 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nanumsquare_regular"
                     android:text="m"
-                    android:textColor="@android:color/black"
+                    android:textColor="@android:color/white"
                     android:textSize="15sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_distance_record"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_distance_record" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -133,7 +136,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nanumsquare_bold"
                     android:text="00:00"
-                    android:textColor="@android:color/black"
+                    android:textColor="@android:color/white"
                     android:textSize="25sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -154,12 +157,11 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nanumsquare_bold"
                     android:text="00'00''"
-                    android:textColor="@android:color/black"
+                    android:textColor="@android:color/white"
                     android:textSize="25sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -175,11 +177,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
+                android:gravity="left"
                 android:id="@+id/tv_distance_desc_current_record"
                 android:fontFamily="@font/nanumsquare_regular"
                 android:text="거리"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColor="@android:color/white"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -189,17 +192,19 @@
                 android:fontFamily="@font/nanumsquare_regular"
                 android:id="@+id/tv_time_desc_current_record"
                 android:text="시간"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColor="@android:color/white"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
+                android:gravity="right"
                 android:fontFamily="@font/nanumsquare_regular"
                 android:id="@+id/tv_progress_desc_current_record"
                 android:text="페이스"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColor="@android:color/white"/>
 
         </TableRow>
     </TableLayout>
@@ -294,7 +299,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/background_round_shape_border_orange"
             android:text="SUBMIT"
-            android:textSize="13sp"
+            android:textSize="11sp"
             android:textColor="@android:color/holo_red_light"
             android:letterSpacing="0.2"
             android:textScaleX="1.1"
@@ -331,6 +336,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:src="@drawable/ic_start"
+            android:saveEnabled="false"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

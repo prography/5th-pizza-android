@@ -45,9 +45,6 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.10.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
 
-    // https://github.com/ParkSangGwon/TedPermission
-    implementation 'gun0912.ted:tedpermission:2.2.2'
-
     // Android Room
     implementation 'androidx.room:room-runtime:2.2.3'
     annotationProcessor 'androidx.room:room-compiler:2.2.3'
@@ -57,7 +54,6 @@ dependencies {
     testImplementation "androidx.room:room-testing:2.2.3"
 
     // Kakao Developers
-    implementation files('src\\main\\jniLibs\\libDaumMapAndroid.jar')
     implementation group: 'com.kakao.sdk', name: 'usermgmt', version: project.KAKAO_SDK_VERSION
 
     // https://github.com/PhilJay/MPAndroidChart
@@ -78,7 +74,6 @@ dependencies {
 
     // Google
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
 
     // https://developers.facebook.com/docs/facebook-login/android
@@ -86,6 +81,10 @@ dependencies {
 
     // https://developers.naver.com/docs/login/android/
     implementation 'com.naver.nid:naveridlogin-android-sdk:4.2.5'
+
+    // https://www.mapbox.com/install/android/
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.5.0'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-localization-v8:0.11.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

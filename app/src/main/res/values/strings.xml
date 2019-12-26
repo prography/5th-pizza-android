@@ -10,6 +10,7 @@
     <string name="google_client_key">1040046491707-l3egtlg5n72alvpb4ft8gqrru03g5j7m.apps.googleusercontent.com</string>
     <string name="naver_client_id">0Ei9c5O7korykmJUa4_B</string>
     <string name="naver_client_key">wpRd5BChYw</string>
+    <string name="mapbox_token">pk.eyJ1Ijoid29vaXNzbyIsImEiOiJjazRqc3hnOHcxcWF4M2RvYmhuZ2tqcW83In0.vthjGLkPZbyWuNnjhXMFxA</string>
 
 
     <!-- AddChallenge Activity -->

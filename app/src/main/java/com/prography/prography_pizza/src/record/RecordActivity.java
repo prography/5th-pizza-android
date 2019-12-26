@@ -1,6 +1,5 @@
 package com.prography.prography_pizza.src.record;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -8,13 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -27,7 +25,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.GravityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.transition.Slide;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -35,8 +35,28 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+import com.mapbox.android.core.permissions.PermissionsManager;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.LineString;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.location.LocationComponent;
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
+import com.mapbox.mapboxsdk.location.modes.CameraMode;
+import com.mapbox.mapboxsdk.location.modes.RenderMode;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.maps.UiSettings;
+import com.mapbox.mapboxsdk.plugins.localization.LocalizationPlugin;
+import com.mapbox.mapboxsdk.style.expressions.Expression;
+import com.mapbox.mapboxsdk.style.layers.LineLayer;
+import com.mapbox.mapboxsdk.style.layers.Property;
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
+import com.mapbox.mapboxsdk.style.layers.PropertyValue;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.prography.prography_pizza.BuildConfig;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.services.LocationRecordService;
@@ -45,22 +65,21 @@ import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.interfaces.RecordActivityView;
 
-import net.daum.mf.map.api.MapPoint;
-import net.daum.mf.map.api.MapPolyline;
-import net.daum.mf.map.api.MapView;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineCap;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineGradient;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineJoin;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth;
 import static com.prography.prography_pizza.src.ApplicationClass.CURRENT_TIME_FORMAT;
 
 public class RecordActivity extends BaseActivity implements RecordActivityView {
 
     public static final int GOALTYPE_DISTANCE = 1;
     public static final int GOALTYPE_TIME = 2;
-
     public static float dpUnit;
 
     private Toolbar tbRecord;
@@ -68,7 +87,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private TextView tvGoal;
     private ImageView ivStartRecord;
     private TextView tvSubmitRecord;
-    private MapView mvRecord;
+    private com.mapbox.mapboxsdk.maps.MapView mvRecord;
     private PieChart pcRecord;
     private ConstraintLayout clBottomUpperContainer;
     private TextView tvProgress;
@@ -85,12 +104,13 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
     private AlertDialog mAlertDialog;
 
-    private ArrayList<MapPolyline> mapPolylines = new ArrayList<>();
+    private ArrayList<Point> mPoints = new ArrayList<>();
 
     private Intent serviceIntent;
     private LocationRecordService mLocationRecordService;
-    private ServiceConnection mConnection;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private MapboxMap mvImplRecord;
+    private Style mvStyle;
+    private PermissionsManager permissionsManager;
 
     private MainResponse.Data mChallenge;
     private double mGoal = 0;
@@ -106,6 +126,8 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /* Get Mapbox SDK (Before set content)*/
+        Mapbox.getInstance(this, getString(R.string.mapbox_token));
         setContentView(R.layout.activity_record);
 
         /* findViewByID */
@@ -127,24 +149,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         tvTime = findViewById(R.id.tv_time_record);
         tvPace = findViewById(R.id.tv_pace_record);
         tblRecord = findViewById(R.id.tbl_record);
-
-        /* Permission Listener */
-        TedPermission.with(this)
-                .setPermissionListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                        /* Set MapView */
-                        mvRecord.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading); // 권한 설정 필요
-                    }
-
-                    @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                        showToast("permission Denied\n" + deniedPermissions.toString());
-                    }
-                })
-                .setDeniedMessage("권한 승인을 해야만 이용이 가능합니다.")
-                .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-                .check();
 
         /* Get Intent */
         Intent intent = getIntent();
@@ -175,22 +179,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 }
                 mGoal = mGoal * 60 * 1000; // min -> mills
         }
-        /* 액티비티 재시작일경우 기존 location 데이터로부터 polyline 다시 그리기 */
-        if (intent.getParcelableExtra("locationDataSetInit") != null) {
-            mLocationDataSet = intent.getParcelableExtra("locationDataSetInit");
-            for (int i = 0; i < mLocationDataSet.locations.size() - 1; i++) {
-                MapPolyline mapPolyline = new MapPolyline();
-                Location prev = mLocationDataSet.locations.get(i);
-                Location cur = mLocationDataSet.locations.get(i + 1);
-                ArrayList<Integer> colors = mLocationDataSet.powerColors.get(i);
 
-                mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(prev.getLatitude(), prev.getLongitude()));
-                mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(cur.getLatitude(), cur.getLongitude()));
-                mapPolyline.setLineColor(Color.argb(255, colors.get(0), colors.get(1), 0)); // 색상 범위 : 빨간색 (255, 0, 0) ~ 노란색 (255, 255, 0) ~ 초록색 (0, 255, 0)
-                mvRecord.addPolyline(mapPolyline);
-                mapPolylines.add(mapPolyline);
-            }
-        }
 
         /* Set Constants */
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -204,24 +193,12 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         abRecord.setDisplayHomeAsUpEnabled(true);
         abRecord.setHomeAsUpIndicator(R.drawable.ic_back);
 
-        /* Get Location Provider Client */
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
         /* Set MapView */
-        mvRecord.setZoomLevel(1, false);
+        mvRecord.onCreate(savedInstanceState);
+        mvRecord.getMapAsync(this);
 
         /* Set BackGround Service Receiver */
         LocalBroadcastManager.getInstance(this).registerReceiver(mLocationDataSetReceiver, new IntentFilter("location-data"));
-        mConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                mLocationRecordService = ((LocationRecordService.LocationBinder) service).getService();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-            }
-        };
 
         /* Set on Click Listener */
         ivStartRecord.setOnClickListener(this);
@@ -264,12 +241,108 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     }
 
     @Override
+    public void onMapReady(@NonNull MapboxMap mapboxMap) {
+        mvImplRecord = mapboxMap;
+        mapboxMap.setStyle(Style.DARK, this);
+        ivStartRecord.setEnabled(true);
+    }
+
+    @Override
+    public void onStyleLoaded(@NonNull Style style) {
+        // Map is set.
+        mvStyle = style;
+        if (PermissionsManager.areLocationPermissionsGranted(this)) {
+            // Init
+            LocationComponent locationComponent = mvImplRecord.getLocationComponent();
+            locationComponent.activateLocationComponent(LocationComponentActivationOptions.builder(this, style).build());
+            locationComponent.setLocationComponentEnabled(true);
+            locationComponent.setCameraMode(CameraMode.TRACKING_GPS);
+            locationComponent.setRenderMode(RenderMode.GPS);
+            UiSettings uiSettings = mvImplRecord.getUiSettings();
+            uiSettings.setLogoGravity(Gravity.RIGHT | Gravity.TOP);
+            uiSettings.setCompassEnabled(true);
+            uiSettings.setCompassGravity(Gravity.TOP | Gravity.LEFT);
+            LocalizationPlugin localizationPlugin = new LocalizationPlugin(mvRecord, mvImplRecord, style);
+            try {
+                localizationPlugin.matchMapLanguageWithDeviceDefault();
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
+
+            /* Set Style */
+            style.addSource(new GeoJsonSource("path", FeatureCollection.fromFeature(Feature.fromGeometry(LineString.fromLngLats(mPoints))), new GeoJsonOptions().withLineMetrics(true)));
+            style.addLayer(new LineLayer("exercise", "path").withProperties(
+                    lineCap(Property.LINE_CAP_ROUND),
+                    lineJoin(Property.LINE_JOIN_ROUND),
+                    lineWidth(5 * dpUnit)));
+
+
+            /* 액티비티 재시작일경우 기존 location 데이터로부터 Gradient Line 다시 그리기 */
+            Intent intent = getIntent();
+            if (intent.getParcelableExtra("locationDataSetInit") != null) {
+                mLocationDataSet = intent.getParcelableExtra("locationDataSetInit");
+
+                /* Set Line */
+                mPoints.clear();
+                for (LatLng latLng : mLocationDataSet.locations) {
+                    mPoints.add(Point.fromLngLat(latLng.getLongitude(),latLng.getLatitude(),latLng.getAltitude()));
+                }
+                FeatureCollection featureCollection = FeatureCollection.fromFeature(Feature.fromGeometry(LineString.fromLngLats(mPoints)));
+
+                /* Set Gradient Stop Points*/
+                ArrayList<Expression.Stop> stops = new ArrayList<>();
+                for (Integer key : mLocationDataSet.changePowerIdxs.keySet()) {
+                    Expression expression = mLocationDataSet.changePowerIdxs.get(key);
+                    float percentage;
+                    if (mLocationDataSet.locations.size() != 0) {
+                        percentage = key / (float) mLocationDataSet.locations.size();
+                    } else {
+                        percentage = 0.f;
+                    }
+                    if (expression != null) {
+                        stops.add(Expression.stop(percentage, expression));
+                    }
+                }
+
+                /* Set Style */
+                GeoJsonSource path = style.getSourceAs("path");
+                if (path != null) {
+                    path.setGeoJson(featureCollection);
+                }
+                LineLayer lines = style.getLayerAs("exercise");
+                if (lines != null) {
+                    lines.setProperties(lineCap(Property.LINE_CAP_ROUND),
+                            lineJoin(Property.LINE_JOIN_ROUND),
+                            lineWidth(5 * dpUnit),
+                            lineGradient(Expression.interpolate(Expression.linear(), Expression.lineProgress(),
+                                    (Expression.Stop[]) stops.toArray())));
+                }
+            }
+
+        } else {
+            permissionsManager = new PermissionsManager(this);
+            permissionsManager.requestLocationPermissions(this);
+        }
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        mLocationRecordService = ((LocationRecordService.LocationBinder) service).getService();
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        mvRecord.onDestroy();
 
         if (serviceIntent != null) {
             stopService(serviceIntent);
-            unbindService(mConnection);
+            unbindService(this);
             serviceIntent = null;
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocationDataSetReceiver);
@@ -324,7 +397,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         serviceIntent = new Intent(this, LocationRecordService.class);
                         serviceIntent.putExtra("challenge", mChallenge);
                         serviceIntent.putExtra("locationDataSet", mLocationDataSet);
-                        bindService(serviceIntent, mConnection, BIND_AUTO_CREATE);
+                        bindService(serviceIntent, this, BIND_AUTO_CREATE);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             startForegroundService(serviceIntent);
                         } else {
@@ -409,6 +482,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
             /* Set View */
             if (mLocationDataSet != null) {
+                mvImplRecord.getLocationComponent().setCameraMode(CameraMode.TRACKING_GPS);
                 switch (mGoalType) {
                     case GOALTYPE_DISTANCE:
                         mGoalPercent = (float) (mLocationDataSet.totalDistance / mGoal) * 100;
@@ -422,20 +496,44 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
                 /* 새로운 polyline 점 추가 */
                 int lastIndex = mLocationDataSet.locations.size() - 1;
-                if (lastIndex > 0) {
-                    // location에 저장된 데이터셋이 2개 이상일 때만 직선 그림.
-                    Location prev = mLocationDataSet.locations.get(lastIndex - 1);
-                    Location cur = mLocationDataSet.locations.get(lastIndex);
-                    ArrayList<Integer> curPower = mLocationDataSet.powerColors.get(mLocationDataSet.powerColors.size() - 1);
+                if (lastIndex >= 0) {
+                    /* Set Line */
+                    LatLng lastLatLng = mLocationDataSet.locations.get(lastIndex);
+                    mPoints.add(Point.fromLngLat(lastLatLng.getLongitude(),lastLatLng.getLatitude(),lastLatLng.getAltitude()));
+                    FeatureCollection featureCollection = FeatureCollection.fromFeature(Feature.fromGeometry(LineString.fromLngLats(mPoints)));
 
-                    MapPolyline mapPolyline = new MapPolyline();
-                    mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(prev.getLatitude(), prev.getLongitude()));
-                    mapPolyline.addPoint(MapPoint.mapPointWithGeoCoord(cur.getLatitude(), cur.getLongitude()));
-                    mapPolyline.setLineColor(Color.argb(255, curPower.get(0), curPower.get(1), 0)); // 색상 범위 : 빨간색 (255, 0, 0) ~ 노란색 (255, 255, 0) ~ 초록색 (0, 255, 0)
-                    mvRecord.addPolyline(mapPolyline);
-                    mapPolylines.add(mapPolyline);
+                    /* Set Gradient Stop Points*/
+                    ArrayList<Expression.Stop> stops = new ArrayList<>();
+                    for (Integer key : mLocationDataSet.changePowerIdxs.keySet()) {
+                        Expression expression = mLocationDataSet.changePowerIdxs.get(key);
+                        float percentage;
+                        if (mLocationDataSet.locations.size() != 0) {
+                            percentage = key / (float) mLocationDataSet.locations.size();
+                        } else {
+                            percentage = 0.f;
+                        }
+                        if (expression != null) {
+                            stops.add(Expression.stop(percentage, expression));
+                        }
+                    }
 
-                    /* Debug TextView */
+                    /* Set Style */
+                    GeoJsonSource path = mvStyle.getSourceAs("path");
+                    if (path != null) {
+                        path.setGeoJson(featureCollection);
+                    }
+                    LineLayer lines = mvStyle.getLayerAs("exercise");
+                    if (lines != null) {
+                        Expression.Stop[] stopExpressions = stops.toArray(new Expression.Stop[stops.size()]);
+                        lines.setProperties(lineCap(Property.LINE_CAP_ROUND),
+                                lineJoin(Property.LINE_JOIN_ROUND),
+                                lineWidth(5 * dpUnit),
+                                lineGradient(Expression.interpolate(Expression.linear(),
+                                        Expression.lineProgress(),
+                                        stopExpressions)));
+                    }
+
+                    /* Debug TextView *//*
                     if (BuildConfig.DEBUG) {
                         ((TextView) findViewById(R.id.tv_debug))
                                 .setText("Provider: " + cur.getProvider() + "\n"
@@ -446,10 +544,9 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                                         + "Accuracy: " + cur.getAccuracy() + "\n"
                                         + "DistanceTo: " + cur.distanceTo(prev) + " m\n"
                                         + "Distance(Vel): " + cur.getSpeed() * 1 + "m");
-                    } else {
-                        ((TextView) findViewById(R.id.tv_debug)).setVisibility(View.GONE);
-                    }
+                    } */
                 }
+
 
                 /* Set TextView */
                 String distance = "";
@@ -482,4 +579,61 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             pcRecord.invalidate();
         }
     };
+
+    @Override
+    public void onExplanationNeeded(List<String> permissionsToExplain) {
+
+    }
+
+    @Override
+    public void onPermissionResult(boolean granted) {
+        if (granted) {
+            mvImplRecord.getStyle(this);
+        } else {
+            finish();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mvRecord.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mvRecord.onStart();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mvRecord.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mvRecord.onStop();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mvRecord.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mvRecord.onLowMemory();
+    }
+
+
 }
