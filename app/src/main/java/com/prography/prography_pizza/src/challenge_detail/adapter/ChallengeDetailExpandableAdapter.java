@@ -34,10 +34,11 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
     private String runningTime;
     private double distance;
 
-    public ChallengeDetailExpandableAdapter(ArrayList<ChallengeDetailResponse.Data> mList, Context context) {
+    public ChallengeDetailExpandableAdapter(ArrayList<ChallengeDetailResponse.Data> mList, Context context, String exerciseType) {
         this.mList = mList;
         mContext = context;
         layoutInflater = LayoutInflater.from(context);
+        this.exerciseType=exerciseType;
     }
 
     @NonNull
@@ -60,9 +61,8 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
                 e.printStackTrace();
             }
 
-
             recordId = timeLineModel.getRecordId();
-            switch (timeLineModel.getExerciseType()) {
+            switch (exerciseType) {
                 case "running":
                     exerciseType = "러닝";
                     break;

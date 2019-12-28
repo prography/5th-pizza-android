@@ -1,5 +1,7 @@
 package com.prography.prography_pizza.src.challenge_detail;
 
+import android.util.Log;
+
 import com.prography.prography_pizza.src.challenge_detail.interfaces.ChallengeDetailActivityView;
 import com.prography.prography_pizza.src.challenge_detail.interfaces.ChallengeDetailRetrofitInterface;
 import com.prography.prography_pizza.src.challenge_detail.models.ChallengeDetailResponse;
@@ -25,6 +27,7 @@ public class ChallengeDetailService {
             public void onResponse(Call<ChallengeDetailResponse> call, Response<ChallengeDetailResponse> response) {
                 final ChallengeDetailResponse challengeDetailResponse = response.body();
                 if (challengeDetailResponse == null) {
+                    Log.i("getDetail", "null");
                     mChallengeDetailActivityView.validateFailure();
                     return;
                 }
@@ -34,6 +37,8 @@ public class ChallengeDetailService {
 
             @Override
             public void onFailure(Call<ChallengeDetailResponse> call, Throwable t) {
+                Log.i("getDeatil", "failure");
+                t.printStackTrace();
                 mChallengeDetailActivityView.validateFailure();
             }
         });

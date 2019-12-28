@@ -12,8 +12,10 @@ public class ChallengeDetailResponse {
     public static class Data implements Serializable {
         @SerializedName("id")
         private int recordId;
-        @SerializedName("exercise_type")
-        private String exerciseType;
+        @SerializedName("user_id")
+        private int userId;
+        @SerializedName("challenge_id")
+        private int challengId;
         @SerializedName("running_time")
         private double runningTime;
         @SerializedName("distance")
@@ -25,8 +27,12 @@ public class ChallengeDetailResponse {
             return recordId;
         }
 
-        public String getExerciseType() {
-            return exerciseType;
+        public int getUserId() {
+            return userId;
+        }
+
+        public int getChallengId() {
+            return challengId;
         }
 
         public double getRunningTime() {
@@ -41,15 +47,7 @@ public class ChallengeDetailResponse {
             return createdAt;
         }
 
-        public Data(int recordId, String exerciseType, double runningTime, double totalDistance, String createdAt) {
-            this.recordId = recordId;
-            this.exerciseType = exerciseType;
-            this.runningTime = runningTime;
-            this.totalDistance = totalDistance;
-            this.createdAt = createdAt;
-        }
     }
-
 
     public ArrayList<Data> getData() {
         return data;

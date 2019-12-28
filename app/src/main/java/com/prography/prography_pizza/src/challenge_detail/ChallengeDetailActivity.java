@@ -23,16 +23,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ChallengeDetailActivity extends BaseActivity implements ChallengeDetailActivityView {
     private int mChallengeId;
+    private String mExerciseType;
     private RecyclerView rvDetail;
     private Toolbar tbDetail;
-    private ArrayList<ChallengeDetailResponse.Data> mList=new ArrayList<>();
+    private ArrayList<ChallengeDetailResponse.Data> mList = new ArrayList<>();
     private LinearLayoutManager mLayoutManager;
     private ChallengeDetailExpandableAdapter cdAdapter;
     private TimelineView timelineView;
     private TextView tvTitle;
     private TextView tvDate;
-
-
 
 
     @Override
@@ -41,8 +40,8 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         setContentView(R.layout.activity_challenge_detail);
 
         /* findViewByID */
-        rvDetail=findViewById(R.id.recyclerView_detail);
-        tbDetail=findViewById(R.id.toolbar_detail);
+        rvDetail = findViewById(R.id.recyclerView_detail);
+        tbDetail = findViewById(R.id.toolbar_detail);
 //        tvTitle=findViewById(R.id.tv_timeline_title);
 //        tvDate=findViewById(R.id.tv_timeline_date);
 
@@ -54,27 +53,32 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
 
         /* RecyclerView */
-        mList.add(new ChallengeDetailResponse.Data(1,"running",612000,1200,"2019-12-20T00:00:00.000Z"));
+        /*mList.add(new ChallengeDetailResponse.Data(1,"running",612000,1200,"2019-12-20T00:00:00.000Z"));
         mList.add(new ChallengeDetailResponse.Data(2,"running",306000,600,"2019-12-21T00:00:00.000Z"));
-
+*/
         // RecyclerView 역순으로 출력
        /* mLayoutManager=new LinearLayoutManager(this);
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(true);
         rvDetail.setLayoutManager(mLayoutManager);*/
 
-        cdAdapter=new ChallengeDetailExpandableAdapter(mList,this);
-        rvDetail.setAdapter(cdAdapter);
-
         /* Get Intent */
         Intent intent = getIntent();
         mChallengeId = intent.getIntExtra("challengeId", 0);
+        mExerciseType= intent.getStringExtra("exerciseType");
+
+
+        cdAdapter = new ChallengeDetailExpandableAdapter(mList, this, mExerciseType);
+        rvDetail.setAdapter(cdAdapter);
+
+
+        tyrgetDetail(mChallengeId);
 
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;
@@ -82,14 +86,22 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         return super.onOptionsItemSelected(item);
     }
 
+    private void tyrgetDetail(int mChallengeId) {
+        showProgressDialog();
+        ChallengeDetailService challengeDetailService = new ChallengeDetailService(this);
+        challengeDetailService.getDetail(mChallengeId);
+    }
+
     @Override
     public void validateSuccess(ArrayList<ChallengeDetailResponse.Data> data) {
-
+        hideProgressDialog();
+        showToast("Success");
     }
 
     @Override
     public void validateFailure() {
-
+        hideProgressDialog();
+        showToast("Failure");
     }
 
 

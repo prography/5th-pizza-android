@@ -133,6 +133,7 @@ public class MyChallengeListAdapter extends RecyclerView.Adapter<MyChallengeList
                 // Start Challenge Detail Activity
                 Intent intent = new Intent(v.getContext(), ChallengeDetailActivity.class);
                 intent.putExtra("challengeId", mChallenges.get(getAdapterPosition()).getChallengeId());
+                intent.putExtra("exerciseType", mChallenges.get(getAdapterPosition()).getExerciseType());
                 ((MyPageActivity) v.getContext()).startActivity(intent);
             }
         }
