@@ -7,7 +7,7 @@ import com.prography.prography_pizza.src.add_challenge.models.AddChallengeRespon
 public interface AddChallengeActivityView extends View.OnClickListener {
     void postvalidateSuccess(AddChallengeResponse.Data datum);
 
-    void postvalidateFailure();
+    void postvalidateFailure(int code);
 
     void onPickerItemSelected(int which, String selected);
 

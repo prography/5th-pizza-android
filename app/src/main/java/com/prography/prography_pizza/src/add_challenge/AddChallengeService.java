@@ -25,7 +25,7 @@ public class AddChallengeService {
             public void onResponse(Call<AddChallengeResponse> call, Response<AddChallengeResponse> response) {
                 final AddChallengeResponse addChallengeResponse = response.body();
                 if (addChallengeResponse == null) {
-                    addChallengeActivityView.postvalidateFailure();
+                    addChallengeActivityView.postvalidateFailure(response.code());
                     return;
                     // Fail
                 }
@@ -36,7 +36,7 @@ public class AddChallengeService {
             @Override
             public void onFailure(Call<AddChallengeResponse> call, Throwable t) {
                 t.printStackTrace();
-                addChallengeActivityView.postvalidateFailure();
+                addChallengeActivityView.postvalidateFailure(0);
                 // Fail
             }
         });

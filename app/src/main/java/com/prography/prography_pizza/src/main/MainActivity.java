@@ -148,6 +148,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     public void validateFailure() {
         hideProgressDialog();
         Log.i("GET", "gvalidateFauilure");
+        showToast("네트워크 오류");
     }
 
     @Override

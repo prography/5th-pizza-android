@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 public class MainDeleteResponse {
     @SerializedName("data")
-    private MainResponse.Data data;
+    private int data;
 
-    public MainResponse.Data getData() {
+    public int getData() {
         return data;
     }
 }

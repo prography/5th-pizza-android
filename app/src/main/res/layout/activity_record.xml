@@ -58,12 +58,24 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:layout_marginBottom="68dp"
         android:id="@+id/mv_record"
-        android:foreground="@drawable/foreground_gradient_white_center"
         app:layout_constraintTop_toBottomOf="@id/toolbar_record"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        mapbox:mapbox_cameraZoom="16"/>
+        mapbox:mapbox_cameraZoom="16" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginBottom="68dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_record"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="#333333"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 
     <TextView
@@ -102,7 +114,7 @@
                     android:id="@+id/tv_distance_record"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/nanumsquare_bold"
+                    android:fontFamily="sans-serif-condensed"
                     android:text="0.0"
                     android:textColor="@android:color/white"
                     android:textSize="25sp"
@@ -116,7 +128,7 @@
                     android:id="@+id/tv_distance_unit_record"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/nanumsquare_regular"
+                    android:fontFamily="sans-serif-condensed"
                     android:text="m"
                     android:textColor="@android:color/white"
                     android:textSize="15sp"
@@ -134,7 +146,7 @@
                     android:id="@+id/tv_time_record"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/nanumsquare_bold"
+                    android:fontFamily="sans-serif-condensed"
                     android:text="00:00"
                     android:textColor="@android:color/white"
                     android:textSize="25sp"
@@ -155,7 +167,7 @@
                     android:id="@+id/tv_pace_record"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/nanumsquare_bold"
+                    android:fontFamily="sans-serif-condensed"
                     android:text="00'00''"
                     android:textColor="@android:color/white"
                     android:textSize="25sp"
@@ -290,6 +302,7 @@
             android:text="오늘 목표 달성률"
             android:textColor="@android:color/black"
             android:textSize="17sp"
+            android:fontFamily="@font/nanumsquare_regular"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_progress_record" />
 
@@ -303,7 +316,7 @@
             android:textColor="@android:color/holo_red_light"
             android:letterSpacing="0.2"
             android:textScaleX="1.1"
-            android:fontFamily="@font/nanumsquare_bold"
+            android:fontFamily="sans-serif-medium"
             android:layout_marginEnd="36dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

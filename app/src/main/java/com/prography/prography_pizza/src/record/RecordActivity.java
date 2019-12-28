@@ -451,25 +451,53 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 }
                 break;
             case R.id.tv_submit_record:
-                // 1. 목표를 달성했을 때.
-                // 2. 충분한 거리를 달렸지만 목표를 달성하지 못했을 때.
-                new AlertDialog.Builder(this).setMessage("목표를 아직 달성하지 못했습니다.\n여기까지만 저장하고 잠시 쉴까요?")
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                tryPostRecord(mLocationDataSet.totalTime, (double) mLocationDataSet.totalDistance);
-                                dialog.dismiss();
-                                finish();
-                            }
-                        })
-                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        })
-                        .create().show();
-                // 3. 달린 거리나 시간이 너무 부족할 때,
+                if (mGoalPercent == 100) {
+                    // 1. 목표를 달성했을 때.
+                    new AlertDialog.Builder(this).setMessage("목표를 달성했어요!\n이제 저장하고 쉴까요?")
+                            .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    tryPostRecord(mLocationDataSet.totalTime, (double) mLocationDataSet.totalDistance);
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            .create().show();
+                } else if (mGoalPercent >= 4.f){
+                    // 2. 충분한 거리를 달렸지만 목표를 달성하지 못했을 때.
+                    new AlertDialog.Builder(this).setMessage("목표를 아직 달성하지 못했어요.\n여기까지만 저장하고 잠시 쉴까요?")
+                            .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    tryPostRecord(mLocationDataSet.totalTime, (double) mLocationDataSet.totalDistance);
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            .create().show();
+                } else {
+                    // 3. 달린 거리나 시간이 너무 부족할 때, (4.0% 미만)
+                    new AlertDialog.Builder(this).setMessage("너무 조금만 달렸는데요?\n조금만 더 해볼까요?")
+                            .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            .create().show();
+                }
                 break;
         }
     }

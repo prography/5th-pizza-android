@@ -272,7 +272,7 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
     @Override
     public void validateSuccess(String token) {
         hideProgressDialog();
-        showToast("Success");
+        showToast("환영합니다");
         sSharedPreferences.edit().putString(X_ACCESS_TOKEN, token).apply();
         startNextActivity(MainActivity.class);
         finish();

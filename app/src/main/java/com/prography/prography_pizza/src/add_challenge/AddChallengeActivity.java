@@ -140,9 +140,9 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
     }
 
     @Override
-    public void postvalidateFailure() {
+    public void postvalidateFailure(int code) {
         hideProgressDialog();
-        showToast("postFailure");
+        showToast("postFailure: " + code);
     }
 
     @Override

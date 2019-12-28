@@ -95,6 +95,9 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
     @Override
     public void validateFailure(String message) {
         hideProgressDialog();
+        startNextActivity(SignInActivity.class);
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+        finish();
     }
 
     public void trySignIn(String token, String type) {
