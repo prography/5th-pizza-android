@@ -80,6 +80,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
     public static final int GOALTYPE_DISTANCE = 1;
     public static final int GOALTYPE_TIME = 2;
+    public static final float DEFAULT_LINE_WIDTH = 3;
     public static float dpUnit;
 
     private Toolbar tbRecord;
@@ -274,7 +275,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             style.addLayer(new LineLayer("exercise", "path").withProperties(
                     lineCap(Property.LINE_CAP_ROUND),
                     lineJoin(Property.LINE_JOIN_ROUND),
-                    lineWidth(5 * dpUnit)));
+                    lineWidth(DEFAULT_LINE_WIDTH * dpUnit)));
 
 
             /* 액티비티 재시작일경우 기존 location 데이터로부터 Gradient Line 다시 그리기 */
@@ -313,7 +314,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 if (lines != null) {
                     lines.setProperties(lineCap(Property.LINE_CAP_ROUND),
                             lineJoin(Property.LINE_JOIN_ROUND),
-                            lineWidth(5 * dpUnit),
+                            lineWidth(DEFAULT_LINE_WIDTH * dpUnit),
                             lineGradient(Expression.interpolate(Expression.linear(), Expression.lineProgress(),
                                     (Expression.Stop[]) stops.toArray())));
                 }
@@ -362,10 +363,10 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         mAlertDialog.show();
     }
 
-    private void tryPostRecord(double totalTime, double totalDistance) {
+    private void tryPostRecord(int challengeId, double totalTime, double totalDistance) {
         showProgressDialog();
         RecordService recordService = new RecordService(this);
-        recordService.postRecord(totalTime, totalDistance);
+        recordService.postRecord(challengeId, totalTime, totalDistance);
     }
 
     @Override
@@ -457,7 +458,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                             .setPositiveButton("네", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    tryPostRecord(mLocationDataSet.totalTime, (double) mLocationDataSet.totalDistance);
+                                    tryPostRecord(mChallenge.getChallengeId(), mLocationDataSet.totalTime, (double) mLocationDataSet.totalDistance);
                                     dialog.dismiss();
                                     finish();
                                 }
@@ -475,7 +476,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                             .setPositiveButton("네", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    tryPostRecord(mLocationDataSet.totalTime, (double) mLocationDataSet.totalDistance);
+                                    tryPostRecord(mChallenge.getChallengeId(), mLocationDataSet.totalTime, (double) mLocationDataSet.totalDistance);
                                     dialog.dismiss();
                                     finish();
                                 }
@@ -555,7 +556,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         Expression.Stop[] stopExpressions = stops.toArray(new Expression.Stop[stops.size()]);
                         lines.setProperties(lineCap(Property.LINE_CAP_ROUND),
                                 lineJoin(Property.LINE_JOIN_ROUND),
-                                lineWidth(5 * dpUnit),
+                                lineWidth(DEFAULT_LINE_WIDTH * dpUnit),
                                 lineGradient(Expression.interpolate(Expression.linear(),
                                         Expression.lineProgress(),
                                         stopExpressions)));

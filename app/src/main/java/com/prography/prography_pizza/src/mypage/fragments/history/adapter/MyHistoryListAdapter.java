@@ -1,4 +1,4 @@
-package com.prography.prography_pizza.src.mypage.fragments.records.adapter;
+package com.prography.prography_pizza.src.mypage.fragments.history.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,14 +24,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.prography.prography_pizza.src.ApplicationClass.DATE_FORMAT;
 
-public class MyChallengeListAdapter extends RecyclerView.Adapter<MyChallengeListAdapter.ChallengeViewHolder> {
+public class MyHistoryListAdapter extends RecyclerView.Adapter<MyHistoryListAdapter.ChallengeViewHolder> {
 
     private ArrayList<MainResponse.Data> mChallenges;
     private Context mContext;
 
-    public MyChallengeListAdapter(Context context, ArrayList<MainResponse.Data> mChallenges) {
+    public MyHistoryListAdapter(Context context, ArrayList<MainResponse.Data> mChallenges) {
         this.mChallenges = mChallenges;
         mContext = context;
+    }
+
+    public void setData(ArrayList<MainResponse.Data> data) {
+        mChallenges = data;
+        notifyDataSetChanged();
     }
 
     @NonNull

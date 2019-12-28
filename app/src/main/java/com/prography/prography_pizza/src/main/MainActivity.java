@@ -205,7 +205,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             if (resultCode == RESULT_OK) {
                 Log.e("RESULT", "결과 받기 성공");
                 // Get Intent from AddChallenge Activity
-                AddChallengeResponse.Data datum = (AddChallengeResponse.Data) data.getSerializableExtra("item");
+                AddChallengeResponse.Data datum = data.getParcelableExtra("item");
                 if (datum != null) {
                     Log.e("RESULT", "결과 받기 성공");
                     MainResponse.Data newDatum = new MainResponse.Data(datum);

@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.prography.prography_pizza.src.mypage.fragments.records.RecordsFragment;
+import com.prography.prography_pizza.src.mypage.fragments.history.HistoryFragment;
 import com.prography.prography_pizza.src.mypage.fragments.summary.SummaryFragment;
 
 public class MyPagePager extends FragmentStatePagerAdapter {
@@ -28,7 +28,7 @@ public class MyPagePager extends FragmentStatePagerAdapter {
                 fragment = new SummaryFragment();
                 break;
             case 1:
-                fragment = new RecordsFragment();
+                fragment = new HistoryFragment();
                 break;
         }
         return fragment;

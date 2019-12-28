@@ -18,9 +18,9 @@ public class RecordService {
         this.mRecordActivityView = mRecordActivityView;
     }
 
-    public void postRecord(double totalTime, double totalDistance) {
+    public void postRecord(int challengeId, double totalTime, double totalDistance) {
         final RecordRetrofitInterface recordRetrofitInterface = getRetrofit().create(RecordRetrofitInterface.class);
-        recordRetrofitInterface.postRecord(new RecordRequest(totalTime, totalDistance)).enqueue(new Callback<RecordResponse>() {
+        recordRetrofitInterface.postRecord(new RecordRequest(challengeId, totalTime, totalDistance)).enqueue(new Callback<RecordResponse>() {
             @Override
             public void onResponse(Call<RecordResponse> call, Response<RecordResponse> response) {
                 final RecordResponse recordResponse = response.body();
