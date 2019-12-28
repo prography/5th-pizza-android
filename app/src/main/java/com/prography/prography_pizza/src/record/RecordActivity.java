@@ -160,25 +160,23 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 mGoalType = GOALTYPE_DISTANCE;
                 switch (mChallenge.getExerciseType()) {
                     case "running":
-                        tvGoal.setText((int) mGoal + "km 달리기");
+                        tvGoal.setText((int) mGoal / 1000 + "km 달리기");
                         break;
                     case "cycling":
-                        tvGoal.setText((int) mGoal + "km 자전거 타기");
+                        tvGoal.setText((int) mGoal / 1000 + "km 자전거 타기");
                         break;
                 }
-                mGoal = mGoal * 1000; // km -> m
                 break;
             case "time":
                 mGoalType = GOALTYPE_TIME;
                 switch (mChallenge.getExerciseType()) {
                     case "running":
-                        tvGoal.setText((int) mGoal + "분 달리기");
+                        tvGoal.setText((int) mGoal / 60 + "분 달리기");
                         break;
                     case "cycling":
-                        tvGoal.setText((int) mGoal + "분 자전거 타기");
+                        tvGoal.setText((int) mGoal / 60 + "분 자전거 타기");
                         break;
                 }
-                mGoal = mGoal * 60 * 1000; // min -> mills
         }
 
 
@@ -419,6 +417,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         ivStar1.animate().alpha(0.f).setInterpolator(interpolator).setDuration(200).start();
                         ivStar2.animate().alpha(0.f).setInterpolator(interpolator).setDuration(200).start();
                         ivStar3.animate().alpha(0.f).setInterpolator(interpolator).setDuration(200).start();
+                        tvSubmitRecord.setEnabled(false);
                     }
 
                 } else {
@@ -440,6 +439,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     tvProgressUnit.animate().alpha(1.f).setInterpolator(interpolator).setDuration(500).start();
                     tvProgressDesc.animate().alpha(1.f).setInterpolator(interpolator).setDuration(500).start();
                     tvSubmitRecord.animate().alpha(1.f).setInterpolator(interpolator).setDuration(500).start();
+                    tvSubmitRecord.setEnabled(true);
                     if (mGoalPercent >= 30) {
                         ivStar1.animate().alpha(1.f).setStartDelay(500).setDuration(200).start();
                     }
@@ -470,7 +470,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                                 }
                             })
                             .create().show();
-                } else if (mGoalPercent >= 4.f){
+                } else if (mGoalPercent >= 3.f){
                     // 2. 충분한 거리를 달렸지만 목표를 달성하지 못했을 때.
                     new AlertDialog.Builder(this).setMessage("목표를 아직 달성하지 못했어요.\n여기까지만 저장하고 잠시 쉴까요?")
                             .setPositiveButton("네", new DialogInterface.OnClickListener() {
@@ -489,7 +489,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                             })
                             .create().show();
                 } else {
-                    // 3. 달린 거리나 시간이 너무 부족할 때, (4.0% 미만)
+                    // 3. 달린 거리나 시간이 너무 부족할 때, (3.0% 미만)
                     new AlertDialog.Builder(this).setMessage("너무 조금만 달렸는데요?\n조금만 더 해볼까요?")
                             .setPositiveButton("네", new DialogInterface.OnClickListener() {
                                 @Override
@@ -587,7 +587,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     distance = String.format("%.1f", mLocationDataSet.totalDistance / 1000);
                     distanceUnit = "km";
                 }
-                Date date = new Date(mLocationDataSet.totalTime); // Time
+                Date date = new Date(mLocationDataSet.totalTime * 1000); // Time
                 int pace = 0;
                 if (mLocationDataSet.velocityAvg != 0)
                     pace = Math.round(1000 / mLocationDataSet.velocityAvg); // m/s -> sec/km

@@ -96,9 +96,9 @@ public class LocationRecordService extends Service implements LocationRecordServ
                 while (SERVICE_RUNNING) {
                     if (COUNT_PAUSE_TIME_IN_SEC > 0) {
                         COUNT_PAUSE_TIME_IN_SEC--;
-                        mLocationDataSet.totalTime += 1000; // 총 시간 계산 (매 쓰레드마다 1000ms 씩 증가
+                        mLocationDataSet.totalTime += 1; // 총 시간 계산 (매 쓰레드마다 1s 씩 증가
                         if (mLocationDataSet.totalTime != 0 && mLocationDataSet.totalDistance != 0) {
-                            mLocationDataSet.velocityAvg = (mLocationDataSet.totalDistance / mLocationDataSet.totalTime) * 1000; // m/ms -> m/s
+                            mLocationDataSet.velocityAvg = (mLocationDataSet.totalDistance / mLocationDataSet.totalTime); // m/s
                         } else {
                             mLocationDataSet.velocityAvg = 0.f;
                         }

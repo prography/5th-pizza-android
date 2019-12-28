@@ -65,6 +65,7 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MainResponse.Data data = challengeResponses.get(position);
 
+        String time ="";
         if (data != null) {
             // 변환 필요.
             switch (data.getRoutineType()) {
@@ -82,8 +83,10 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
             switch (data.getObjectUnit()) {
                 case "distance":
                     objectUnit = "km";
+                    time = String.valueOf((int) data.getTime() / 1000);
                     break;
                 case "time":
+                    time = String.valueOf((int) data.getTime() / 60);
                     objectUnit = "분";
             }
 
@@ -95,7 +98,7 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
                     exerciseType = "자전거 타기";
                     break;
             }
-            String title = routineType + " " + (int) data.getTime() + objectUnit + " " + exerciseType;
+            String title = routineType + " " + time + objectUnit + " " + exerciseType;
             holder.tvTitle.setText(title);
             holder.tvCreatedAt.setText(new SimpleDateFormat("yyyy.MM.dd").format(new Date())+" 오늘 목표 달성률");
             holder.pbChallenge.setProgress(data.getAchievement());

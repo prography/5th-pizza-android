@@ -32,7 +32,7 @@ public class LocationDataSet implements Parcelable {
     public float velocity = 0.0f;
     public float velocityAvg = 0.0f;
     public int velocityLevel = VEL_LEVEL0;
-    public long totalTime = 0;
+    public int totalTime = 0;
     @Ignore
     public HashMap<Integer, Expression> changePowerIdxs = new HashMap<>(); // List Of HashMap<int changeIdx, int curColor>
 
@@ -47,7 +47,7 @@ public class LocationDataSet implements Parcelable {
         increaseDistance = in.readFloat();
         velocity = in.readFloat();
         velocityAvg = in.readFloat();
-        totalTime = in.readLong();
+        totalTime = in.readInt();
     }
 
     public static final Creator<LocationDataSet> CREATOR = new Creator<LocationDataSet>() {
@@ -75,6 +75,6 @@ public class LocationDataSet implements Parcelable {
         dest.writeFloat(increaseDistance);
         dest.writeFloat(velocity);
         dest.writeFloat(velocityAvg);
-        dest.writeLong(totalTime);
+        dest.writeInt(totalTime);
     }
 }

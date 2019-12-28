@@ -191,9 +191,9 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
                 int minIdx = timeOrDistance.lastIndexOf('분');
                 int hourIdx = timeOrDistance.lastIndexOf('시');
                 if (minIdx != -1) {
-                    mQuota = Double.parseDouble(timeOrDistance.substring(0, minIdx));
+                    mQuota = Double.parseDouble(timeOrDistance.substring(0, minIdx)) * 60; // min -> s
                 } else if (hourIdx != -1) {
-                    mQuota = Double.parseDouble(timeOrDistance.substring(0, hourIdx)) * 60;
+                    mQuota = Double.parseDouble(timeOrDistance.substring(0, hourIdx)) * 60 * 60; // hour -> s
                 }
                 break;
             case "1km":
@@ -202,7 +202,7 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
             case "5km":
             case "10km":
                 mObjectUnit = "distance";
-                mQuota = Double.parseDouble(timeOrDistance.substring(0, timeOrDistance.lastIndexOf('k')));
+                mQuota = Double.parseDouble(timeOrDistance.substring(0, timeOrDistance.lastIndexOf('k'))) * 1000;
                 break;
         }
 

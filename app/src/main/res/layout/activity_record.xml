@@ -318,6 +318,7 @@
             android:textScaleX="1.1"
             android:fontFamily="sans-serif-medium"
             android:layout_marginEnd="36dp"
+            android:enabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
