@@ -35,7 +35,6 @@ import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.db.ChallengeModel;
 import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.add_challenge.AddChallengeActivity;
-import com.prography.prography_pizza.src.add_challenge.models.AddChallengeResponse;
 import com.prography.prography_pizza.src.common.utils.RecyclerViewDecoration;
 import com.prography.prography_pizza.src.main.adapter.ChallengeListAdapter;
 import com.prography.prography_pizza.src.main.interfaces.MainActivityView;
@@ -204,22 +203,11 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Log.e("RESULT", "결과 받기 성공");
-                // Get Intent from AddChallenge Activity
-                AddChallengeResponse.Data datum = data.getParcelableExtra("item");
-                if (datum != null) {
-                    Log.e("RESULT", "결과 받기 성공");
-                    MainResponse.Data newDatum = new MainResponse.Data(datum);
-                    clAdapter.addItem(newDatum);
-                    tvTitle.setText("오늘 도전할 챌린지가\n" + clAdapter.getItemCount() + "개 있습니다");
-                    tvTitleCollapsed.setText("오늘의 챌린지: " + clAdapter.getItemCount() + "개");
-
-                    /* Saving to Local DB... */
-                    ChallengeModel challengeModel = new ChallengeModel(this);
-                    challengeModel.insertDatum(newDatum);
-                }
-            } else {
-                Log.e("RESULT", "결과 받기 실패");
+                // Get Data From Server...
+                tryGetChallenge();
             }
+        } else {
+            Log.e("RESULT", "결과 받기 실패");
         }
     }
 
