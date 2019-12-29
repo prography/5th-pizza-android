@@ -553,13 +553,12 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     }
                     LineLayer lines = mvStyle.getLayerAs("exercise");
                     if (lines != null) {
-                        Expression.Stop[] stopExpressions = stops.toArray(new Expression.Stop[stops.size()]);
                         lines.setProperties(lineCap(Property.LINE_CAP_ROUND),
                                 lineJoin(Property.LINE_JOIN_ROUND),
                                 lineWidth(DEFAULT_LINE_WIDTH * dpUnit),
                                 lineGradient(Expression.interpolate(Expression.linear(),
                                         Expression.lineProgress(),
-                                        stopExpressions)));
+                                        (Expression.Stop[]) stops.toArray())));
                     }
 
                     /* Debug TextView *//*

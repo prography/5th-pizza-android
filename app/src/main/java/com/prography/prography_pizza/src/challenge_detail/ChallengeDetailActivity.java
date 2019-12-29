@@ -26,9 +26,9 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
     private String mExerciseType;
     private RecyclerView rvDetail;
     private Toolbar tbDetail;
-    private ArrayList<ChallengeDetailResponse.Data> mList = new ArrayList<>();
-    private LinearLayoutManager mLayoutManager;
-    private ChallengeDetailExpandableAdapter cdAdapter;
+    private ArrayList<ChallengeDetailResponse.Data> mRecordList = new ArrayList<>();
+
+    private ChallengeDetailExpandableAdapter cdeAdapter;
     private TimelineView timelineView;
     private TextView tvTitle;
     private TextView tvDate;
@@ -53,8 +53,8 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
 
         /* RecyclerView */
-        /*mList.add(new ChallengeDetailResponse.Data(1,"running",612000,1200,"2019-12-20T00:00:00.000Z"));
-        mList.add(new ChallengeDetailResponse.Data(2,"running",306000,600,"2019-12-21T00:00:00.000Z"));
+        /*mRecordList.add(new ChallengeDetailResponse.Data(1,"running",612000,1200,"2019-12-20T00:00:00.000Z"));
+        mRecordList.add(new ChallengeDetailResponse.Data(2,"running",306000,600,"2019-12-21T00:00:00.000Z"));
 */
         // RecyclerView 역순으로 출력
        /* mLayoutManager=new LinearLayoutManager(this);
@@ -68,11 +68,11 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         mExerciseType= intent.getStringExtra("exerciseType");
 
 
-        cdAdapter = new ChallengeDetailExpandableAdapter(mList, this, mExerciseType);
-        rvDetail.setAdapter(cdAdapter);
+        cdeAdapter = new ChallengeDetailExpandableAdapter(mRecordList, this, mExerciseType);
+        rvDetail.setAdapter(cdeAdapter);
 
 
-        tyrgetDetail(mChallengeId);
+        tyrGetDetail(mChallengeId);
 
     }
 
@@ -86,7 +86,7 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         return super.onOptionsItemSelected(item);
     }
 
-    private void tyrgetDetail(int mChallengeId) {
+    private void tyrGetDetail(int mChallengeId) {
         showProgressDialog();
         ChallengeDetailService challengeDetailService = new ChallengeDetailService(this);
         challengeDetailService.getDetail(mChallengeId);
@@ -96,6 +96,7 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
     public void validateSuccess(ArrayList<ChallengeDetailResponse.Data> data) {
         hideProgressDialog();
         showToast("Success");
+        cdeAdapter.setData(data);
     }
 
     @Override

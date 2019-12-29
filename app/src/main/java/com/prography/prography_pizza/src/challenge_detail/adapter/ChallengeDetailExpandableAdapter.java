@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.github.vipulasri.timelineview.TimelineView;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.challenge_detail.models.ChallengeDetailResponse;
@@ -16,15 +19,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import static com.prography.prography_pizza.src.ApplicationClass.CURRENT_TIME_FORMAT;
 import static com.prography.prography_pizza.src.ApplicationClass.DATE_FORMAT;
 
 public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<ChallengeDetailExpandableAdapter.TimeLineViewHolder> {
-    private ArrayList<ChallengeDetailResponse.Data> mList;
-    private LayoutInflater layoutInflater;
+    private ArrayList<ChallengeDetailResponse.Data> mRecordList;
     private Context mContext;
     private RecyclerView mRecyclerView;
 
@@ -35,23 +34,27 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
     private double distance;
 
     public ChallengeDetailExpandableAdapter(ArrayList<ChallengeDetailResponse.Data> mList, Context context, String exerciseType) {
-        this.mList = mList;
+        this.mRecordList = mList;
         mContext = context;
-        layoutInflater = LayoutInflater.from(context);
-        this.exerciseType=exerciseType;
+        this.exerciseType = exerciseType;
+    }
+
+    public void setData(ArrayList<ChallengeDetailResponse.Data> data) {
+        mRecordList = data;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public TimeLineViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = layoutInflater.inflate(R.layout.item_timeline, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_timeline, parent, false);
         TimeLineViewHolder timeLineViewHolder = new TimeLineViewHolder(view, viewType);
         return timeLineViewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull TimeLineViewHolder holder, int position) {
-        ChallengeDetailResponse.Data timeLineModel = mList.get(position);
+        ChallengeDetailResponse.Data timeLineModel = mRecordList.get(position);
 
         if (timeLineModel != null) {
             try {
@@ -95,7 +98,7 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
 
     @Override
     public int getItemCount() {
-        return mList.size();
+        return mRecordList.size();
     }
 
     @Override
