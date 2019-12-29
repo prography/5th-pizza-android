@@ -12,6 +12,7 @@ import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.challenge_detail.adapter.ChallengeDetailExpandableAdapter;
 import com.prography.prography_pizza.src.challenge_detail.interfaces.ChallengeDetailActivityView;
 import com.prography.prography_pizza.src.challenge_detail.models.ChallengeDetailResponse;
+import com.prography.prography_pizza.src.main.models.MainResponse;
 
 import java.util.ArrayList;
 
@@ -32,6 +33,8 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
     private TimelineView timelineView;
     private TextView tvTitle;
     private TextView tvDate;
+
+    private MainResponse.Data mData;
 
 
     @Override
@@ -64,16 +67,16 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
 
         /* Get Intent */
         Intent intent = getIntent();
-        mChallengeId = intent.getIntExtra("challengeId", 0);
-        mExerciseType= intent.getStringExtra("exerciseType");
+        mData = intent.getParcelableExtra("challenge");
+        if (mData != null) {
+            mChallengeId = mData.getChallengeId();
+            mExerciseType = mData.getExerciseType();
+        }
 
-
-        cdeAdapter = new ChallengeDetailExpandableAdapter(mRecordList, this, mExerciseType);
+        cdeAdapter = new ChallengeDetailExpandableAdapter(mRecordList, this, mExerciseType, mData);
         rvDetail.setAdapter(cdeAdapter);
 
-
         tyrGetDetail(mChallengeId);
-
     }
 
     @Override

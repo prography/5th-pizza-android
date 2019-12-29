@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.challenge_detail.ChallengeDetailActivity;
 import com.prography.prography_pizza.src.main.models.MainResponse;
@@ -18,9 +21,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import static com.prography.prography_pizza.src.ApplicationClass.DATE_FORMAT;
 
@@ -55,6 +55,7 @@ public class MyHistoryListAdapter extends RecyclerView.Adapter<MyHistoryListAdap
             String routineType = "";
             String objectUnit = "";
             String exerciseType = "";
+            String time = "";
             // 변환 필요.
             switch (data.getRoutineType()) {
                 case "daily":
@@ -71,9 +72,11 @@ public class MyHistoryListAdapter extends RecyclerView.Adapter<MyHistoryListAdap
             switch (data.getObjectUnit()) {
                 case "distance":
                     objectUnit = "km";
+                    time = String.valueOf((int) data.getTime() / 1000);
                     break;
                 case "time":
                     objectUnit = "분";
+                    time = String.valueOf((int) data.getTime() / 60);
             }
 
             switch (data.getExerciseType()) {
@@ -84,11 +87,11 @@ public class MyHistoryListAdapter extends RecyclerView.Adapter<MyHistoryListAdap
                     exerciseType = "자전거 타기";
                     break;
             }
-            String title = routineType + " " + (int) data.getTime() + objectUnit + " " + exerciseType;
+            String title = routineType + " " + time + objectUnit + " " + exerciseType;
             holder.tvTitle.setText(title);
 
             try {
-                Date date=DATE_FORMAT.parse(data.getCreatedAt());
+                Date date = DATE_FORMAT.parse(data.getCreatedAt());
                 holder.tvCreatedAt.setText(new SimpleDateFormat("yyyy.MM.dd").format(date) + " 부터 지금까지");
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -137,8 +140,7 @@ public class MyHistoryListAdapter extends RecyclerView.Adapter<MyHistoryListAdap
             if (v == itemView) {
                 // Start Challenge Detail Activity
                 Intent intent = new Intent(v.getContext(), ChallengeDetailActivity.class);
-                intent.putExtra("challengeId", mChallenges.get(getAdapterPosition()).getChallengeId());
-                intent.putExtra("exerciseType", mChallenges.get(getAdapterPosition()).getExerciseType());
+                intent.putExtra("challenge", mChallenges.get(getAdapterPosition()));
                 ((MyPageActivity) v.getContext()).startActivity(intent);
             }
         }

@@ -13,10 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.vipulasri.timelineview.TimelineView;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.challenge_detail.models.ChallengeDetailResponse;
+import com.prography.prography_pizza.src.main.models.MainResponse;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import static com.prography.prography_pizza.src.ApplicationClass.CURRENT_TIME_FORMAT;
@@ -33,10 +35,13 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
     private String runningTime;
     private double distance;
 
-    public ChallengeDetailExpandableAdapter(ArrayList<ChallengeDetailResponse.Data> mList, Context context, String exerciseType) {
+    private MainResponse.Data mChallenge;
+
+    public ChallengeDetailExpandableAdapter(ArrayList<ChallengeDetailResponse.Data> mList, Context context, String exerciseType, MainResponse.Data data) {
         this.mRecordList = mList;
         mContext = context;
         this.exerciseType = exerciseType;
+        mChallenge = data;
     }
 
     public void setData(ArrayList<ChallengeDetailResponse.Data> data) {
@@ -57,14 +62,7 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
         ChallengeDetailResponse.Data timeLineModel = mRecordList.get(position);
 
         if (timeLineModel != null) {
-            try {
-                Date date = DATE_FORMAT.parse(timeLineModel.getCreatedAt());
-                holder.tvDate.setText(new SimpleDateFormat("yyyy.MM.dd").format(date));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
 
-            recordId = timeLineModel.getRecordId();
             switch (exerciseType) {
                 case "running":
                     exerciseType = "러닝";
@@ -73,7 +71,20 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
                     exerciseType = "사이클";
                     break;
             }
-            holder.tvTitle.setText(recordId + "일차 " + exerciseType);
+
+            try {
+                Date cur = DATE_FORMAT.parse(timeLineModel.getCreatedAt());
+                Date start = DATE_FORMAT.parse(mChallenge.getCreatedAt());
+                Date dist = new Date(cur.getTime() - start.getTime());
+                Calendar distCal = Calendar.getInstance();
+                distCal.setTime(dist);
+
+                holder.tvTitle.setText(distCal.get(Calendar.DAY_OF_YEAR) + "일차 " + exerciseType);
+                holder.tvDate.setText(new SimpleDateFormat("yyyy.MM.dd").format(cur));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
 
             if (timeLineModel.getTotalDistance() > 1000) {
                 distance = timeLineModel.getTotalDistance() / 1000;
@@ -83,14 +94,12 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
                 holder.tvDistance.setText(String.format("%.0f", (float) distance) + "m");
             }
 
-            Date d = new Date(Double.valueOf(timeLineModel.getRunningTime()).longValue());
+            Date d = new Date(Double.valueOf(timeLineModel.getRunningTime() * 1000).longValue());
             runningTime = CURRENT_TIME_FORMAT.format(d);
             holder.tvTime.setText(runningTime);
 
-            double tmp = timeLineModel.getRunningTime() / timeLineModel.getTotalDistance(); // sec/km
-            int min = (int) (tmp / 60);
-            int sec = (int) (tmp - min * 60);
-            holder.tvSpeed.setText(min + "'" + sec + "''/km");
+            int pace = (int) timeLineModel.getRunningTime() / (int) timeLineModel.getTotalDistance() / 1000; // sec/m -> sec/km
+            holder.tvSpeed.setText(pace / 60 + "'" + pace % 60 + "''/km");
 
         }
     }
