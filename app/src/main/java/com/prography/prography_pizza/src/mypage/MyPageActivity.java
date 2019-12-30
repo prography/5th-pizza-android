@@ -35,6 +35,9 @@ public class MyPageActivity extends BaseActivity implements MyPageActivityView {
     private ViewPager vpMypage;
     private ImageView ivProfile;
     private TextView tvUserName;
+    private TextView tvStar;
+    private TextView tvSuccess;
+    private TextView tvSuccessPercentage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,9 @@ public class MyPageActivity extends BaseActivity implements MyPageActivityView {
         tvToolbarTitleCollapsed = findViewById(R.id.tv_toolbar_title_collapsed_mypage);
         ivProfile = findViewById(R.id.iv_profile_img_mypage);
         tvUserName = findViewById(R.id.tv_username_mypage);
+        tvStar = findViewById(R.id.tv_star_mypage);
+        tvSuccess = findViewById(R.id.tv_success_mypage);
+        tvSuccessPercentage = findViewById(R.id.tv_percent_mypage);
 
         /* Toolbar */
         setSupportActionBar(tbMyPage);
@@ -82,6 +88,9 @@ public class MyPageActivity extends BaseActivity implements MyPageActivityView {
                 .placeholder(R.drawable.kakao_default_profile_image)
                 .into(ivProfile);
         ivProfile.setClipToOutline(true);
+        // tvSuccess
+        // tvSuccessPercentage
+        // tvStar
 
     }
 

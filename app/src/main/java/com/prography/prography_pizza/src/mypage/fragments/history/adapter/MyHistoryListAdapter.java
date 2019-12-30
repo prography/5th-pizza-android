@@ -105,6 +105,7 @@ public class MyHistoryListAdapter extends RecyclerView.Adapter<MyHistoryListAdap
                 holder.pbChallenge.setVisibility(View.INVISIBLE);
             }
             // holder.ivMore
+            holder.tvChallengers.setText("같이 하는 친구들: " + data.getChallengersConut() + "명");
         }
     }
 
@@ -120,6 +121,7 @@ public class MyHistoryListAdapter extends RecyclerView.Adapter<MyHistoryListAdap
         ImageView ivMore;
         TextView tvPercentage;
         ProgressBar pbChallenge;
+        TextView tvChallengers;
 
         public ChallengeViewHolder(@NonNull final View itemView) {
             super(itemView);
@@ -130,6 +132,7 @@ public class MyHistoryListAdapter extends RecyclerView.Adapter<MyHistoryListAdap
             ivMore = itemView.findViewById(R.id.iv_menu_item_challenge);
             tvPercentage = itemView.findViewById(R.id.tv_progress_percentage_item_challenge_main);
             pbChallenge = itemView.findViewById(R.id.pb_item_challenge_main);
+            tvChallengers = itemView.findViewById(R.id.tv_challengers_item_challenge);
 
             /* Set On Click Listener */
             itemView.setOnClickListener(this);

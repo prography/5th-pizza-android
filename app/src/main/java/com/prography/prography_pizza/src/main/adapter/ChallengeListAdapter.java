@@ -103,7 +103,15 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
             holder.tvCreatedAt.setText(new SimpleDateFormat("yyyy.MM.dd").format(new Date())+" 오늘 목표 달성률");
             holder.pbChallenge.setProgress(data.getAchievement());
             holder.tvPercentage.setText(data.getAchievement() + "%");
-            // holder.ivMore
+            holder.tvChallengers.setText("같이 하는 친구들: " + data.getChallengersConut() + "명");
+
+            if (data.getAchievement() == 100) {
+                holder.tvClear.setVisibility(View.VISIBLE);
+                holder.itemView.setEnabled(false);
+            } else {
+                holder.tvClear.setVisibility(View.GONE);
+                holder.itemView.setEnabled(true);
+            }
         }
     }
 
@@ -138,6 +146,8 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
         ImageView ivMore;
         TextView tvPercentage;
         ProgressBar pbChallenge;
+        TextView tvClear;
+        TextView tvChallengers;
 
         public ViewHolder(final View itemView) {
             super(itemView);
@@ -148,6 +158,8 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
             ivMore = itemView.findViewById(R.id.iv_menu_item_challenge);
             tvPercentage = itemView.findViewById(R.id.tv_progress_percentage_item_challenge_main);
             pbChallenge = itemView.findViewById(R.id.pb_item_challenge_main);
+            tvClear = itemView.findViewById(R.id.tv_clear_item_challenge_main);
+            tvChallengers = itemView.findViewById(R.id.tv_challengers_item_challenge);
 
             /* Set On Click Listener */
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -176,17 +188,22 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
 
         @Override
         public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
-            new AlertDialog.Builder(mContext).setMessage("정말로 삭제하시겠습니까?").setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            new AlertDialog.Builder(mContext).setMessage("정말로 삭제하시겠습니까?")
+                    .setPositiveButton("예", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     int position = viewHolder.getAdapterPosition();
                     deleteItem(position);
                 }
-            }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            }).setNegativeButton("아니오", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    notifyDataSetChanged();
                     dialog.cancel();
+                }
+            }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    notifyDataSetChanged();
                 }
             }).create().show();
 
