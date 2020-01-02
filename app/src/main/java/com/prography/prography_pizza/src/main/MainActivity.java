@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
+import com.kakao.util.helper.log.Logger;
 import com.nhn.android.naverlogin.OAuthLogin;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.db.ChallengeModel;
@@ -90,6 +92,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
         /* Get Contents From Server... */
         tryGetChallenge();
+
 
         /* Toolbar */
         setSupportActionBar(tbMain);

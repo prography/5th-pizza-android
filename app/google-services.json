@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1040046491707-8061g4vg2s7pj5ntc25gvu08cls3968g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.prography.prography_pizza",
+            "certificate_hash": "ff365edcdfb8cba5c62d5109871c4dd72c66351d"
+          }
+        },
+        {
           "client_id": "1040046491707-vre2ep9t3e6qbka3hrfifka28s3oua70.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -36,7 +44,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1040046491707-2m7ohhl3hb5a888hros1itjl3ipcrnki.apps.googleusercontent.com",
+              "client_id": "1040046491707-l3egtlg5n72alvpb4ft8gqrru03g5j7m.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

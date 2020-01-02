@@ -1,6 +1,7 @@
 package com.prography.prography_pizza.src.splash;
 
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 
 import com.facebook.AccessToken;
@@ -10,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.util.exception.KakaoException;
+import com.kakao.util.helper.log.Logger;
 import com.nhn.android.naverlogin.OAuthLogin;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
@@ -35,6 +37,13 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        // SHA1: FF:36:5E:DC:DF:B8:CB:A5:C6:2D:51:09:87:1C:4D:D7:2C:66:35:1D
+
+        byte[] sha1 = {
+                (byte)0xFF, (byte)0x36, (byte)0x5E, (byte)0xDC, (byte)0xDF, (byte)0xB8, (byte)0xCB, (byte)0xA5, (byte)0xC6, 0x2D, 0x51, (byte)0x09, (byte)0x87, (byte)0x1C, 0x4D, (byte)0xD7, (byte)0x2C, (byte)0x66, (byte)0x35, (byte)0x1D
+        };
+        Logger.e("keyHash: " + Base64.encodeToString(sha1, Base64.NO_WRAP));
 
         String loginType = sSharedPreferences.getString(LOGIN_TYPE, TYPE_KAKAO);
         switch (loginType) {
