@@ -103,7 +103,7 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
             holder.tvCreatedAt.setText(new SimpleDateFormat("yyyy.MM.dd").format(new Date())+" 오늘 목표 달성률");
             holder.pbChallenge.setProgress(data.getAchievement());
             holder.tvPercentage.setText(data.getAchievement() + "%");
-            holder.tvChallengers.setText("같이 하는 친구들: " + data.getChallengersConut() + "명");
+            holder.tvChallengers.setText(data.getChallengersConut() + "명");
 
             if (data.getAchievement() == 100) {
                 holder.tvClear.setVisibility(View.VISIBLE);

@@ -9,9 +9,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.challenge_detail.ChallengeDetailActivity;
 import com.prography.prography_pizza.src.main.models.MainResponse;
@@ -21,6 +18,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static com.prography.prography_pizza.src.ApplicationClass.DATE_FORMAT;
 
@@ -105,7 +105,7 @@ public class MyHistoryListAdapter extends RecyclerView.Adapter<MyHistoryListAdap
                 holder.pbChallenge.setVisibility(View.INVISIBLE);
             }
             // holder.ivMore
-            holder.tvChallengers.setText("같이 하는 친구들: " + data.getChallengersConut() + "명");
+            holder.tvChallengers.setText(data.getChallengersConut() + "명");
         }
     }
 
