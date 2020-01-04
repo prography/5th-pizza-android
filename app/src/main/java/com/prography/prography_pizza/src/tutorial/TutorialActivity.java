@@ -1,6 +1,7 @@
 package com.prography.prography_pizza.src.tutorial;
 
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -43,8 +44,33 @@ public class TutorialActivity extends BaseActivity implements TutorialView {
 
     @Override
     public void onClick(View v) {
-        startNextActivity(SignInActivity.class);
-        finish();
+        switch (v.getId()) {
+            case R.id.tv_skip_tutorial:
+                startNextActivity(SignInActivity.class);
+                finish();
+                break;
+        }
     }
 
+    private boolean CHECK_ACTION_MOVE = false;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_UP:
+                if (!CHECK_ACTION_MOVE) {
+                    if (vpTutorial.getCurrentItem() == fragmentPagerAdapter.getCount() - 1) {
+                        tvSkip.performClick();
+                    } else {
+                        vpTutorial.setCurrentItem(vpTutorial.getCurrentItem() + 1);
+                    }
+                    CHECK_ACTION_MOVE = false;
+                }
+                return true;
+            case MotionEvent.ACTION_MOVE:
+                CHECK_ACTION_MOVE = true;
+                return true;
+        }
+        return super.onTouchEvent(event);
+    }
 }

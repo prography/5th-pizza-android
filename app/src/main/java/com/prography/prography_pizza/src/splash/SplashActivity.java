@@ -97,7 +97,6 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
                         finish();
                     }
                 }, 1000);
-
                 break;
 
         }
