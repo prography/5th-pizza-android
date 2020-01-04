@@ -50,4 +50,6 @@ public class TutorialPager extends FragmentPagerAdapter {
     public int getCount() {
         return NUM_ITEMS;
     }
+
+
 }

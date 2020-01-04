@@ -1,11 +1,11 @@
 package com.prography.prography_pizza.src.splash;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 
 import com.facebook.AccessToken;
-import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.kakao.auth.ISessionCallback;
@@ -19,6 +19,7 @@ import com.prography.prography_pizza.src.main.MainActivity;
 import com.prography.prography_pizza.src.signin.SignInActivity;
 import com.prography.prography_pizza.src.splash.interfaces.SplashActivityView;
 import com.prography.prography_pizza.src.splash.models.SplashResponse;
+import com.prography.prography_pizza.src.tutorial.TutorialActivity;
 
 import static com.prography.prography_pizza.src.ApplicationClass.LOGIN_TYPE;
 import static com.prography.prography_pizza.src.ApplicationClass.TYPE_FACEBOOK;
@@ -45,7 +46,7 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
         };
         Logger.e("keyHash: " + Base64.encodeToString(sha1, Base64.NO_WRAP));
 
-        String loginType = sSharedPreferences.getString(LOGIN_TYPE, TYPE_KAKAO);
+        String loginType = sSharedPreferences.getString(LOGIN_TYPE, "");
         switch (loginType) {
             case TYPE_KAKAO:
                 callback = new SessionCallback();
@@ -88,6 +89,17 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
                 }
                 trySignIn(naverToken[0], TYPE_NAVER);
                 break;
+            default:
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startNextActivity(TutorialActivity.class);
+                        finish();
+                    }
+                }, 1000);
+
+                break;
+
         }
     }
 

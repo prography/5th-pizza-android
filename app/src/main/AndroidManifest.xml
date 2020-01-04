@@ -23,12 +23,12 @@
         <activity android:name=".src.result.ResultActivity"></activity>
         <activity android:name=".src.challenge_detail.ChallengeDetailActivity" />
         <activity android:name=".src.mypage.MyPageActivity" />
-        <activity android:name=".src.splash.SplashActivity" />
+        <activity android:name=".src.tutorial.TutorialActivity" />
         <activity
             android:name=".src.record.RecordActivity"
             android:launchMode="singleTask" />
         <activity android:name=".src.main.MainActivity" />
-        <activity android:name=".src.tutorial.TutorialActivity">
+        <activity android:name=".src.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

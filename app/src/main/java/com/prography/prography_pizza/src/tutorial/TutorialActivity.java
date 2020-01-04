@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
-import com.prography.prography_pizza.src.splash.SplashActivity;
+import com.prography.prography_pizza.src.signin.SignInActivity;
 import com.prography.prography_pizza.src.tutorial.adapter.TutorialPager;
 import com.prography.prography_pizza.src.tutorial.interfaces.TutorialView;
 
@@ -43,7 +43,8 @@ public class TutorialActivity extends BaseActivity implements TutorialView {
 
     @Override
     public void onClick(View v) {
-        startNextActivity(SplashActivity.class);
+        startNextActivity(SignInActivity.class);
         finish();
     }
+
 }
