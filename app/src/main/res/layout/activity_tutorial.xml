@@ -19,5 +19,16 @@
         app:ci_margin="4dp"
         android:layout_gravity="bottom"/>
 
+    <TextView
+        android:id="@+id/tv_skip_tutorial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="skip >"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"/>
+
 
 </FrameLayout>
