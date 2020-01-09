@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,13 +36,17 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
@@ -50,6 +55,8 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.maps.UiSettings;
 import com.mapbox.mapboxsdk.plugins.localization.LocalizationPlugin;
+import com.mapbox.mapboxsdk.snapshotter.MapSnapshot;
+import com.mapbox.mapboxsdk.snapshotter.MapSnapshotter;
 import com.mapbox.mapboxsdk.style.expressions.Expression;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.layers.Property;
@@ -74,6 +81,7 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineCap;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineGradient;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineJoin;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth;
+import static com.prography.prography_pizza.src.ApplicationClass.BASE_FIREBASE_STORAGE;
 import static com.prography.prography_pizza.src.ApplicationClass.CURRENT_TIME_FORMAT;
 
 public class RecordActivity extends BaseActivity implements RecordActivityView {
@@ -112,6 +120,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private MapboxMap mvImplRecord;
     private Style mvStyle;
     private PermissionsManager permissionsManager;
+    private Bitmap mImg;
 
     private MainResponse.Data mChallenge;
     private double mGoal = 0;
@@ -361,10 +370,16 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         mAlertDialog.show();
     }
 
-    private void tryPostRecord(int challengeId, double totalTime, double totalDistance) {
+    private void tryPostImgToFirebase(Bitmap bitmap) {
         showProgressDialog();
         RecordService recordService = new RecordService(this);
-        recordService.postRecord(challengeId, totalTime, totalDistance);
+        recordService.postImgToFirebase(bitmap);
+    }
+
+    private void tryPostRecord(int challengeId, double totalTime, double totalDistance, String url) {
+        showProgressDialog();
+        RecordService recordService = new RecordService(this);
+        recordService.postRecord(challengeId, totalTime, totalDistance, url);
     }
 
     @Override
@@ -372,6 +387,11 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         hideProgressDialog();
         showToast("업로드에 성공하였습니다.");
         finish();
+    }
+
+    @Override
+    public void validateFirebaseSuccess(String imgUrl) {
+        tryPostRecord(mChallenge.getChallengeId(),  mLocationDataSet.totalTime, (double) mLocationDataSet.totalDistance, imgUrl);
     }
 
     @Override
@@ -452,13 +472,21 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 }
                 break;
             case R.id.tv_submit_record:
+                LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(mLocationDataSet.locations).build();
+                MapSnapshotter.Options options = new MapSnapshotter.Options(500, 500);
+                options.withRegion(mvImplRecord.getProjection().getVisibleRegion().latLngBounds);
+                options.withStyle(mvImplRecord.getStyle().getUri());
+                MapSnapshotter mapSnapshotter = new MapSnapshotter(this, options);
+                mapSnapshotter.start(this);
+                mvImplRecord.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 20));
+
                 if (mGoalPercent == 100) {
                     // 1. 목표를 달성했을 때.
                     new AlertDialog.Builder(this).setMessage("목표를 달성했어요!\n이제 저장하고 쉴까요?")
                             .setPositiveButton("네", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    tryPostRecord(mChallenge.getChallengeId(), mLocationDataSet.totalTime, (double) mLocationDataSet.totalDistance);
+                                    tryPostImgToFirebase(mImg);
                                     dialog.dismiss();
                                     finish();
                                 }
@@ -476,7 +504,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                             .setPositiveButton("네", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    tryPostRecord(mChallenge.getChallengeId(), mLocationDataSet.totalTime, (double) mLocationDataSet.totalDistance);
+                                    tryPostImgToFirebase(mImg);
                                     dialog.dismiss();
                                     finish();
                                 }
@@ -494,13 +522,18 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                             .setPositiveButton("네", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
+                                    dialog.dismiss();
                                 }
                             })
                             .create().show();
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onSnapshotReady(MapSnapshot snapshot) {
+        mImg = snapshot.getBitmap();
     }
 
 
@@ -663,6 +696,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         super.onLowMemory();
         mvRecord.onLowMemory();
     }
+
 
 
 }

@@ -44,6 +44,8 @@ public class ApplicationClass extends Application {
     // 실서버 주소
     public static String BASE_URL = "https://pizza.geusan.com";
 
+    public static String BASE_FIREBASE_STORAGE = "gs://prography.appspot.com";
+
     public static SharedPreferences sSharedPreferences = null;
 
     // SharedPreferences 키 값
