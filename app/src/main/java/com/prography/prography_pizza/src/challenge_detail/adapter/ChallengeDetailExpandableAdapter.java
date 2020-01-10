@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.github.vipulasri.timelineview.TimelineView;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.challenge_detail.models.ChallengeDetailResponse;
@@ -20,6 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static com.prography.prography_pizza.src.ApplicationClass.CURRENT_TIME_FORMAT;
 import static com.prography.prography_pizza.src.ApplicationClass.DATE_FORMAT;

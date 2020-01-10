@@ -4,9 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.vipulasri.timelineview.TimelineView;
+import com.bumptech.glide.Glide;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.challenge_detail.adapter.ChallengeDetailExpandableAdapter;
@@ -19,8 +20,11 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
+import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
+import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
 
 public class ChallengeDetailActivity extends BaseActivity implements ChallengeDetailActivityView {
     private int mChallengeId;
@@ -30,9 +34,11 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
     private ArrayList<ChallengeDetailResponse.Data> mRecordList = new ArrayList<>();
 
     private ChallengeDetailExpandableAdapter cdeAdapter;
-    private TimelineView timelineView;
-    private TextView tvTitle;
-    private TextView tvDate;
+//    private TimelineView timelineView;
+//    private TextView tvTitle;
+//    private TextView tvDate;
+    private ImageView ivProfile;
+    private TextView tvUserName;
 
     private MainResponse.Data mData;
 
@@ -43,8 +49,9 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         setContentView(R.layout.activity_challenge_detail);
 
         /* findViewByID */
-        rvDetail = findViewById(R.id.recyclerView_detail);
+        rvDetail = findViewById(R.id.rv_record_detail);
         tbDetail = findViewById(R.id.toolbar_detail);
+        tvUserName=findViewById(R.id.tv_username_detail);
 //        tvTitle=findViewById(R.id.tv_timeline_title);
 //        tvDate=findViewById(R.id.tv_timeline_date);
 
@@ -55,15 +62,15 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
 
-        /* RecyclerView */
-        /*mRecordList.add(new ChallengeDetailResponse.Data(1,"running",612000,1200,"2019-12-20T00:00:00.000Z"));
-        mRecordList.add(new ChallengeDetailResponse.Data(2,"running",306000,600,"2019-12-21T00:00:00.000Z"));
-*/
-        // RecyclerView 역순으로 출력
-       /* mLayoutManager=new LinearLayoutManager(this);
-        mLayoutManager.setReverseLayout(true);
-        mLayoutManager.setStackFromEnd(true);
-        rvDetail.setLayoutManager(mLayoutManager);*/
+        /* Init View */
+        tvUserName.setText(sSharedPreferences.getString(USER_NAME, "USERName"));
+        Glide.with(this)
+                .load(sSharedPreferences.getString(USER_PROFILE, null))
+                .centerCrop()
+                .error(R.drawable.kakao_default_profile_image)
+                .placeholder(R.drawable.kakao_default_profile_image)
+                .into(ivProfile);
+        ivProfile.setClipToOutline(true);
 
         /* Get Intent */
         Intent intent = getIntent();

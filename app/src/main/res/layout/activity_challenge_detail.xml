@@ -26,16 +26,65 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <TextView
+        android:id="@+id/tv_rank_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="랭킹"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:fontFamily="@font/nanumsquare_regular"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_detail"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="20dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_detail"
+        android:id="@+id/rv_rank_detail"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginHorizontal="20dp"
+        android:scrollbars="none"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_rank"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_rank_detail"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="5dp"/>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_rank_detail"
+        android:layout_marginTop="15dp"
+        android:layout_marginHorizontal="15dp"/>
+
+    <TextView
+        android:id="@+id/tv_record_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="기록"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:fontFamily="@font/nanumsquare_regular"
+        app:layout_constraintTop_toBottomOf="@id/line"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_record_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="5dp"
         android:scrollbars="none"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_timeline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_detail"
+        app:layout_constraintTop_toBottomOf="@id/tv_record_detail"
         app:layout_constraintEnd_toEndOf="parent"/>
 
 
