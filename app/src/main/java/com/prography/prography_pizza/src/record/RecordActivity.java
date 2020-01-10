@@ -54,6 +54,7 @@ import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.maps.UiSettings;
+import com.mapbox.mapboxsdk.maps.renderer.glsurfaceview.MapboxGLSurfaceView;
 import com.mapbox.mapboxsdk.plugins.localization.LocalizationPlugin;
 import com.mapbox.mapboxsdk.snapshotter.MapSnapshot;
 import com.mapbox.mapboxsdk.snapshotter.MapSnapshotter;
@@ -83,6 +84,8 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineJoin;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth;
 import static com.prography.prography_pizza.src.ApplicationClass.BASE_FIREBASE_STORAGE;
 import static com.prography.prography_pizza.src.ApplicationClass.CURRENT_TIME_FORMAT;
+import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
+import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
 
 public class RecordActivity extends BaseActivity implements RecordActivityView {
 
@@ -373,11 +376,10 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private void tryPostImgToFirebase(Bitmap bitmap) {
         showProgressDialog();
         RecordService recordService = new RecordService(this);
-        recordService.postImgToFirebase(bitmap);
+        recordService.postImgToFirebase(sSharedPreferences.getString(USER_NAME, "name"), bitmap);
     }
 
     private void tryPostRecord(int challengeId, double totalTime, double totalDistance, String url) {
-        showProgressDialog();
         RecordService recordService = new RecordService(this);
         recordService.postRecord(challengeId, totalTime, totalDistance, url);
     }
@@ -473,67 +475,67 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 break;
             case R.id.tv_submit_record:
                 LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(mLocationDataSet.locations).build();
-                MapSnapshotter.Options options = new MapSnapshotter.Options(500, 500);
-                options.withRegion(mvImplRecord.getProjection().getVisibleRegion().latLngBounds);
-                options.withStyle(mvImplRecord.getStyle().getUri());
+                mvImplRecord.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 40));
+                MapSnapshotter.Options options = new MapSnapshotter.Options(500, 500)
+                        .withRegion(mvImplRecord.getProjection().getVisibleRegion().latLngBounds)
+                        .withStyle(mvStyle.getUri())
+                        .withLogo(false);
                 MapSnapshotter mapSnapshotter = new MapSnapshotter(this, options);
+                //mapSnapshotter.setStyleUrl(mvStyle.getUri());
+                mapSnapshotter.setStyleJson(mvStyle.getJson());
                 mapSnapshotter.start(this);
-                mvImplRecord.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 20));
-
-                if (mGoalPercent == 100) {
-                    // 1. 목표를 달성했을 때.
-                    new AlertDialog.Builder(this).setMessage("목표를 달성했어요!\n이제 저장하고 쉴까요?")
-                            .setPositiveButton("네", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    tryPostImgToFirebase(mImg);
-                                    dialog.dismiss();
-                                    finish();
-                                }
-                            })
-                            .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            })
-                            .create().show();
-                } else if (mGoalPercent >= 3.f){
-                    // 2. 충분한 거리를 달렸지만 목표를 달성하지 못했을 때.
-                    new AlertDialog.Builder(this).setMessage("목표를 아직 달성하지 못했어요.\n여기까지만 저장하고 잠시 쉴까요?")
-                            .setPositiveButton("네", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    tryPostImgToFirebase(mImg);
-                                    dialog.dismiss();
-                                    finish();
-                                }
-                            })
-                            .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            })
-                            .create().show();
-                } else {
-                    // 3. 달린 거리나 시간이 너무 부족할 때, (3.0% 미만)
-                    new AlertDialog.Builder(this).setMessage("너무 조금만 달렸는데요?\n조금만 더 해볼까요?")
-                            .setPositiveButton("네", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .create().show();
-                }
                 break;
         }
     }
 
     @Override
     public void onSnapshotReady(MapSnapshot snapshot) {
-        mImg = snapshot.getBitmap();
+        mImg = snapshot.getBitmap(); // ISSUE : geoJson Layer가 같이 안잡힘. -> bitmap 업로드 대신 List<latlng>을 json으로 올릴까
+        if (mGoalPercent == 100) {
+            // 1. 목표를 달성했을 때.
+            new AlertDialog.Builder(this).setMessage("목표를 달성했어요!\n이제 저장하고 쉴까요?")
+                    .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            tryPostImgToFirebase(mImg);
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .create().show();
+        } else if (mGoalPercent >= 0.f){
+            // 2. 충분한 거리를 달렸지만 목표를 달성하지 못했을 때.
+            new AlertDialog.Builder(this).setMessage("목표를 아직 달성하지 못했어요.\n여기까지만 저장하고 잠시 쉴까요?")
+                    .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            tryPostImgToFirebase(mImg);
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .create().show();
+        } else {
+            // 3. 달린 거리나 시간이 너무 부족할 때, (3.0% 미만)
+            new AlertDialog.Builder(this).setMessage("너무 조금만 달렸는데요?\n조금만 더 해볼까요?")
+                    .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+        }
     }
 
 

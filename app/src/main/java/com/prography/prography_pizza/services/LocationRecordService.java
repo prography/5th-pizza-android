@@ -17,7 +17,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.google.android.gms.common.util.Hex;
+import com.google.android.gms.fitness.FitnessOptions;
+import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -31,11 +32,6 @@ import com.prography.prography_pizza.services.interfaces.LocationRecordServiceVi
 import com.prography.prography_pizza.services.models.LocationDataSet;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.RecordActivity;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class LocationRecordService extends Service implements LocationRecordServiceView {
     public static final int DEFAULT_PAUSETIME = 2;
@@ -151,16 +147,23 @@ public class LocationRecordService extends Service implements LocationRecordServ
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
 
+                FitnessOptions fitnessOptions = FitnessOptions.builder()
+                        .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
+                        .addDataType(DataType.TYPE_SPEED, FitnessOptions.ACCESS_READ)
+                        .build();
+
                 Location lastLocation = locationResult.getLastLocation();
                 if (lastLocation != null) {
-                    /* Speed가 지정한 속력 범위가 아닐 때는 아무것도 안하고 return */
-                    if (lastLocation.getSpeed() * 3.6f < MINIMUM_SPEED || lastLocation.getSpeed() * 3.6f > MAXIMUM_SPEED) {
-                        return;
-                    }
                     /* Release Only : 위치 제공자가 "fused"일 때만 연산. 이외의 모의 위치 거부*/
-                    /*if (!lastLocation.getProvider().equals("fused")) {
-                        return;
-                    }*/
+                    if (!BuildConfig.DEBUG) {
+                        /* Speed가 지정한 속력 범위가 아닐 때는 아무것도 안하고 return */
+                        if (lastLocation.getSpeed() * 3.6f < MINIMUM_SPEED || lastLocation.getSpeed() * 3.6f > MAXIMUM_SPEED) {
+                            return;
+                        }
+                        if (!lastLocation.getProvider().equals("fused")) {
+                            return;
+                        }
+                    }
                     COUNT_PAUSE_TIME_IN_SEC = DEFAULT_PAUSETIME; // PauseTime 초기화
 
                     mLocationDataSet.locations.add(new LatLng(lastLocation));

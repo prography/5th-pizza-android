@@ -1,6 +1,7 @@
 package com.prography.prography_pizza.src.record;
 
 import android.graphics.Bitmap;
+import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -56,7 +57,9 @@ public class RecordService {
         });
     }
 
-    public void postImgToFirebase(Bitmap bitmap) {
+    public void postImgToFirebase(String userName, Bitmap bitmap) {
+        final Date date = new Date();
+
         // FirebaseStorage 인스턴스
         FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance(BASE_FIREBASE_STORAGE);
         StorageReference mImageRef = mFirebaseStorage.getReference().child("imgs"); // imgs 폴더 참조.
@@ -64,20 +67,21 @@ public class RecordService {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
-
-        final Date date = new Date();
-        UploadTask uploadTask = mImageRef.child(date.getTime() + ".jpg").putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                mRecordActivityView.validateFailure("firebase Failure");
-                e.printStackTrace();
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                mRecordActivityView.validateFirebaseSuccess(date.getTime() + ".jpg");
-            }
-        });
+        final String title = Base64.encodeToString(userName.getBytes(), Base64.NO_WRAP) + "_" + date.getTime() + ".jpg"; // 특수문자 고려하여 이름을 Base64로 인코딩
+        Log.i("title", title);
+        mImageRef.child(title).putBytes(data)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        mRecordActivityView.validateFailure("firebase Failure");
+                        e.printStackTrace();
+                    }
+                })
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        mRecordActivityView.validateFirebaseSuccess(title);
+                    }
+                });
     }
 }

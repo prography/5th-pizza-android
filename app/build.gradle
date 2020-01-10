@@ -7,8 +7,8 @@ android {
         applicationId "com.prography.prography_pizza"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 5
-        versionName "1.4.2"
+        versionCode 6
+        versionName "1.4.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -75,6 +75,7 @@ dependencies {
     // Google
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.gms:play-services-fitness:18.0.0'
 
     // https://developers.facebook.com/docs/facebook-login/android
     implementation 'com.facebook.android:facebook-login:5.13.0'
