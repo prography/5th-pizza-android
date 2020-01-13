@@ -589,6 +589,10 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     // bottomUpper result View 구성
                     tvProgress.setText(String.format("%.1f", mGoalPercent));
 
+                    // MapView 축소.
+                    LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(mLocationDataSet.locations).build();
+                    mvImplRecord.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));
+
                     // bottomUpper result Animation (나타나기)
                     AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
                     tblRecord.animate().translationY(0).setStartDelay(20).setInterpolator(interpolator).setDuration(500).start();
@@ -624,8 +628,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
     @Override
     public void onSnapshotReady(MapSnapshot snapshot) {
-        // TODO: 커스텀 Imageview객체 만들어서 -> onDraw로 snapshot bitmap 그리고 위에 jsonline 다시 그리기
-        //mImg = snapshot.getBitmap(); // ISSUE : geoJson Layer가 같이 안잡힘. -> bitmap 업로드 대신 List<latlng>을 json으로 올릴까
         mImg = extractMapImageView(snapshot);
 
         if (mGoalPercent == 100) {
@@ -678,6 +680,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     }
 
     public Bitmap extractMapImageView(MapSnapshot input) {
+        showProgressDialog();
         Bitmap output = input.getBitmap();
         Canvas canvas = new Canvas(output);
         Rect rect = new Rect(0, 0, output.getWidth(), output.getHeight());
@@ -703,7 +706,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             }
 
         }
-
+        hideProgressDialog();
         return output;
     }
 

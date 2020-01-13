@@ -59,11 +59,7 @@ public class RecordService {
     }
 
     public void postImgToFirebase(String userName, Bitmap bitmap) {
-        final Calendar cDate = Calendar.getInstance();
-        cDate.setTime(new Date());
-        cDate.set(Calendar.MILLISECOND, 0); // 서버 동기화시 생기는 차이 제거 -> ISSUE 여전히 존재 (분 전환시)
-        cDate.set(Calendar.SECOND, 0); // 서버 동기화시 생기는 차이 제거
-
+        Date date = new Date();
         // FirebaseStorage 인스턴스
         FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance(BASE_FIREBASE_STORAGE);
         StorageReference mImageRef = mFirebaseStorage.getReference().child("imgs"); // imgs 폴더 참조.
@@ -71,7 +67,7 @@ public class RecordService {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
-        final String title = Base64.encodeToString(userName.getBytes(), Base64.NO_WRAP) + "_" + cDate.getTime().getTime() + ".jpg"; // 특수문자 고려하여 이름을 Base64로 인코딩
+        final String title = Base64.encodeToString(userName.getBytes(), Base64.NO_WRAP) + "_" + date.getTime() + ".jpg"; // 특수문자 고려하여 이름을 Base64로 인코딩
         mImageRef.child(title).putBytes(data)
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
