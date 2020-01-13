@@ -18,24 +18,16 @@ import java.util.Map;
 @Entity
 public class LocationDataSet implements Parcelable {
 
-    public static final int VEL_LEVEL0 = 0;
-    public static final int VEL_LEVEL1 = 1;
-    public static final int VEL_LEVEL2 = 2;
-    public static final int VEL_LEVEL3 = 3;
-
     @PrimaryKey(autoGenerate = true)
     public int id = 0;
     @Ignore
-    public ArrayList<LatLng> locations = new ArrayList<>();
+    public ArrayList<LatLng> locations = new ArrayList<>(); // List of LatLngs
     public float totalDistance = 0.0f;
     public float increaseDistance = 0.0f;
-    public float velocity = 0.0f;
-    public float velocityAvg = 0.0f;
-    public int velocityLevel = VEL_LEVEL0;
+    public float speedAvg = 0.0f;
     public int totalTime = 0;
     @Ignore
-    public HashMap<Integer, Expression> changePowerIdxs = new HashMap<>(); // List Of HashMap<int changeIdx, int curColor>
-
+    public ArrayList<Float> speeds = new ArrayList<>(); // List Of Velocity
     public LocationDataSet() {
     }
 
@@ -45,8 +37,7 @@ public class LocationDataSet implements Parcelable {
         locations = in.createTypedArrayList(LatLng.CREATOR);
         totalDistance = in.readFloat();
         increaseDistance = in.readFloat();
-        velocity = in.readFloat();
-        velocityAvg = in.readFloat();
+        speedAvg = in.readFloat();
         totalTime = in.readInt();
     }
 
@@ -73,8 +64,7 @@ public class LocationDataSet implements Parcelable {
         dest.writeTypedList(locations);
         dest.writeFloat(totalDistance);
         dest.writeFloat(increaseDistance);
-        dest.writeFloat(velocity);
-        dest.writeFloat(velocityAvg);
+        dest.writeFloat(speedAvg);
         dest.writeInt(totalTime);
     }
 }

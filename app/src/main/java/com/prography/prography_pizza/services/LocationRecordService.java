@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Binder;
 import android.os.Build;
@@ -17,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.android.gms.common.util.Hex;
 import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -94,9 +96,9 @@ public class LocationRecordService extends Service implements LocationRecordServ
                         COUNT_PAUSE_TIME_IN_SEC--;
                         mLocationDataSet.totalTime += 1; // 총 시간 계산 (매 쓰레드마다 1s 씩 증가
                         if (mLocationDataSet.totalTime != 0 && mLocationDataSet.totalDistance != 0) {
-                            mLocationDataSet.velocityAvg = (mLocationDataSet.totalDistance / mLocationDataSet.totalTime); // m/s
+                            mLocationDataSet.speedAvg = (mLocationDataSet.totalDistance / mLocationDataSet.totalTime); // m/s
                         } else {
-                            mLocationDataSet.velocityAvg = 0.f;
+                            mLocationDataSet.speedAvg = 0.f;
                         }
                         // 평균 속도 계산
 
@@ -154,12 +156,13 @@ public class LocationRecordService extends Service implements LocationRecordServ
 
                 Location lastLocation = locationResult.getLastLocation();
                 if (lastLocation != null) {
-                    /* Release Only : 위치 제공자가 "fused"일 때만 연산. 이외의 모의 위치 거부*/
+                    /* Release Only */
                     if (!BuildConfig.DEBUG) {
                         /* Speed가 지정한 속력 범위가 아닐 때는 아무것도 안하고 return */
                         if (lastLocation.getSpeed() * 3.6f < MINIMUM_SPEED || lastLocation.getSpeed() * 3.6f > MAXIMUM_SPEED) {
                             return;
                         }
+                        /* 위치 제공자가 "fused"일 때만 연산. 이외의 모의 위치 거부 */
                         if (!lastLocation.getProvider().equals("fused")) {
                             return;
                         }
@@ -167,36 +170,14 @@ public class LocationRecordService extends Service implements LocationRecordServ
                     COUNT_PAUSE_TIME_IN_SEC = DEFAULT_PAUSETIME; // PauseTime 초기화
 
                     mLocationDataSet.locations.add(new LatLng(lastLocation));
-                    int velLevel = getVelLevel(lastLocation.getSpeed() * 3.6f); // Current Velocity Level
-                    float vel = lastLocation.getSpeed() * 3.6f;
-                    if (mLocationDataSet.locations.size() == 1) {
-                      // 초기값일 때,
-                        mLocationDataSet.changePowerIdxs.put(0, getColor(vel));
-                    } else if (velLevel != mLocationDataSet.velocityLevel) {
-                        // Compare with prev velocity level
-                        mLocationDataSet.changePowerIdxs.put(mLocationDataSet.locations.size() - 1, getColor(vel));
-                    }
+                    mLocationDataSet.speeds.add(lastLocation.getSpeed() * 3.6f);
                     mLocationDataSet.increaseDistance = getDistanceDx(lastLocation, mLocationDataSet.locations.size() > 1 ?
                             mLocationDataSet.locations.get(mLocationDataSet.locations.size() - 2) : null);
                     mLocationDataSet.totalDistance += mLocationDataSet.increaseDistance;
-                    mLocationDataSet.velocity = vel; // Speed : m/s -> km/h
-                    mLocationDataSet.velocityLevel = velLevel; // Current Velocity Level
                 }
             }
         };
 
-    }
-
-    public int getVelLevel(float vel) {
-        if (vel >= SPEED_RANGE0 && vel < SPEED_RANGE1) {
-            return LocationDataSet.VEL_LEVEL1;
-        } else if (vel >= SPEED_RANGE1 && vel < SPEED_RANGE2) {
-            return LocationDataSet.VEL_LEVEL2;
-        } else if (vel < SPEED_RANGE0) {
-            return LocationDataSet.VEL_LEVEL0;
-        } else {
-            return LocationDataSet.VEL_LEVEL3;
-        }
     }
 
     public float getDistanceDx(@NonNull Location cur, @Nullable LatLng prev) {
@@ -213,42 +194,7 @@ public class LocationRecordService extends Service implements LocationRecordServ
         return result;
     }
 
-    /**
-     * @param vel velocity of the location
-     * @return the value of Expression of red and green
-     */
-    public Expression getColor(float vel) {
 
-        int red = 0, green = 0;
-
-        switch (getVelLevel(vel)) {
-            case LocationDataSet.VEL_LEVEL0:
-                red = 255;
-                green = 0;
-                break;
-            case LocationDataSet.VEL_LEVEL1:
-                red = 255;
-                green = 255 - (int) ((vel - SPEED_RANGE0) / (SPEED_RANGE1 - SPEED_RANGE0)) * 255;
-                break;
-            case LocationDataSet.VEL_LEVEL2:
-                red = 255 - (int) ((vel - SPEED_RANGE1) / (SPEED_RANGE2 - SPEED_RANGE1)) * 255;
-                green = 255;
-                break;
-            case LocationDataSet.VEL_LEVEL3:
-                red = 0;
-                green = 255;
-                break;
-
-        }
-
-        /* validation check */
-        if (red >= 255) red = 255;
-        else if (red <= 0) red = 0;
-        if (green >= 255) green = 255;
-        else if (green <= 0) green = 0;
-
-        return Expression.rgb(red, green, 0);
-    }
 
     @Override
     public void onDestroy() {

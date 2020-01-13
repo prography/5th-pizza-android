@@ -10,10 +10,12 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -157,17 +159,23 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
                     /* Set Gradient Stop Points*/
                     ArrayList<Expression.Stop> stops = new ArrayList<>();
-                    for (Integer key : mLocationDataSet.changePowerIdxs.keySet()) {
-                        Expression expression = mLocationDataSet.changePowerIdxs.get(key);
+                    String colorLevel = "";
+                    for (int i = 0; i < mLocationDataSet.speeds.size(); i++) {
+                        float vel = mLocationDataSet.speeds.get(i);
+                        String curColorLevel = getColor(vel);
+                        if (colorLevel.equals(getColor(vel))) {
+                            // 같으면 패스
+                            continue;
+                        }
+                        // 다를 때
                         float percentage;
                         if (mLocationDataSet.locations.size() != 0) {
-                            percentage = key / (float) mLocationDataSet.locations.size();
+                            percentage = i / (float) mLocationDataSet.locations.size();
                         } else {
                             percentage = 0.f;
                         }
-                        if (expression != null) {
-                            stops.add(Expression.stop(percentage, expression));
-                        }
+                        stops.add(Expression.stop(percentage, Expression.color(Color.parseColor(curColorLevel))));
+                        colorLevel = curColorLevel;
                     }
 
                     /* Set Style */
@@ -213,8 +221,8 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 }
                 Date date = new Date(mLocationDataSet.totalTime * 1000); // Time
                 int pace = 0;
-                if (mLocationDataSet.velocityAvg != 0)
-                    pace = Math.round(1000 / mLocationDataSet.velocityAvg); // m/s -> sec/km
+                if (mLocationDataSet.speedAvg != 0)
+                    pace = Math.round(1000 / mLocationDataSet.speedAvg); // m/s -> sec/km
 
                 tvDistance.setText(distance);
                 tvDistanceUnit.setText(distanceUnit);
@@ -232,6 +240,30 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             pcRecord.invalidate();
         }
     };
+
+    /**
+     * @param vel velocity of the location
+     * @return the value of String
+     */
+    public String getColor(float vel) {
+        String red = "00", green = "00", blue = "00";
+
+        if (vel < LocationRecordService.SPEED_RANGE0) {
+            // 5km/h 미만
+            red = "FF";
+        } else if (vel < LocationRecordService.SPEED_RANGE1) {
+            // 10km/h 미만
+            red = "FF";
+            green = "FF";
+        } else if (vel < LocationRecordService.SPEED_RANGE2) {
+            // 15km/h 미만
+            red = "FF";
+            green = "FF";
+        } else if (vel >= LocationRecordService.SPEED_RANGE2) {
+            blue = "FF";
+        }
+        return "#" + red + green + blue;
+    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -399,17 +431,23 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
                 /* Set Gradient Stop Points*/
                 ArrayList<Expression.Stop> stops = new ArrayList<>();
-                for (Integer key : mLocationDataSet.changePowerIdxs.keySet()) {
-                    Expression expression = mLocationDataSet.changePowerIdxs.get(key);
+                String colorLevel = "";
+                for (int i = 0; i < mLocationDataSet.speeds.size(); i++) {
+                    float vel = mLocationDataSet.speeds.get(i);
+                    String curColorLevel = getColor(vel);
+                    if (colorLevel.equals(getColor(vel))) {
+                        // 같으면 패스
+                        continue;
+                    }
+                    // 다를 때
                     float percentage;
                     if (mLocationDataSet.locations.size() != 0) {
-                        percentage = key / (float) mLocationDataSet.locations.size();
+                        percentage = i / (float) mLocationDataSet.locations.size();
                     } else {
                         percentage = 0.f;
                     }
-                    if (expression != null) {
-                        stops.add(Expression.stop(percentage, expression));
-                    }
+                    stops.add(Expression.stop(percentage, Expression.color(Color.parseColor(curColorLevel))));
+                    colorLevel = curColorLevel;
                 }
 
                 /* Set Style */
@@ -419,11 +457,12 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 }
                 LineLayer lines = style.getLayerAs("exercise");
                 if (lines != null) {
+                    Expression.Stop[] stops1 = stops.toArray(new Expression.Stop[stops.size()]);
                     lines.setProperties(lineCap(Property.LINE_CAP_ROUND),
                             lineJoin(Property.LINE_JOIN_ROUND),
                             lineWidth(DEFAULT_LINE_WIDTH * dpUnit),
                             lineGradient(Expression.interpolate(Expression.linear(), Expression.lineProgress(),
-                                    (Expression.Stop[]) stops.toArray())));
+                                    stops1)));
                 }
             }
 
@@ -583,34 +622,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         }
     }
 
-    public Bitmap extractMapImageView(MapSnapshot input) {
-        Bitmap output = input.getBitmap();
-        Canvas canvas = new Canvas(output);
-        Rect rect = new Rect(0, 0, output.getWidth(), output.getHeight());
-        Paint paint = new Paint();
-        Path path = new Path();
-        // TODO : paint를 LineGradient shader를 활용해서 원래 이미지랑 똑같이 복원하기.
-        paint.setAntiAlias(true);
-        paint.setColor(Color.rgb(255, 0 , 0));
-        paint.setStrokeWidth(DEFAULT_LINE_WIDTH * dpUnit);
-        paint.setStrokeCap(Paint.Cap.ROUND);
-        paint.setStrokeJoin(Paint.Join.MITER);
-        boolean isFirst = true;
-        for (LatLng latLng : mLocationDataSet.locations) {
-            PointF point = input.pixelForLatLng(latLng);
-            if (isFirst) {
-                path.moveTo(point.x, point.y);
-                isFirst = false;
-            } else {
-                path.lineTo(point.x, point.y);
-            }
-        }
-        canvas.drawPath(path, paint);
-        canvas.drawBitmap(output, null, rect, paint);
-
-        return output;
-    }
-
     @Override
     public void onSnapshotReady(MapSnapshot snapshot) {
         // TODO: 커스텀 Imageview객체 만들어서 -> onDraw로 snapshot bitmap 그리고 위에 jsonline 다시 그리기
@@ -664,6 +675,36 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     })
                     .create().show();
         }
+    }
+
+    public Bitmap extractMapImageView(MapSnapshot input) {
+        Bitmap output = input.getBitmap();
+        Canvas canvas = new Canvas(output);
+        Rect rect = new Rect(0, 0, output.getWidth(), output.getHeight());
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.rgb(255, 0, 0));
+        paint.setStrokeWidth(DEFAULT_LINE_WIDTH * dpUnit);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+
+        /* Get Color Gradient Array */
+        // TODO : paint를 LineGradient shader를 활용해서 원래 이미지랑 똑같이 복원하기.
+
+        canvas.drawBitmap(output, null, rect, paint);
+        for (int i = 0; i < mLocationDataSet.locations.size(); i++ ) {
+            if (i < mLocationDataSet.locations.size() - 2) {
+                LatLng latLng = mLocationDataSet.locations.get(i);
+                LatLng latLngNext = mLocationDataSet.locations.get(i + 1);
+                PointF point = input.pixelForLatLng(latLng);
+                PointF pointNext = input.pixelForLatLng(latLngNext);
+                paint.setColor(Color.parseColor(getColor(mLocationDataSet.speeds.get(i))));
+                canvas.drawLine(point.x, point.y, pointNext.x, pointNext.y, paint);
+            }
+
+        }
+
+        return output;
     }
 
     @Override
