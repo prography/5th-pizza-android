@@ -10,12 +10,12 @@ public class RecordRequest {
     @SerializedName("distance")
     private double distance;
     @SerializedName("screenshot")
-    private String imgUrl;
+    private String latLngs;
 
-    public RecordRequest(int challengeId, double totalTime, double distance, String imgUrl) {
+    public RecordRequest(int challengeId, double totalTime, double distance, String latLngs) {
         this.challengeId = challengeId;
         this.totalTime = totalTime;
         this.distance = distance;
-        this.imgUrl = imgUrl;
+        this.latLngs = latLngs;
     }
 }

@@ -33,9 +33,9 @@ public class RecordService {
         this.mRecordActivityView = mRecordActivityView;
     }
 
-    public void postRecord(int challengeId, double totalTime, double totalDistance, String url) {
+    public void postRecord(int challengeId, double totalTime, double totalDistance, String latLngs) {
         final RecordRetrofitInterface recordRetrofitInterface = getRetrofit().create(RecordRetrofitInterface.class);
-        recordRetrofitInterface.postRecord(new RecordRequest(challengeId, totalTime, totalDistance, url)).enqueue(new Callback<RecordResponse>() {
+        recordRetrofitInterface.postRecord(new RecordRequest(challengeId, totalTime, totalDistance, latLngs)).enqueue(new Callback<RecordResponse>() {
             @Override
             public void onResponse(Call<RecordResponse> call, Response<RecordResponse> response) {
                 final RecordResponse recordResponse = response.body();

@@ -8,7 +8,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PointF;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -26,18 +31,12 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.view.GravityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.transition.Slide;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
@@ -54,18 +53,14 @@ import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.maps.UiSettings;
-import com.mapbox.mapboxsdk.maps.renderer.glsurfaceview.MapboxGLSurfaceView;
 import com.mapbox.mapboxsdk.plugins.localization.LocalizationPlugin;
 import com.mapbox.mapboxsdk.snapshotter.MapSnapshot;
 import com.mapbox.mapboxsdk.snapshotter.MapSnapshotter;
 import com.mapbox.mapboxsdk.style.expressions.Expression;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.layers.Property;
-import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
-import com.mapbox.mapboxsdk.style.layers.PropertyValue;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-import com.prography.prography_pizza.BuildConfig;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.services.LocationRecordService;
 import com.prography.prography_pizza.services.models.LocationDataSet;
@@ -82,7 +77,6 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineCap;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineGradient;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineJoin;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth;
-import static com.prography.prography_pizza.src.ApplicationClass.BASE_FIREBASE_STORAGE;
 import static com.prography.prography_pizza.src.ApplicationClass.CURRENT_TIME_FORMAT;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
 import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
@@ -134,7 +128,110 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private PieDataSet mPieDataSet;
     private PieData mPieData;
     private boolean SERVICE_RUNNING = false;
+    private BroadcastReceiver mLocationDataSetReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mLocationDataSet = intent.getParcelableExtra("locationDataSet");
 
+            /* Set View */
+            if (mLocationDataSet != null) {
+                mvImplRecord.getLocationComponent().setCameraMode(CameraMode.TRACKING_GPS);
+                switch (mGoalType) {
+                    case GOALTYPE_DISTANCE:
+                        mGoalPercent = (float) (mLocationDataSet.totalDistance / mGoal) * 100;
+                        break;
+                    case GOALTYPE_TIME:
+                        mGoalPercent = (float) (mLocationDataSet.totalTime / mGoal) * 100;
+                        break;
+                }
+                if (mGoalPercent >= 100)
+                    mGoalPercent = 100;
+
+                /* 새로운 polyline 점 추가 */
+                int lastIndex = mLocationDataSet.locations.size() - 1;
+                if (lastIndex >= 0) {
+                    /* Set Line */
+                    LatLng lastLatLng = mLocationDataSet.locations.get(lastIndex);
+                    mPoints.add(Point.fromLngLat(lastLatLng.getLongitude(), lastLatLng.getLatitude(), lastLatLng.getAltitude()));
+                    FeatureCollection featureCollection = FeatureCollection.fromFeature(Feature.fromGeometry(LineString.fromLngLats(mPoints)));
+
+                    /* Set Gradient Stop Points*/
+                    ArrayList<Expression.Stop> stops = new ArrayList<>();
+                    for (Integer key : mLocationDataSet.changePowerIdxs.keySet()) {
+                        Expression expression = mLocationDataSet.changePowerIdxs.get(key);
+                        float percentage;
+                        if (mLocationDataSet.locations.size() != 0) {
+                            percentage = key / (float) mLocationDataSet.locations.size();
+                        } else {
+                            percentage = 0.f;
+                        }
+                        if (expression != null) {
+                            stops.add(Expression.stop(percentage, expression));
+                        }
+                    }
+
+                    /* Set Style */
+                    GeoJsonSource path = mvStyle.getSourceAs("path");
+                    if (path != null) {
+                        path.setGeoJson(featureCollection);
+                    }
+                    LineLayer lines = mvStyle.getLayerAs("exercise");
+                    if (lines != null) {
+                        Expression.Stop[] stops1 = stops.toArray(new Expression.Stop[stops.size()]);
+                        lines.setProperties(lineCap(Property.LINE_CAP_ROUND),
+                                lineJoin(Property.LINE_JOIN_ROUND),
+                                lineWidth(DEFAULT_LINE_WIDTH * dpUnit),
+                                lineGradient(Expression.interpolate(Expression.linear(),
+                                        Expression.lineProgress(),
+                                        stops1)));
+                    }
+
+                    /* Debug TextView *//*
+                    if (BuildConfig.DEBUG) {
+                        ((TextView) findViewById(R.id.tv_debug))
+                                .setText("Provider: " + cur.getProvider() + "\n"
+                                        + "PrevLocation: " + prev.getLatitude() + ", " + prev.getLongitude() + "\n"
+                                        + "CurLocation: " + cur.getLatitude() + ", " + cur.getLongitude() + "\n"
+                                        + "Color: " + curPower.get(0) + ", " + curPower.get(1) + ", 0" + "\n"
+                                        + "Velocity: " + cur.getSpeed() + " m/s\n"
+                                        + "Accuracy: " + cur.getAccuracy() + "\n"
+                                        + "DistanceTo: " + cur.distanceTo(prev) + " m\n"
+                                        + "Distance(Vel): " + cur.getSpeed() * 1 + "m");
+                    } */
+                }
+
+
+                /* Set TextView */
+                String distance = "";
+                String distanceUnit = "";
+                if (mLocationDataSet.totalDistance < 1000) {
+                    distance = String.format("%.1f", mLocationDataSet.totalDistance);
+                    distanceUnit = "m";
+                } else {
+                    distance = String.format("%.1f", mLocationDataSet.totalDistance / 1000);
+                    distanceUnit = "km";
+                }
+                Date date = new Date(mLocationDataSet.totalTime * 1000); // Time
+                int pace = 0;
+                if (mLocationDataSet.velocityAvg != 0)
+                    pace = Math.round(1000 / mLocationDataSet.velocityAvg); // m/s -> sec/km
+
+                tvDistance.setText(distance);
+                tvDistanceUnit.setText(distanceUnit);
+                tvTime.setText(CURRENT_TIME_FORMAT.format(date));
+                tvPace.setText(String.format("%02d'%02d''", pace / 60, pace % 60));
+            }
+
+            /* PieChart */
+            List<PieEntry> pieEntryList = new ArrayList<>(Arrays.asList(
+                    new PieEntry(mGoalPercent / 100, ""),
+                    new PieEntry(1 - mGoalPercent / 100, "")));
+            mPieDataSet.setValues(pieEntryList);
+            mPieData.setDataSet(mPieDataSet);
+            pcRecord.setData(mPieData);
+            pcRecord.invalidate();
+        }
+    };
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -296,7 +393,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 /* Set Line */
                 mPoints.clear();
                 for (LatLng latLng : mLocationDataSet.locations) {
-                    mPoints.add(Point.fromLngLat(latLng.getLongitude(),latLng.getLatitude(),latLng.getAltitude()));
+                    mPoints.add(Point.fromLngLat(latLng.getLongitude(), latLng.getLatitude(), latLng.getAltitude()));
                 }
                 FeatureCollection featureCollection = FeatureCollection.fromFeature(Feature.fromGeometry(LineString.fromLngLats(mPoints)));
 
@@ -379,9 +476,9 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         recordService.postImgToFirebase(sSharedPreferences.getString(USER_NAME, "name"), bitmap);
     }
 
-    private void tryPostRecord(int challengeId, double totalTime, double totalDistance, String url) {
+    private void tryPostRecord(int challengeId, double totalTime, double totalDistance, String latLngs) {
         RecordService recordService = new RecordService(this);
-        recordService.postRecord(challengeId, totalTime, totalDistance, url);
+        recordService.postRecord(challengeId, totalTime, totalDistance, latLngs);
     }
 
     @Override
@@ -393,7 +490,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
     @Override
     public void validateFirebaseSuccess(String imgUrl) {
-        tryPostRecord(mChallenge.getChallengeId(),  mLocationDataSet.totalTime, (double) mLocationDataSet.totalDistance, imgUrl);
+        tryPostRecord(mChallenge.getChallengeId(), mLocationDataSet.totalTime, (double) mLocationDataSet.totalDistance, imgUrl);
     }
 
     @Override
@@ -465,7 +562,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     if (mGoalPercent >= 30) {
                         ivStar1.animate().alpha(1.f).setStartDelay(500).setDuration(200).start();
                     }
-                    if (mGoalPercent >= 60){
+                    if (mGoalPercent >= 60) {
                         ivStar2.animate().alpha(1.f).setStartDelay(600).setDuration(200).start();
                     }
                     if (mGoalPercent >= 90) {
@@ -475,22 +572,51 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 break;
             case R.id.tv_submit_record:
                 LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(mLocationDataSet.locations).build();
-                mvImplRecord.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 40));
+                mvImplRecord.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));
                 MapSnapshotter.Options options = new MapSnapshotter.Options(500, 500)
                         .withRegion(mvImplRecord.getProjection().getVisibleRegion().latLngBounds)
                         .withStyle(mvStyle.getUri())
                         .withLogo(false);
                 MapSnapshotter mapSnapshotter = new MapSnapshotter(this, options);
-                //mapSnapshotter.setStyleUrl(mvStyle.getUri());
-                mapSnapshotter.setStyleJson(mvStyle.getJson());
                 mapSnapshotter.start(this);
                 break;
         }
     }
 
+    public Bitmap extractMapImageView(MapSnapshot input) {
+        Bitmap output = input.getBitmap();
+        Canvas canvas = new Canvas(output);
+        Rect rect = new Rect(0, 0, output.getWidth(), output.getHeight());
+        Paint paint = new Paint();
+        Path path = new Path();
+        // TODO : paint를 LineGradient shader를 활용해서 원래 이미지랑 똑같이 복원하기.
+        paint.setAntiAlias(true);
+        paint.setColor(Color.rgb(255, 0 , 0));
+        paint.setStrokeWidth(DEFAULT_LINE_WIDTH * dpUnit);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeJoin(Paint.Join.MITER);
+        boolean isFirst = true;
+        for (LatLng latLng : mLocationDataSet.locations) {
+            PointF point = input.pixelForLatLng(latLng);
+            if (isFirst) {
+                path.moveTo(point.x, point.y);
+                isFirst = false;
+            } else {
+                path.lineTo(point.x, point.y);
+            }
+        }
+        canvas.drawPath(path, paint);
+        canvas.drawBitmap(output, null, rect, paint);
+
+        return output;
+    }
+
     @Override
     public void onSnapshotReady(MapSnapshot snapshot) {
-        mImg = snapshot.getBitmap(); // ISSUE : geoJson Layer가 같이 안잡힘. -> bitmap 업로드 대신 List<latlng>을 json으로 올릴까
+        // TODO: 커스텀 Imageview객체 만들어서 -> onDraw로 snapshot bitmap 그리고 위에 jsonline 다시 그리기
+        //mImg = snapshot.getBitmap(); // ISSUE : geoJson Layer가 같이 안잡힘. -> bitmap 업로드 대신 List<latlng>을 json으로 올릴까
+        mImg = extractMapImageView(snapshot);
+
         if (mGoalPercent == 100) {
             // 1. 목표를 달성했을 때.
             new AlertDialog.Builder(this).setMessage("목표를 달성했어요!\n이제 저장하고 쉴까요?")
@@ -498,6 +624,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             tryPostImgToFirebase(mImg);
+                            //tryPostRecord(mChallenge.getChallengeId(), mLocationDataSet.totalTime, mLocationDataSet.totalDistance, jsonLatLng);
                             dialog.dismiss();
                         }
                     })
@@ -508,13 +635,14 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         }
                     })
                     .create().show();
-        } else if (mGoalPercent >= 0.f){
+        } else if (mGoalPercent >= 0.f) {
             // 2. 충분한 거리를 달렸지만 목표를 달성하지 못했을 때.
             new AlertDialog.Builder(this).setMessage("목표를 아직 달성하지 못했어요.\n여기까지만 저장하고 잠시 쉴까요?")
                     .setPositiveButton("네", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             tryPostImgToFirebase(mImg);
+                            //tryPostRecord(mChallenge.getChallengeId(), mLocationDataSet.totalTime, mLocationDataSet.totalDistance, jsonLatLng);
                             dialog.dismiss();
                         }
                     })
@@ -537,112 +665,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     .create().show();
         }
     }
-
-
-    private BroadcastReceiver mLocationDataSetReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            mLocationDataSet = intent.getParcelableExtra("locationDataSet");
-
-            /* Set View */
-            if (mLocationDataSet != null) {
-                mvImplRecord.getLocationComponent().setCameraMode(CameraMode.TRACKING_GPS);
-                switch (mGoalType) {
-                    case GOALTYPE_DISTANCE:
-                        mGoalPercent = (float) (mLocationDataSet.totalDistance / mGoal) * 100;
-                        break;
-                    case GOALTYPE_TIME:
-                        mGoalPercent = (float) (mLocationDataSet.totalTime / mGoal) * 100;
-                        break;
-                }
-                if (mGoalPercent >= 100)
-                    mGoalPercent = 100;
-
-                /* 새로운 polyline 점 추가 */
-                int lastIndex = mLocationDataSet.locations.size() - 1;
-                if (lastIndex >= 0) {
-                    /* Set Line */
-                    LatLng lastLatLng = mLocationDataSet.locations.get(lastIndex);
-                    mPoints.add(Point.fromLngLat(lastLatLng.getLongitude(),lastLatLng.getLatitude(),lastLatLng.getAltitude()));
-                    FeatureCollection featureCollection = FeatureCollection.fromFeature(Feature.fromGeometry(LineString.fromLngLats(mPoints)));
-
-                    /* Set Gradient Stop Points*/
-                    ArrayList<Expression.Stop> stops = new ArrayList<>();
-                    for (Integer key : mLocationDataSet.changePowerIdxs.keySet()) {
-                        Expression expression = mLocationDataSet.changePowerIdxs.get(key);
-                        float percentage;
-                        if (mLocationDataSet.locations.size() != 0) {
-                            percentage = key / (float) mLocationDataSet.locations.size();
-                        } else {
-                            percentage = 0.f;
-                        }
-                        if (expression != null) {
-                            stops.add(Expression.stop(percentage, expression));
-                        }
-                    }
-
-                    /* Set Style */
-                    GeoJsonSource path = mvStyle.getSourceAs("path");
-                    if (path != null) {
-                        path.setGeoJson(featureCollection);
-                    }
-                    LineLayer lines = mvStyle.getLayerAs("exercise");
-                    if (lines != null) {
-                        Expression.Stop[] stops1 = stops.toArray(new Expression.Stop[stops.size()]);
-                        lines.setProperties(lineCap(Property.LINE_CAP_ROUND),
-                                lineJoin(Property.LINE_JOIN_ROUND),
-                                lineWidth(DEFAULT_LINE_WIDTH * dpUnit),
-                                lineGradient(Expression.interpolate(Expression.linear(),
-                                        Expression.lineProgress(),
-                                        stops1)));
-                    }
-
-                    /* Debug TextView *//*
-                    if (BuildConfig.DEBUG) {
-                        ((TextView) findViewById(R.id.tv_debug))
-                                .setText("Provider: " + cur.getProvider() + "\n"
-                                        + "PrevLocation: " + prev.getLatitude() + ", " + prev.getLongitude() + "\n"
-                                        + "CurLocation: " + cur.getLatitude() + ", " + cur.getLongitude() + "\n"
-                                        + "Color: " + curPower.get(0) + ", " + curPower.get(1) + ", 0" + "\n"
-                                        + "Velocity: " + cur.getSpeed() + " m/s\n"
-                                        + "Accuracy: " + cur.getAccuracy() + "\n"
-                                        + "DistanceTo: " + cur.distanceTo(prev) + " m\n"
-                                        + "Distance(Vel): " + cur.getSpeed() * 1 + "m");
-                    } */
-                }
-
-
-                /* Set TextView */
-                String distance = "";
-                String distanceUnit = "";
-                if (mLocationDataSet.totalDistance < 1000) {
-                    distance = String.format("%.1f", mLocationDataSet.totalDistance);
-                    distanceUnit = "m";
-                } else {
-                    distance = String.format("%.1f", mLocationDataSet.totalDistance / 1000);
-                    distanceUnit = "km";
-                }
-                Date date = new Date(mLocationDataSet.totalTime * 1000); // Time
-                int pace = 0;
-                if (mLocationDataSet.velocityAvg != 0)
-                    pace = Math.round(1000 / mLocationDataSet.velocityAvg); // m/s -> sec/km
-
-                tvDistance.setText(distance);
-                tvDistanceUnit.setText(distanceUnit);
-                tvTime.setText(CURRENT_TIME_FORMAT.format(date));
-                tvPace.setText(String.format("%02d'%02d''", pace / 60, pace % 60));
-            }
-
-            /* PieChart */
-            List<PieEntry> pieEntryList = new ArrayList<>(Arrays.asList(
-                    new PieEntry(mGoalPercent / 100, ""),
-                    new PieEntry(1 - mGoalPercent / 100, "")));
-            mPieDataSet.setValues(pieEntryList);
-            mPieData.setDataSet(mPieDataSet);
-            pcRecord.setData(mPieData);
-            pcRecord.invalidate();
-        }
-    };
 
     @Override
     public void onExplanationNeeded(List<String> permissionsToExplain) {
@@ -698,7 +720,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         super.onLowMemory();
         mvRecord.onLowMemory();
     }
-
 
 
 }
