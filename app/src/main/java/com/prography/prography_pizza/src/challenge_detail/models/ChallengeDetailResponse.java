@@ -22,6 +22,8 @@ public class ChallengeDetailResponse {
         private double totalDistance;
         @SerializedName("created_at")
         private String createdAt;
+        @SerializedName("screenshot")
+        private String recordImgUrl;
 
         public int getRecordId() {
             return recordId;
@@ -47,6 +49,9 @@ public class ChallengeDetailResponse {
             return createdAt;
         }
 
+        public String getRecordImgUrl() {
+            return recordImgUrl;
+        }
     }
 
     public ArrayList<Data> getData() {

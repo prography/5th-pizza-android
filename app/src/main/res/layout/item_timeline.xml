@@ -12,13 +12,13 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="15dp"
-        app:endLineColor="@android:color/white"
+        app:startLineColor="#FFA047"
+        app:endLineColor="#FFA047"
+        app:lineWidth="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:linePadding="5dp"
-        app:lineWidth="2dp"
-        app:marker="@drawable/ic_timeline_marker"
-        app:markerSize="20dp"
-        app:startLineColor="@android:color/white" />
+        app:marker="@drawable/marker_timeline"
+        app:markerInCenter="false"
+        app:markerSize="20dp" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -28,7 +28,6 @@
         android:layout_marginTop="15dp"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="15dp"
-        app:cardBackgroundColor="@android:color/white"
         app:cardElevation="0dp"
         app:contentPadding="5dp">
 
@@ -41,7 +40,6 @@
                 android:id="@+id/iv_map_detail"
                 android:layout_width="61dp"
                 android:layout_height="61dp"
-                android:backgroundTint="@android:color/black"
                 android:src="@drawable/ic_launcher_foreground"/>
 
             <LinearLayout

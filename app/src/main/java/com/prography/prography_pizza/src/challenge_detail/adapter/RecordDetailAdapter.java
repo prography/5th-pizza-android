@@ -7,9 +7,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.github.vipulasri.timelineview.TimelineView;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.challenge_detail.models.ChallengeDetailResponse;
+import com.prography.prography_pizza.src.common.utils.GlideApp;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 
 import java.text.ParseException;
@@ -21,10 +27,11 @@ import java.util.Date;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.prography.prography_pizza.src.ApplicationClass.BASE_FIREBASE_STORAGE;
 import static com.prography.prography_pizza.src.ApplicationClass.CURRENT_TIME_FORMAT;
 import static com.prography.prography_pizza.src.ApplicationClass.DATE_FORMAT;
 
-public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<ChallengeDetailExpandableAdapter.TimeLineViewHolder> {
+public class RecordDetailAdapter extends RecyclerView.Adapter<RecordDetailAdapter.TimeLineViewHolder> {
     private ArrayList<ChallengeDetailResponse.Data> mRecordList;
     private Context mContext;
     private RecyclerView mRecyclerView;
@@ -37,7 +44,7 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
 
     private MainResponse.Data mChallenge;
 
-    public ChallengeDetailExpandableAdapter(ArrayList<ChallengeDetailResponse.Data> mList, Context context, String exerciseType, MainResponse.Data data) {
+    public RecordDetailAdapter(Context context, ArrayList<ChallengeDetailResponse.Data> mList, String exerciseType, MainResponse.Data data) {
         this.mRecordList = mList;
         mContext = context;
         this.exerciseType = exerciseType;
@@ -98,8 +105,17 @@ public class ChallengeDetailExpandableAdapter extends RecyclerView.Adapter<Chall
             runningTime = CURRENT_TIME_FORMAT.format(d);
             holder.tvTime.setText(runningTime);
 
-            int pace = (int) timeLineModel.getRunningTime() / (int) timeLineModel.getTotalDistance() / 1000; // sec/m -> sec/km
-            holder.tvSpeed.setText(pace / 60 + "'" + pace % 60 + "''/km");
+            int pace = (int) ((timeLineModel.getRunningTime() / timeLineModel.getTotalDistance()) * 1000); // sec/m -> sec/km
+            holder.tvSpeed.setText(String.format("%2d'%2d'' /km", pace / 60, pace % 60));
+
+            // Image
+            StorageReference ref = FirebaseStorage.getInstance().getReference().child("imgs").child(timeLineModel.getRecordImgUrl());
+            GlideApp.with(mContext)
+                    .load(ref)
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.mipmap.ic_launcher)
+                    .thumbnail(0.3f)
+                    .into(holder.ivMap);
 
         }
     }

@@ -7,40 +7,35 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.prography.prography_pizza.R;
-import com.prography.prography_pizza.src.BaseActivity;
-import com.prography.prography_pizza.src.challenge_detail.adapter.ChallengeDetailExpandableAdapter;
-import com.prography.prography_pizza.src.challenge_detail.interfaces.ChallengeDetailActivityView;
-import com.prography.prography_pizza.src.challenge_detail.models.ChallengeDetailResponse;
-import com.prography.prography_pizza.src.main.models.MainResponse;
-
-import java.util.ArrayList;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
-import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
-import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
+import com.prography.prography_pizza.R;
+import com.prography.prography_pizza.src.BaseActivity;
+import com.prography.prography_pizza.src.challenge_detail.adapter.RankAdapter;
+import com.prography.prography_pizza.src.challenge_detail.adapter.RecordDetailAdapter;
+import com.prography.prography_pizza.src.challenge_detail.interfaces.ChallengeDetailActivityView;
+import com.prography.prography_pizza.src.challenge_detail.models.ChallengeDetailResponse;
+import com.prography.prography_pizza.src.challenge_detail.models.RankResponse;
+import com.prography.prography_pizza.src.main.models.MainResponse;
+
+import java.util.ArrayList;
 
 public class ChallengeDetailActivity extends BaseActivity implements ChallengeDetailActivityView {
     private int mChallengeId;
     private String mExerciseType;
-    private RecyclerView rvDetail;
+    private RecyclerView rvRecordDetail;
+    private RecyclerView rvRankDetail;
     private Toolbar tbDetail;
-    private ArrayList<ChallengeDetailResponse.Data> mRecordList = new ArrayList<>();
 
-    private ChallengeDetailExpandableAdapter cdeAdapter;
-//    private TimelineView timelineView;
-//    private TextView tvTitle;
-//    private TextView tvDate;
-    private ImageView ivProfile;
-    private TextView tvUserName;
+    private RecordDetailAdapter rdAdapter;
+    private RankAdapter rAdapter;
 
     private MainResponse.Data mData;
+    private ArrayList<ChallengeDetailResponse.Data> mRecordList = new ArrayList<>();
+    private ArrayList<RankResponse.Data> mRankList = new ArrayList<>();
 
 
     @Override
@@ -49,11 +44,9 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         setContentView(R.layout.activity_challenge_detail);
 
         /* findViewByID */
-        rvDetail = findViewById(R.id.rv_record_detail);
+        rvRecordDetail = findViewById(R.id.rv_record_detail);
         tbDetail = findViewById(R.id.toolbar_detail);
-        tvUserName=findViewById(R.id.tv_username_detail);
-//        tvTitle=findViewById(R.id.tv_timeline_title);
-//        tvDate=findViewById(R.id.tv_timeline_date);
+        rvRankDetail = findViewById(R.id.rv_rank_detail);
 
         /* Toolbar */
         setSupportActionBar(tbDetail);
@@ -63,14 +56,6 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
 
         /* Init View */
-        tvUserName.setText(sSharedPreferences.getString(USER_NAME, "USERName"));
-        Glide.with(this)
-                .load(sSharedPreferences.getString(USER_PROFILE, null))
-                .centerCrop()
-                .error(R.drawable.kakao_default_profile_image)
-                .placeholder(R.drawable.kakao_default_profile_image)
-                .into(ivProfile);
-        ivProfile.setClipToOutline(true);
 
         /* Get Intent */
         Intent intent = getIntent();
@@ -80,8 +65,17 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
             mExerciseType = mData.getExerciseType();
         }
 
-        cdeAdapter = new ChallengeDetailExpandableAdapter(mRecordList, this, mExerciseType, mData);
-        rvDetail.setAdapter(cdeAdapter);
+        /* RecyclerView - Record */
+        rdAdapter = new RecordDetailAdapter(this, mRecordList,  mExerciseType, mData);
+        rvRecordDetail.setAdapter(rdAdapter);
+
+        /* RecyclerView - Rank */
+        // Dummy
+        mRankList.add(new RankResponse.Data(1, "여누YEONU", "", 100));
+        mRankList.add(new RankResponse.Data(2, "여누YEONU", "", 90));
+        mRankList.add(new RankResponse.Data(3, "여누YEONU", "", 80));
+        rAdapter = new RankAdapter(this, mRankList);
+        rvRankDetail.setAdapter(rAdapter);
 
         tyrGetDetail(mChallengeId);
     }
@@ -102,11 +96,17 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
         challengeDetailService.getDetail(mChallengeId);
     }
 
+    private void tryGetRank(int mChallengeId) {
+        showProgressDialog();
+        ChallengeDetailService challengeDetailService = new ChallengeDetailService(this);
+        //getRank
+    }
+
     @Override
     public void validateSuccess(ArrayList<ChallengeDetailResponse.Data> data) {
         hideProgressDialog();
         showToast("Success");
-        cdeAdapter.setData(data);
+        rdAdapter.setData(data);
     }
 
     @Override
