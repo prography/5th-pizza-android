@@ -2,6 +2,8 @@ package com.prography.prography_pizza.src.signin;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +39,7 @@ import com.nhn.android.naverlogin.OAuthLoginHandler;
 import com.nhn.android.naverlogin.ui.view.OAuthLoginButton;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
+import com.prography.prography_pizza.src.common.utils.CustomSimpleMessageDialog;
 import com.prography.prography_pizza.src.main.MainActivity;
 import com.prography.prography_pizza.src.signin.interfaces.SignInActivityView;
 
@@ -243,7 +246,13 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
             } else {
                 String errorCode = mOAuthLoginModule.getLastErrorCode(getParent()).getCode();
                 String errorDesc = mOAuthLoginModule.getLastErrorDesc(getParent());
-                showToast("errorCode:" + errorCode + ", errorDesc:" + errorDesc);
+                CustomSimpleMessageDialog csmdError = new CustomSimpleMessageDialog.Builder(getApplicationContext())
+                        .setMessage("errorCode:" + errorCode + ", errorDesc:" + errorDesc)
+                        .setButtonText("확인")
+                        .setType(CustomSimpleMessageDialog.FINISH_NONE)
+                        .build();
+                csmdError.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                csmdError.show();
             }
         };
     };
@@ -272,16 +281,27 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
     @Override
     public void validateSuccess(String token) {
         hideProgressDialog();
-        showToast("환영합니다");
         sSharedPreferences.edit().putString(X_ACCESS_TOKEN, token).apply();
-        startNextActivity(MainActivity.class);
-        finish();
+        CustomSimpleMessageDialog csmdSuccess = new CustomSimpleMessageDialog.Builder(this)
+                .setMessage("환영합니다.")
+                .setButtonText("닫기")
+                .setType(CustomSimpleMessageDialog.FINISH_ACTIVITY_THEN_START)
+                .setNextActivity(MainActivity.class)
+                .build();
+        csmdSuccess.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        csmdSuccess.show();
     }
 
     @Override
     public void validateFailure() {
         hideProgressDialog();
-        showToast("Failure");
+        CustomSimpleMessageDialog csmdFailure = new CustomSimpleMessageDialog.Builder(this)
+                .setMessage("서버 점검중입니다.\n잠시 후 다시 시도해주세요.")
+                .setButtonText("확인")
+                .setType(CustomSimpleMessageDialog.FINISH_ACTIVITY)
+                .build();
+        csmdFailure.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        csmdFailure.show();
     }
 
     public void tryGetToken(String token, String type) {

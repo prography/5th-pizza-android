@@ -25,7 +25,9 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -68,8 +70,11 @@ import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.services.LocationRecordService;
 import com.prography.prography_pizza.services.models.LocationDataSet;
 import com.prography.prography_pizza.src.BaseActivity;
+import com.prography.prography_pizza.src.common.utils.CustomPosNegDialog;
+import com.prography.prography_pizza.src.common.utils.CustomSimpleMessageDialog;
 import com.prography.prography_pizza.src.common.utils.CustomSubmitDialog;
 import com.prography.prography_pizza.src.main.models.MainResponse;
+import com.prography.prography_pizza.src.mypage.MyPageActivity;
 import com.prography.prography_pizza.src.record.interfaces.RecordActivityView;
 
 import java.util.ArrayList;
@@ -96,7 +101,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private ActionBar abRecord;
     private TextView tvGoal;
     private ImageView ivStartRecord;
-    private TextView tvSubmitRecord;
+    public TextView tvSubmitRecord;
     private com.mapbox.mapboxsdk.maps.MapView mvRecord;
     private PieChart pcRecord;
     private ConstraintLayout clBottomUpperContainer;
@@ -111,8 +116,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private TextView tvTime;
     private TextView tvPace;
     private TableLayout tblRecord;
-
-    private AlertDialog mAlertDialog;
+    public ProgressBar pbLoading;
 
     private ArrayList<Point> mPoints = new ArrayList<>();
 
@@ -165,6 +169,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         tvTime = findViewById(R.id.tv_time_record);
         tvPace = findViewById(R.id.tv_pace_record);
         tblRecord = findViewById(R.id.tbl_record);
+        pbLoading = findViewById(R.id.pb_loading_record);
 
         /* Get Intent */
         Intent intent = getIntent();
@@ -218,20 +223,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         /* Set on Click Listener */
         ivStartRecord.setOnClickListener(this);
         tvSubmitRecord.setOnClickListener(this);
-
-        /* Make AlertDialog */
-        mAlertDialog = new AlertDialog.Builder(this).setMessage("운동을 저장하지 않고 종료하시겠습니까?")
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                }).create();
 
         /* Init View */
         clBottomUpperContainer.setTranslationY(100 * dpUnit);
@@ -510,14 +501,23 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mAlertDialog.show();
+                tryFinish();
         }
         return false;
     }
 
     @Override
     public void onBackPressed() {
-        mAlertDialog.show();
+        tryFinish();
+    }
+
+    private void tryFinish() {
+        CustomPosNegDialog cpndFinish = new CustomPosNegDialog.Builder(this)
+                .setMessage("운동을 저장하지 않고 종료하시겠습니까?")
+                .setType(CustomPosNegDialog.FINISH_ACTIVITY)
+                .build();
+        cpndFinish.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        cpndFinish.show();
     }
 
     public void tryPostImgToFirebase(Bitmap bitmap) {
@@ -534,8 +534,18 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     @Override
     public void validateSuccess(String message) {
         hideProgressDialog();
-        showToast("업로드에 성공하였습니다.");
-        finish();
+        pbLoading.setVisibility(View.GONE);
+        pbLoading.setIndeterminate(false);
+        pbLoading.setProgress(100, true);
+        CustomSimpleMessageDialog csmdSuccess = new CustomSimpleMessageDialog.Builder(this)
+                .setMessage("업로드에 성공하였습니다.")
+                .setType(CustomSimpleMessageDialog.FINISH_ACTIVITY_THEN_START)
+                .setNextActivity(MyPageActivity.class)
+                .setButtonText("확인")
+                .build();
+        csmdSuccess.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        csmdSuccess.setCancelable(false);
+        csmdSuccess.show();
     }
 
     @Override
@@ -546,7 +556,17 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     @Override
     public void validateFailure(String message) {
         hideProgressDialog();
-        showToast("업로드에 실패하였습니다.");
+        pbLoading.setVisibility(View.GONE);
+        tvSubmitRecord.setText("SUBMIT");
+        tvSubmitRecord.setEnabled(true);
+        CustomSimpleMessageDialog csmdFailure = new CustomSimpleMessageDialog.Builder(this)
+                .setMessage("업로드에 실패하였습니다.")
+                .setType(CustomSimpleMessageDialog.FINISH_NONE)
+                .setButtonText("확인")
+                .build();
+        csmdFailure.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        csmdFailure.setCancelable(false);
+        csmdFailure.show();
     }
 
     @SuppressLint("MissingPermission")
@@ -627,11 +647,35 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 }
                 break;
             case R.id.tv_submit_record:
+                tvSubmitRecord.setPivotX(tvSubmitRecord.getWidth());
+                tvSubmitRecord.animate()
+                        .setDuration(200)
+                        .setInterpolator(new DecelerateInterpolator(1.f))
+                        .scaleX(0.3f)
+                        .withStartAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvSubmitRecord.setTextColor(Color.parseColor("#ea7a58"));
+                            }
+                        })
+                        .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvSubmitRecord.setText("");
+                                tvSubmitRecord.setScaleX(1.f);
+                                pbLoading.setVisibility(View.VISIBLE);
+                            }
+                        })
+                        .start();
+
+                tvSubmitRecord.setEnabled(false);
                 LatLngBounds latLngBounds = null;
                 if (mLocationDataSet.locations.size() > 1) {
                     latLngBounds = new LatLngBounds.Builder().includes(mLocationDataSet.locations).build();
                 } else if (mLocationDataSet.locations.size() == 1) {
                     latLngBounds = new LatLngBounds.Builder().include(mLocationDataSet.locations.get(0)).build();
+                } else {
+                    break;
                 }
                 mvImplRecord.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));
                 MapSnapshotter.Options options = new MapSnapshotter.Options(500, 500)

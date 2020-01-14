@@ -2,6 +2,7 @@ package com.prography.prography_pizza.src.common.utils;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.prography.prography_pizza.R;
+import com.prography.prography_pizza.src.mypage.MyPageActivity;
 import com.prography.prography_pizza.src.record.RecordActivity;
 
 import java.util.ArrayList;
@@ -75,7 +77,12 @@ public class CustomSubmitDialog extends Dialog implements View.OnClickListener{
                 dismiss();
                 break;
             case R.id.tv_negative_dialog_submit_record:
+                ((RecordActivity) mContext).tvSubmitRecord.setEnabled(true);
+                ((RecordActivity) mContext).tvSubmitRecord.setText("SUBMIT");
+                ((RecordActivity) mContext).tvSubmitRecord.setTextColor(Color.WHITE);
+                ((RecordActivity) mContext).pbLoading.setVisibility(View.GONE);
                 dismiss();
+
                 break;
         }
     }

@@ -312,18 +312,34 @@
             android:id="@+id/tv_submit_record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_round_shape_border_orange"
+            android:background="@drawable/background_round_shape_orange"
+            android:gravity="right"
             android:text="SUBMIT"
             android:textSize="11sp"
-            android:textColor="@android:color/holo_red_light"
+            android:textColor="@android:color/white"
             android:letterSpacing="0.2"
             android:textScaleX="1.1"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="@font/nanumsquare_bold"
             android:layout_marginEnd="36dp"
             android:enabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/pb_loading_record"
+            style="@android:style/Widget.Material.Light.ProgressBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateBehavior="cycle"
+            android:indeterminateTint="@android:color/white"
+            android:progressTint="@android:color/white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_submit_record"
+            app:layout_constraintEnd_toEndOf="@+id/tv_submit_record"
+            app:layout_constraintStart_toStartOf="@+id/tv_submit_record"
+            app:layout_constraintTop_toTopOf="@+id/tv_submit_record" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
