@@ -66,6 +66,13 @@ public class ApplicationClass extends Application {
     public static String USER_NAME = "USER-NAME";
     public static String USER_EMAIL = "USER-EMAIL";
 
+    // 튜토리얼 진행도 값
+    public static String TUTORIALED_MAIN = "TUTORIALED_MAIN";
+    public static String TUTORIALED_ADD = "TUTORIALED_ADD";
+    public static String TUTORIALED_DETAIL = "TUTORIALED_DETAIL";
+    public static String TUTORIALED_RECORD = "TUTORIALED_RECORD";
+    public static String TUTORIALED_MYPAGE = "TUTORIALED_MYPAGE";
+
     //날짜 형식
     public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA);
     public static SimpleDateFormat CURRENT_TIME_FORMAT = new SimpleDateFormat("mm:ss", Locale.getDefault());

@@ -31,9 +31,9 @@
                 android:id="@+id/tv_title_expanded_main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="오늘 도전할 챌린지가\n0개 있습니다"
+                android:text="@string/tv_title_expanded_main"
                 android:textColor="@android:color/white"
-                android:textSize="30dp"
+                android:textSize="30sp"
                 android:fontFamily="@font/nanumsquare_bold"
                 android:layout_gravity="bottom|start"
                 android:layout_marginBottom="12dp"
@@ -75,7 +75,7 @@
                 android:layout_marginTop="16sp"
                 android:gravity="center"
                 android:id="@+id/tv_toolbar_title_collapsed_main"
-                android:text="TITLE" />
+                tools:text="TITLE" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

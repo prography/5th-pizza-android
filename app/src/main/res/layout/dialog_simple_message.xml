@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="160dp"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/background_round_shape_white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/nanumsquare_regular"
         android:gravity="center"
-        android:text="Description"
+        tools:text="Description"
         android:textColor="#333333"
         android:textSize="17sp"
         app:layout_constraintBottom_toTopOf="@id/tv_positive_dialog_simple_message"
@@ -30,7 +30,7 @@
         android:gravity="center"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
-        android:text="확인"
+        android:text="@string/tv_confirm"
         android:textColor="@android:color/white"
         android:textSize="19sp"
         app:layout_constraintBottom_toBottomOf="parent"

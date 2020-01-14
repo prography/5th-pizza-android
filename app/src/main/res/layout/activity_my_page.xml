@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|top"
                 android:id="@+id/tv_toolbar_title_collapsed_mypage"
-                android:text="TITLE"
+                tools:text="TITLE"
                 android:textSize="17sp"
                 android:textColor="@android:color/white"
                 android:fontFamily="@font/nanumsquare_bold"
@@ -67,7 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_username_mypage"
-                    android:text="USERNAME님"
+                    tools:text="USERNAME님"
                     android:textColor="@android:color/white"
                     android:textSize="17sp"
                     android:fontFamily="@font/nanumsquare_bold"
@@ -94,7 +94,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="모은 별"
+                    android:text="@string/tv_star_desc_mypage"
                     android:textColor="@android:color/white"
                     android:textSize="13sp"
                     android:fontFamily="@font/nanumsquare_regular"
@@ -121,7 +121,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="완료"
+                    android:text="@string/tv_success_desc_mypage"
                     android:textColor="@android:color/white"
                     android:textSize="13sp"
                     android:fontFamily="@font/nanumsquare_regular"
@@ -148,7 +148,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="성공률"
+                    android:text="@string/tv_percent_desc_mypage"
                     android:textColor="@android:color/white"
                     android:textSize="13sp"
                     android:fontFamily="@font/nanumsquare_regular"
@@ -185,12 +185,12 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="요약" />
+                android:text="@string/tv_summary_mypage" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="운동기록" />
+                android:text="@string/tv_history_mypage" />
 
         </com.google.android.material.tabs.TabLayout>
 

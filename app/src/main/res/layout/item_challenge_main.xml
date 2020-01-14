@@ -86,7 +86,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="!! CLEAR !!"
+        android:text="@string/tv_clear"
         android:textSize="32sp"
         android:textColor="#FEEE99"
         android:fontFamily="@font/cookierun_bold"

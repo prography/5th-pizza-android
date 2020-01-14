@@ -43,11 +43,11 @@ public class HistoryFragment extends BaseFragment implements HistoryFragmentView
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_records_mypage, container, false);
+        View view = inflater.inflate(R.layout.fragment_history_mypage, container, false);
 
         /* findViewByID */
-        rvChallengeComplete = view.findViewById(R.id.rv_challenge_complete_records_mypage);
-        rvChallengeIng = view.findViewById(R.id.rv_challenge_ing_records_mypage);
+        rvChallengeComplete = view.findViewById(R.id.rv_challenge_complete_history_mypage);
+        rvChallengeIng = view.findViewById(R.id.rv_challenge_ing_history_mypage);
 
         /* From Local DB... */
         /*ChallengeModel challengeModel = new ChallengeModel(mContext);

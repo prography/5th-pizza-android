@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="도전 성공률이 높은"
+            android:text="@string/tv_username_desc1_summary_mypage"
             android:textSize="13sp"
             android:textColor="@android:color/black"
             android:fontFamily="@font/nanumsquare_regular"
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nanumsquare_extrabold"
-            android:text="UserName"
+            tools:text="UserName"
             android:textColor="@android:color/black"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_username_desc1_summary_mypage"
@@ -47,7 +47,7 @@
             android:id="@+id/tv_username_desc2_summary_mypage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="님은"
+            android:text="@string/tv_username_desc2_summary_mypage"
             android:textColor="@android:color/black"
             android:textSize="13sp"
             android:fontFamily="@font/nanumsquare_regular"
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="작심삼일이 뭐죠? 완벽형"
+            android:text="@string/tv_type_summary_mypage"
             android:textSize="24sp"
             android:textColor="@android:color/black"
             android:fontFamily="@font/nanumsquare_bold"
@@ -98,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:fontFamily="@font/nanumsquare_regular"
-                    android:text="성공률이 전체 10% 그룹에 속해 있습니다"
+                    android:text="@string/tv_type_desc1_summary_mypage"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"
                     />
@@ -123,7 +123,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nanumsquare_regular"
-                    android:text="지금까지 도전별 평균 거리는 4km 입니다."
+                    android:text="@string/tv_type_desc2_summary_mypage"
                     android:layout_gravity="center_vertical"
                     android:textColor="@android:color/black"
                     android:textSize="14sp" />
@@ -148,7 +148,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:fontFamily="@font/nanumsquare_regular"
-                    android:text="지금까지 도전별 평균 속도는 10.2km/h 입니다."
+                    android:text="@string/tv_type_desc3_summary_mypage"
                     android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
@@ -168,9 +168,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tl_summary_mypage" />
 
-
-
-
         <ImageView
             android:id="@+id/iv_type_img_summary_mypage"
             android:layout_width="wrap_content"
@@ -186,7 +183,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nanumsquare_bold"
-            android:text="획득한 배지"
+            android:text="@string/tv_badges_summary_mypage"
             android:textColor="@android:color/black"
             android:textSize="21sp"
             android:layout_marginTop="32dp"
@@ -241,7 +238,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Coming Soon!"
+                android:text="@string/tv_coming_soon"
                 android:textSize="32sp"
                 android:textColor="@android:color/white"
                 android:fontFamily="@font/cookierun_black"
@@ -250,16 +247,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="다음 업데이트를 기다려주세요"
+                android:text="@string/tv_wait_next_update"
                 android:textSize="24sp"
                 android:textColor="@android:color/white"
                 android:fontFamily="@font/cookierun_bold"
                 android:gravity="center" />
-
         </LinearLayout>
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

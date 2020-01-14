@@ -23,7 +23,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:text="취소"
+            android:text="@string/tv_cancel"
             android:fontFamily="@font/nanumsquare_regular"
             android:layout_marginStart="24dp"
             android:textSize="16sp"
@@ -40,9 +40,10 @@
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:fontFamily="@font/nanumsquare_bold"
-            android:text="선택"
+            android:text="@string/tv_select"
             android:id="@+id/tv_header_selector_bottomsheet"
-            android:layout_marginVertical="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
             />
 
         <TextView
@@ -51,7 +52,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:text="확인"
+            android:text="@string/tv_confirm"
             android:fontFamily="@font/nanumsquare_regular"
             android:layout_marginEnd="24dp"
             android:textSize="16sp"
@@ -71,7 +72,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/item_selectorbottomsheet"
         tools:itemCount="6"
-        android:paddingVertical="72dp"
+        android:paddingTop="72dp"
+        android:paddingBottom="72dp"
         android:clipToPadding="false"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -84,7 +86,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/item_selectorbottomsheet"
         tools:itemCount="6"
-        android:paddingVertical="72dp"
+        android:paddingTop="72dp"
+        android:paddingBottom="72dp"
         android:clipToPadding="false"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -97,7 +100,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/item_selectorbottomsheet"
         tools:itemCount="6"
-        android:paddingVertical="72dp"
+        android:paddingTop="72dp"
+        android:paddingBottom="72dp"
         android:clipToPadding="false"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
