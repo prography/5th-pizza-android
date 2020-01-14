@@ -20,4 +20,9 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <!-- Dialog Round Theme -->
+    <style name="RoundDialogTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/background_round_shape_white</item>
+    </style>
+
 </resources>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="300dp"
+    android:background="@drawable/background_round_shape_white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/iv_star1_dialog_positive_negative"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_star_empty"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/iv_star2_dialog_submit_record"
+        app:layout_constraintTop_toTopOf="@+id/iv_star2_dialog_submit_record" />
+
+    <ImageView
+        android:id="@+id/iv_star2_dialog_submit_record"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/ic_star_empty"
+        app:layout_constraintEnd_toStartOf="@+id/iv_star3_dialog_submit_record"
+        app:layout_constraintStart_toEndOf="@+id/iv_star1_dialog_positive_negative"
+        app:layout_constraintBottom_toTopOf="@+id/tv_title_dialog_submit_record"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_star3_dialog_submit_record"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/ic_star_empty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_star2_dialog_submit_record"
+        app:layout_constraintTop_toTopOf="@+id/iv_star2_dialog_submit_record" />
+
+    <TextView
+        android:id="@+id/tv_title_dialog_submit_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="88%"
+        android:textSize="42sp"
+        android:textColor="#FFA047"
+        android:fontFamily="@font/cookierun_bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_desc_dialog_submit_record"
+        app:layout_constraintTop_toBottomOf="@id/iv_star2_dialog_submit_record" />
+
+    <TextView
+        android:id="@+id/tv_desc_dialog_submit_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_dialog_submit_record"
+        app:layout_constraintBottom_toTopOf="@id/tv_positive_dialog_submit_record"
+        android:gravity="center"
+        android:text="Description"
+        android:textSize="15sp"
+        android:textColor="#888888"
+        android:fontFamily="@font/nanumsquare_regular"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:id="@+id/tv_positive_dialog_submit_record"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_negative_dialog_submit_record"
+        android:gravity="center"
+        android:paddingBottom="12dp"
+        android:paddingTop="12dp"
+        android:text="YES"
+        android:textColor="@android:color/white"
+        android:textSize="21sp"
+        android:fontFamily="@font/nanumsquare_bold"
+        android:foreground="?attr/selectableItemBackground"
+        android:background="@drawable/background_bottom_left_round_shape_orange"/>
+
+    <TextView
+        android:id="@+id/tv_negative_dialog_submit_record"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_positive_dialog_submit_record"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:paddingBottom="12dp"
+        android:paddingTop="12dp"
+        android:text="NO"
+        android:textColor="@android:color/white"
+        android:textSize="21sp"
+        android:fontFamily="@font/nanumsquare_bold"
+        android:foreground="?attr/selectableItemBackground"
+        android:background="@drawable/background_bottom_right_round_shape_orange"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,6 +16,7 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Shader;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -67,6 +68,7 @@ import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.services.LocationRecordService;
 import com.prography.prography_pizza.services.models.LocationDataSet;
 import com.prography.prography_pizza.src.BaseActivity;
+import com.prography.prography_pizza.src.common.utils.CustomSubmitDialog;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.record.interfaces.RecordActivityView;
 
@@ -121,15 +123,230 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     private PermissionsManager permissionsManager;
     private Bitmap mImg;
 
+    public Bitmap getmImg() {
+        return mImg;
+    }
+
     private MainResponse.Data mChallenge;
     private double mGoal = 0;
     private int mGoalType = GOALTYPE_DISTANCE;
     private float mGoalPercent = 0.f;
+    private float mGoalPercentLast = 0.f;
     private LocationDataSet mLocationDataSet = null;
 
     private PieDataSet mPieDataSet;
     private PieData mPieData;
     private boolean SERVICE_RUNNING = false;
+
+
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        /* Get Mapbox SDK (Before set content)*/
+        Mapbox.getInstance(this, getString(R.string.mapbox_token));
+        setContentView(R.layout.activity_record);
+
+        /* findViewByID */
+        tvGoal = findViewById(R.id.tv_goal_record);
+        ivStartRecord = findViewById(R.id.iv_start_record);
+        tvSubmitRecord = findViewById(R.id.tv_submit_record);
+        mvRecord = findViewById(R.id.mv_record);
+        pcRecord = findViewById(R.id.pc_record);
+        tbRecord = findViewById(R.id.toolbar_record);
+        clBottomUpperContainer = findViewById(R.id.cl_bottom_upper_container_record);
+        tvProgress = findViewById(R.id.tv_progress_record);
+        tvProgressUnit = findViewById(R.id.tv_progress_unit_record);
+        tvProgressDesc = findViewById(R.id.tv_progress_desc_record);
+        ivStar1 = findViewById(R.id.iv_star1_record);
+        ivStar2 = findViewById(R.id.iv_star2_record);
+        ivStar3 = findViewById(R.id.iv_star3_record);
+        tvDistance = findViewById(R.id.tv_distance_record);
+        tvDistanceUnit = findViewById(R.id.tv_distance_unit_record);
+        tvTime = findViewById(R.id.tv_time_record);
+        tvPace = findViewById(R.id.tv_pace_record);
+        tblRecord = findViewById(R.id.tbl_record);
+
+        /* Get Intent */
+        Intent intent = getIntent();
+        mChallenge = intent.getParcelableExtra("challenge");
+        mGoal = mChallenge.getTime();
+        mGoalPercentLast = mChallenge.getAchievement();
+        switch (mChallenge.getObjectUnit()) {
+            case "distance":
+                mGoalType = GOALTYPE_DISTANCE;
+                switch (mChallenge.getExerciseType()) {
+                    case "running":
+                        tvGoal.setText((int) mGoal / 1000 + "km 달리기");
+                        break;
+                    case "cycling":
+                        tvGoal.setText((int) mGoal / 1000 + "km 자전거 타기");
+                        break;
+                }
+                break;
+            case "time":
+                mGoalType = GOALTYPE_TIME;
+                switch (mChallenge.getExerciseType()) {
+                    case "running":
+                        tvGoal.setText((int) mGoal / 60 + "분 달리기");
+                        break;
+                    case "cycling":
+                        tvGoal.setText((int) mGoal / 60 + "분 자전거 타기");
+                        break;
+                }
+        }
+
+
+        /* Set Constants */
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        dpUnit = displayMetrics.densityDpi / (float) 160;
+
+        /* Toolbar */
+        setSupportActionBar(tbRecord);
+        abRecord = getSupportActionBar();
+        abRecord.setDisplayShowTitleEnabled(false);
+        abRecord.setDisplayHomeAsUpEnabled(true);
+        abRecord.setHomeAsUpIndicator(R.drawable.ic_back);
+
+        /* Set MapView */
+        mvRecord.onCreate(savedInstanceState);
+        mvRecord.getMapAsync(this);
+
+        /* Set BackGround Service Receiver */
+        LocalBroadcastManager.getInstance(this).registerReceiver(mLocationDataSetReceiver, new IntentFilter("location-data"));
+
+        /* Set on Click Listener */
+        ivStartRecord.setOnClickListener(this);
+        tvSubmitRecord.setOnClickListener(this);
+
+        /* Make AlertDialog */
+        mAlertDialog = new AlertDialog.Builder(this).setMessage("운동을 저장하지 않고 종료하시겠습니까?")
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).create();
+
+        /* Init View */
+        clBottomUpperContainer.setTranslationY(100 * dpUnit);
+        tblRecord.setTranslationY(100 * dpUnit);
+        /* PieChart */
+        List<PieEntry> pieEntryList = new ArrayList<>(Arrays.asList(
+                new PieEntry(mGoalPercentLast / 100, ""),
+                new PieEntry(1.f - mGoalPercentLast / 100, "")));
+        mPieDataSet = new PieDataSet(pieEntryList, "");
+        mPieDataSet.setColors(new int[]{R.color.piechart_record, R.color.transparent}, this);
+        mPieDataSet.setDrawValues(false);
+
+        mPieData = new PieData(mPieDataSet);
+        pcRecord.setData(mPieData);
+        pcRecord.invalidate();
+        pcRecord.setHoleColor(Color.TRANSPARENT);
+        pcRecord.setHoleRadius(90);
+        pcRecord.setDrawEntryLabels(false);
+        pcRecord.getLegend().setEnabled(false);
+        pcRecord.getDescription().setEnabled(false);
+        pcRecord.setTouchEnabled(false);
+    }
+
+    @Override
+    public void onMapReady(@NonNull MapboxMap mapboxMap) {
+        mvImplRecord = mapboxMap;
+        mapboxMap.setStyle(Style.DARK, this);
+        ivStartRecord.setEnabled(true);
+    }
+
+    @Override
+    public void onStyleLoaded(@NonNull Style style) {
+        // Map is set.
+        mvStyle = style;
+        if (PermissionsManager.areLocationPermissionsGranted(this)) {
+            // Init
+            LocationComponent locationComponent = mvImplRecord.getLocationComponent();
+            locationComponent.activateLocationComponent(LocationComponentActivationOptions.builder(this, style).build());
+            locationComponent.setLocationComponentEnabled(true);
+            locationComponent.setCameraMode(CameraMode.TRACKING_GPS);
+            locationComponent.setRenderMode(RenderMode.GPS);
+            UiSettings uiSettings = mvImplRecord.getUiSettings();
+            uiSettings.setLogoGravity(Gravity.RIGHT | Gravity.TOP);
+            uiSettings.setCompassEnabled(true);
+            uiSettings.setCompassGravity(Gravity.TOP | Gravity.LEFT);
+            LocalizationPlugin localizationPlugin = new LocalizationPlugin(mvRecord, mvImplRecord, style);
+            try {
+                localizationPlugin.matchMapLanguageWithDeviceDefault();
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
+
+            /* Set Style */
+            style.addSource(new GeoJsonSource("path", FeatureCollection.fromFeature(Feature.fromGeometry(LineString.fromLngLats(mPoints))), new GeoJsonOptions().withLineMetrics(true)));
+            style.addLayer(new LineLayer("exercise", "path").withProperties(
+                    lineCap(Property.LINE_CAP_ROUND),
+                    lineJoin(Property.LINE_JOIN_ROUND),
+                    lineWidth(DEFAULT_LINE_WIDTH * dpUnit)));
+
+
+            /* 액티비티 재시작일경우 기존 location 데이터로부터 Gradient Line 다시 그리기 */
+            Intent intent = getIntent();
+            if (intent.getParcelableExtra("locationDataSetInit") != null) {
+                mLocationDataSet = intent.getParcelableExtra("locationDataSetInit");
+
+                /* Set Line */
+                mPoints.clear();
+                for (LatLng latLng : mLocationDataSet.locations) {
+                    mPoints.add(Point.fromLngLat(latLng.getLongitude(), latLng.getLatitude(), latLng.getAltitude()));
+                }
+                FeatureCollection featureCollection = FeatureCollection.fromFeature(Feature.fromGeometry(LineString.fromLngLats(mPoints)));
+
+                /* Set Gradient Stop Points*/
+                ArrayList<Expression.Stop> stops = new ArrayList<>();
+                String colorLevel = "";
+                for (int i = 0; i < mLocationDataSet.speeds.size(); i++) {
+                    float vel = mLocationDataSet.speeds.get(i);
+                    String curColorLevel = getColor(vel);
+                    if (colorLevel.equals(getColor(vel))) {
+                        // 같으면 패스
+                        continue;
+                    }
+                    // 다를 때
+                    float percentage;
+                    if (mLocationDataSet.locations.size() != 0) {
+                        percentage = i / (float) mLocationDataSet.locations.size();
+                    } else {
+                        percentage = 0.f;
+                    }
+                    stops.add(Expression.stop(percentage, Expression.color(Color.parseColor(curColorLevel))));
+                    colorLevel = curColorLevel;
+                }
+
+                /* Set Style */
+                GeoJsonSource path = style.getSourceAs("path");
+                if (path != null) {
+                    path.setGeoJson(featureCollection);
+                }
+                LineLayer lines = style.getLayerAs("exercise");
+                if (lines != null) {
+                    Expression.Stop[] stops1 = stops.toArray(new Expression.Stop[stops.size()]);
+                    lines.setProperties(lineCap(Property.LINE_CAP_ROUND),
+                            lineJoin(Property.LINE_JOIN_ROUND),
+                            lineWidth(DEFAULT_LINE_WIDTH * dpUnit),
+                            lineGradient(Expression.interpolate(Expression.linear(), Expression.lineProgress(),
+                                    stops1)));
+                }
+            }
+
+        } else {
+            permissionsManager = new PermissionsManager(this);
+            permissionsManager.requestLocationPermissions(this);
+        }
+    }
+
     private BroadcastReceiver mLocationDataSetReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -138,12 +355,13 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             /* Set View */
             if (mLocationDataSet != null) {
                 mvImplRecord.getLocationComponent().setCameraMode(CameraMode.TRACKING_GPS);
+                mvImplRecord.setCameraPosition(CameraUpdateFactory.zoomTo(16).getCameraPosition(mvImplRecord));
                 switch (mGoalType) {
                     case GOALTYPE_DISTANCE:
-                        mGoalPercent = (float) (mLocationDataSet.totalDistance / mGoal) * 100;
+                        mGoalPercent = mGoalPercentLast + (float) (mLocationDataSet.totalDistance / mGoal) * 100;
                         break;
                     case GOALTYPE_TIME:
-                        mGoalPercent = (float) (mLocationDataSet.totalTime / mGoal) * 100;
+                        mGoalPercent = mGoalPercentLast + (float) (mLocationDataSet.totalTime / mGoal) * 100;
                         break;
                 }
                 if (mGoalPercent >= 100)
@@ -266,213 +484,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     }
 
     @Override
-    protected void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        /* Get Mapbox SDK (Before set content)*/
-        Mapbox.getInstance(this, getString(R.string.mapbox_token));
-        setContentView(R.layout.activity_record);
-
-        /* findViewByID */
-        tvGoal = findViewById(R.id.tv_goal_record);
-        ivStartRecord = findViewById(R.id.iv_start_record);
-        tvSubmitRecord = findViewById(R.id.tv_submit_record);
-        mvRecord = findViewById(R.id.mv_record);
-        pcRecord = findViewById(R.id.pc_record);
-        tbRecord = findViewById(R.id.toolbar_record);
-        clBottomUpperContainer = findViewById(R.id.cl_bottom_upper_container_record);
-        tvProgress = findViewById(R.id.tv_progress_record);
-        tvProgressUnit = findViewById(R.id.tv_progress_unit_record);
-        tvProgressDesc = findViewById(R.id.tv_progress_desc_record);
-        ivStar1 = findViewById(R.id.iv_star1_record);
-        ivStar2 = findViewById(R.id.iv_star2_record);
-        ivStar3 = findViewById(R.id.iv_star3_record);
-        tvDistance = findViewById(R.id.tv_distance_record);
-        tvDistanceUnit = findViewById(R.id.tv_distance_unit_record);
-        tvTime = findViewById(R.id.tv_time_record);
-        tvPace = findViewById(R.id.tv_pace_record);
-        tblRecord = findViewById(R.id.tbl_record);
-
-        /* Get Intent */
-        Intent intent = getIntent();
-        mChallenge = intent.getParcelableExtra("challenge");
-        mGoal = mChallenge.getTime();
-        switch (mChallenge.getObjectUnit()) {
-            case "distance":
-                mGoalType = GOALTYPE_DISTANCE;
-                switch (mChallenge.getExerciseType()) {
-                    case "running":
-                        tvGoal.setText((int) mGoal / 1000 + "km 달리기");
-                        break;
-                    case "cycling":
-                        tvGoal.setText((int) mGoal / 1000 + "km 자전거 타기");
-                        break;
-                }
-                break;
-            case "time":
-                mGoalType = GOALTYPE_TIME;
-                switch (mChallenge.getExerciseType()) {
-                    case "running":
-                        tvGoal.setText((int) mGoal / 60 + "분 달리기");
-                        break;
-                    case "cycling":
-                        tvGoal.setText((int) mGoal / 60 + "분 자전거 타기");
-                        break;
-                }
-        }
-
-
-        /* Set Constants */
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        dpUnit = displayMetrics.densityDpi / (float) 160;
-
-        /* Toolbar */
-        setSupportActionBar(tbRecord);
-        abRecord = getSupportActionBar();
-        abRecord.setDisplayShowTitleEnabled(false);
-        abRecord.setDisplayHomeAsUpEnabled(true);
-        abRecord.setHomeAsUpIndicator(R.drawable.ic_back);
-
-        /* Set MapView */
-        mvRecord.onCreate(savedInstanceState);
-        mvRecord.getMapAsync(this);
-
-        /* Set BackGround Service Receiver */
-        LocalBroadcastManager.getInstance(this).registerReceiver(mLocationDataSetReceiver, new IntentFilter("location-data"));
-
-        /* Set on Click Listener */
-        ivStartRecord.setOnClickListener(this);
-        tvSubmitRecord.setOnClickListener(this);
-
-        /* Make AlertDialog */
-        mAlertDialog = new AlertDialog.Builder(this).setMessage("운동을 저장하지 않고 종료하시겠습니까?")
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                }).create();
-
-        /* Init View */
-        clBottomUpperContainer.setTranslationY(100 * dpUnit);
-        tblRecord.setTranslationY(100 * dpUnit);
-        /* PieChart */
-        List<PieEntry> pieEntryList = new ArrayList<>(Arrays.asList(
-                new PieEntry(0.0f, ""),
-                new PieEntry(0.1f, "")));
-        mPieDataSet = new PieDataSet(pieEntryList, "");
-        mPieDataSet.setColors(new int[]{R.color.piechart_record, R.color.transparent}, this);
-        mPieDataSet.setDrawValues(false);
-
-        mPieData = new PieData(mPieDataSet);
-        pcRecord.setData(mPieData);
-        pcRecord.invalidate();
-        pcRecord.setHoleColor(Color.TRANSPARENT);
-        pcRecord.setHoleRadius(90);
-        pcRecord.setDrawEntryLabels(false);
-        pcRecord.getLegend().setEnabled(false);
-        pcRecord.getDescription().setEnabled(false);
-        pcRecord.setTouchEnabled(false);
-    }
-
-    @Override
-    public void onMapReady(@NonNull MapboxMap mapboxMap) {
-        mvImplRecord = mapboxMap;
-        mapboxMap.setStyle(Style.DARK, this);
-        ivStartRecord.setEnabled(true);
-    }
-
-    @Override
-    public void onStyleLoaded(@NonNull Style style) {
-        // Map is set.
-        mvStyle = style;
-        if (PermissionsManager.areLocationPermissionsGranted(this)) {
-            // Init
-            LocationComponent locationComponent = mvImplRecord.getLocationComponent();
-            locationComponent.activateLocationComponent(LocationComponentActivationOptions.builder(this, style).build());
-            locationComponent.setLocationComponentEnabled(true);
-            locationComponent.setCameraMode(CameraMode.TRACKING_GPS);
-            locationComponent.setRenderMode(RenderMode.GPS);
-            UiSettings uiSettings = mvImplRecord.getUiSettings();
-            uiSettings.setLogoGravity(Gravity.RIGHT | Gravity.TOP);
-            uiSettings.setCompassEnabled(true);
-            uiSettings.setCompassGravity(Gravity.TOP | Gravity.LEFT);
-            LocalizationPlugin localizationPlugin = new LocalizationPlugin(mvRecord, mvImplRecord, style);
-            try {
-                localizationPlugin.matchMapLanguageWithDeviceDefault();
-            } catch (RuntimeException e) {
-                e.printStackTrace();
-            }
-
-            /* Set Style */
-            style.addSource(new GeoJsonSource("path", FeatureCollection.fromFeature(Feature.fromGeometry(LineString.fromLngLats(mPoints))), new GeoJsonOptions().withLineMetrics(true)));
-            style.addLayer(new LineLayer("exercise", "path").withProperties(
-                    lineCap(Property.LINE_CAP_ROUND),
-                    lineJoin(Property.LINE_JOIN_ROUND),
-                    lineWidth(DEFAULT_LINE_WIDTH * dpUnit)));
-
-
-            /* 액티비티 재시작일경우 기존 location 데이터로부터 Gradient Line 다시 그리기 */
-            Intent intent = getIntent();
-            if (intent.getParcelableExtra("locationDataSetInit") != null) {
-                mLocationDataSet = intent.getParcelableExtra("locationDataSetInit");
-
-                /* Set Line */
-                mPoints.clear();
-                for (LatLng latLng : mLocationDataSet.locations) {
-                    mPoints.add(Point.fromLngLat(latLng.getLongitude(), latLng.getLatitude(), latLng.getAltitude()));
-                }
-                FeatureCollection featureCollection = FeatureCollection.fromFeature(Feature.fromGeometry(LineString.fromLngLats(mPoints)));
-
-                /* Set Gradient Stop Points*/
-                ArrayList<Expression.Stop> stops = new ArrayList<>();
-                String colorLevel = "";
-                for (int i = 0; i < mLocationDataSet.speeds.size(); i++) {
-                    float vel = mLocationDataSet.speeds.get(i);
-                    String curColorLevel = getColor(vel);
-                    if (colorLevel.equals(getColor(vel))) {
-                        // 같으면 패스
-                        continue;
-                    }
-                    // 다를 때
-                    float percentage;
-                    if (mLocationDataSet.locations.size() != 0) {
-                        percentage = i / (float) mLocationDataSet.locations.size();
-                    } else {
-                        percentage = 0.f;
-                    }
-                    stops.add(Expression.stop(percentage, Expression.color(Color.parseColor(curColorLevel))));
-                    colorLevel = curColorLevel;
-                }
-
-                /* Set Style */
-                GeoJsonSource path = style.getSourceAs("path");
-                if (path != null) {
-                    path.setGeoJson(featureCollection);
-                }
-                LineLayer lines = style.getLayerAs("exercise");
-                if (lines != null) {
-                    Expression.Stop[] stops1 = stops.toArray(new Expression.Stop[stops.size()]);
-                    lines.setProperties(lineCap(Property.LINE_CAP_ROUND),
-                            lineJoin(Property.LINE_JOIN_ROUND),
-                            lineWidth(DEFAULT_LINE_WIDTH * dpUnit),
-                            lineGradient(Expression.interpolate(Expression.linear(), Expression.lineProgress(),
-                                    stops1)));
-                }
-            }
-
-        } else {
-            permissionsManager = new PermissionsManager(this);
-            permissionsManager.requestLocationPermissions(this);
-        }
-    }
-
-    @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         mLocationRecordService = ((LocationRecordService.LocationBinder) service).getService();
     }
@@ -509,13 +520,13 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         mAlertDialog.show();
     }
 
-    private void tryPostImgToFirebase(Bitmap bitmap) {
+    public void tryPostImgToFirebase(Bitmap bitmap) {
         showProgressDialog();
         RecordService recordService = new RecordService(this);
         recordService.postImgToFirebase(sSharedPreferences.getString(USER_NAME, "name"), bitmap);
     }
 
-    private void tryPostRecord(int challengeId, double totalTime, double totalDistance, String latLngs) {
+    public void tryPostRecord(int challengeId, double totalTime, double totalDistance, String latLngs) {
         RecordService recordService = new RecordService(this);
         recordService.postRecord(challengeId, totalTime, totalDistance, latLngs);
     }
@@ -590,8 +601,10 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                     tvProgress.setText(String.format("%.1f", mGoalPercent));
 
                     // MapView 축소.
-                    LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(mLocationDataSet.locations).build();
-                    mvImplRecord.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));
+                    if (mLocationDataSet.locations.size() > 1) {
+                        LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(mLocationDataSet.locations).build();
+                        mvImplRecord.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));
+                    }
 
                     // bottomUpper result Animation (나타나기)
                     AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
@@ -614,7 +627,12 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 }
                 break;
             case R.id.tv_submit_record:
-                LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(mLocationDataSet.locations).build();
+                LatLngBounds latLngBounds = null;
+                if (mLocationDataSet.locations.size() > 1) {
+                    latLngBounds = new LatLngBounds.Builder().includes(mLocationDataSet.locations).build();
+                } else if (mLocationDataSet.locations.size() == 1) {
+                    latLngBounds = new LatLngBounds.Builder().include(mLocationDataSet.locations.get(0)).build();
+                }
                 mvImplRecord.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));
                 MapSnapshotter.Options options = new MapSnapshotter.Options(500, 500)
                         .withRegion(mvImplRecord.getProjection().getVisibleRegion().latLngBounds)
@@ -632,40 +650,22 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
 
         if (mGoalPercent == 100) {
             // 1. 목표를 달성했을 때.
-            new AlertDialog.Builder(this).setMessage("목표를 달성했어요!\n이제 저장하고 쉴까요?")
-                    .setPositiveButton("네", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            tryPostImgToFirebase(mImg);
-                            //tryPostRecord(mChallenge.getChallengeId(), mLocationDataSet.totalTime, mLocationDataSet.totalDistance, jsonLatLng);
-                            dialog.dismiss();
-                        }
-                    })
-                    .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    })
-                    .create().show();
+            CustomSubmitDialog customSubmitDialog = new CustomSubmitDialog(this, 3, mGoalPercent, "목표를 달성했어요!\n이제 저장하고 쉴까요?");
+            customSubmitDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            customSubmitDialog.show();
         } else if (mGoalPercent >= 0.f) {
             // 2. 충분한 거리를 달렸지만 목표를 달성하지 못했을 때.
-            new AlertDialog.Builder(this).setMessage("목표를 아직 달성하지 못했어요.\n여기까지만 저장하고 잠시 쉴까요?")
-                    .setPositiveButton("네", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            tryPostImgToFirebase(mImg);
-                            //tryPostRecord(mChallenge.getChallengeId(), mLocationDataSet.totalTime, mLocationDataSet.totalDistance, jsonLatLng);
-                            dialog.dismiss();
-                        }
-                    })
-                    .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    })
-                    .create().show();
+            int starCount = 0;
+            if (mGoalPercent >= 30) {
+                starCount = 1;
+            } else if (mGoalPercent >= 60) {
+                starCount = 2;
+            } else if (mGoalPercent >= 90) {
+                starCount = 3;
+            }
+            CustomSubmitDialog customSubmitDialog = new CustomSubmitDialog(this, starCount, mGoalPercent, "목표를 아직 달성하지 못했어요.\n여기까지만 저장하고 잠시 쉴까요?");
+            customSubmitDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            customSubmitDialog.show();
         } else {
             // 3. 달린 거리나 시간이 너무 부족할 때, (3.0% 미만)
             new AlertDialog.Builder(this).setMessage("너무 조금만 달렸는데요?\n조금만 더 해볼까요?")

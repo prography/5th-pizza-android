@@ -37,14 +37,13 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder
     @Override
     public RankViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_rank, parent, false);
-        RankViewHolder rankViewHolder = new RankViewHolder(view, viewType);
+        RankViewHolder rankViewHolder = new RankViewHolder(view);
         return rankViewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RankViewHolder holder, int position) {
         RankResponse.Data rankModel = mRankList.get(position);
-
         if (rankModel != null) {
             if (rankModel.getRank() % 2 == 1) {
                 holder.itemView.setBackgroundColor(Color.rgb(255, 240, 196));
@@ -73,7 +72,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder
         ProgressBar pbDetail;
         TextView tvPercent;
 
-        public RankViewHolder(@NonNull final View itemView, int viewType) {
+        public RankViewHolder(@NonNull final View itemView) {
             super(itemView);
 
             /* findViewByID */
