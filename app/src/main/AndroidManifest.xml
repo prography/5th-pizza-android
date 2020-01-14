@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".src.result.ResultActivity"></activity>
+        <activity android:name=".src.settings.SettingActivity" />
         <activity android:name=".src.challenge_detail.ChallengeDetailActivity" />
         <activity android:name=".src.mypage.MyPageActivity" />
         <activity android:name=".src.tutorial.TutorialActivity" />

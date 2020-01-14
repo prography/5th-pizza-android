@@ -107,7 +107,7 @@ public class MyPageActivity extends BaseActivity implements MyPageActivityView {
                 finish();
                 break;
             case R.id.ti_setting_mypage:
-                showToast(getString(R.string.not_implemented));
+                startNextActivity(MyPageActivity.class);
                 break;
         }
         return true;
