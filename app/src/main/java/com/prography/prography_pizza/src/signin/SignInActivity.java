@@ -282,26 +282,13 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
     public void validateSuccess(String token) {
         hideProgressDialog();
         sSharedPreferences.edit().putString(X_ACCESS_TOKEN, token).apply();
-        CustomSimpleMessageDialog csmdSuccess = new CustomSimpleMessageDialog.Builder(this)
-                .setMessage("환영합니다.")
-                .setButtonText("닫기")
-                .setType(CustomSimpleMessageDialog.FINISH_ACTIVITY_THEN_START)
-                .setNextActivity(MainActivity.class)
-                .build();
-        csmdSuccess.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        csmdSuccess.show();
+        showSimpleMessageDialog("환영합니다.", "닫기", CustomSimpleMessageDialog.FINISH_ACTIVITY_THEN_START, MainActivity.class);
     }
 
     @Override
     public void validateFailure() {
         hideProgressDialog();
-        CustomSimpleMessageDialog csmdFailure = new CustomSimpleMessageDialog.Builder(this)
-                .setMessage("서버 점검중입니다.\n잠시 후 다시 시도해주세요.")
-                .setButtonText("확인")
-                .setType(CustomSimpleMessageDialog.FINISH_ACTIVITY)
-                .build();
-        csmdFailure.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        csmdFailure.show();
+        showSimpleMessageDialog("서버 점검중입니다.\n잠시 후 다시 시도해주세요.", "확인", CustomSimpleMessageDialog.FINISH_ACTIVITY, null);
     }
 
     public void tryGetToken(String token, String type) {

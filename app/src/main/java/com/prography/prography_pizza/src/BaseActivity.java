@@ -2,6 +2,8 @@ package com.prography.prography_pizza.src;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -10,9 +12,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.prography.prography_pizza.R;
+import com.prography.prography_pizza.src.common.utils.CustomSimpleMessageDialog;
 
 public class BaseActivity extends AppCompatActivity {
     public ProgressDialog mProgressDialog;
+    public CustomSimpleMessageDialog mCustomSimpleMessageDialog;
 
     protected final String TAG = getClass().getSimpleName();
 
@@ -23,6 +27,21 @@ public class BaseActivity extends AppCompatActivity {
     public void startNextActivity(Class<?> activity) {
         Intent intent = new Intent(this, activity);
         startActivity(intent);
+    }
+
+    public void showSimpleMessageDialog(String message, String btnText, int type, Class<?> activity) {
+        mCustomSimpleMessageDialog = new CustomSimpleMessageDialog.Builder(this)
+                .setMessage(message)
+                .setButtonText(btnText)
+                .setType(type)
+                .setNextActivity(activity)
+                .build();
+        mCustomSimpleMessageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        mCustomSimpleMessageDialog.show();
+    }
+
+    public void showSimpleMessageDialog(String message) {
+        showSimpleMessageDialog(message, "닫기", CustomSimpleMessageDialog.FINISH_NONE, null);
     }
 
     public void showProgressDialog() {

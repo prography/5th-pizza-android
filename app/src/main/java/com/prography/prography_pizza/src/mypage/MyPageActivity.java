@@ -20,6 +20,7 @@ import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.mypage.adapter.MyPagePager;
 import com.prography.prography_pizza.src.mypage.interfaces.MyPageActivityView;
+import com.prography.prography_pizza.src.settings.SettingActivity;
 
 import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
@@ -107,7 +108,7 @@ public class MyPageActivity extends BaseActivity implements MyPageActivityView {
                 finish();
                 break;
             case R.id.ti_setting_mypage:
-                startNextActivity(MyPageActivity.class);
+                startNextActivity(SettingActivity.class);
                 break;
         }
         return true;

@@ -76,6 +76,7 @@ import com.prography.prography_pizza.src.common.utils.CustomSubmitDialog;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.mypage.MyPageActivity;
 import com.prography.prography_pizza.src.record.interfaces.RecordActivityView;
+import com.prography.prography_pizza.src.tutorial.fragments.MypageHistoryFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -559,14 +560,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         pbLoading.setVisibility(View.GONE);
         tvSubmitRecord.setText("SUBMIT");
         tvSubmitRecord.setEnabled(true);
-        CustomSimpleMessageDialog csmdFailure = new CustomSimpleMessageDialog.Builder(this)
-                .setMessage("업로드에 실패하였습니다.")
-                .setType(CustomSimpleMessageDialog.FINISH_NONE)
-                .setButtonText("확인")
-                .build();
-        csmdFailure.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        csmdFailure.setCancelable(false);
-        csmdFailure.show();
+        showSimpleMessageDialog("업로드에 실패하였습니다.", "확인", CustomSimpleMessageDialog.FINISH_NONE, null);
     }
 
     @SuppressLint("MissingPermission")
@@ -712,14 +706,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             customSubmitDialog.show();
         } else {
             // 3. 달린 거리나 시간이 너무 부족할 때, (3.0% 미만)
-            new AlertDialog.Builder(this).setMessage("너무 조금만 달렸는데요?\n조금만 더 해볼까요?")
-                    .setPositiveButton("네", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .create().show();
+            showSimpleMessageDialog("너무 조금만 달렸는데요?\n조금만 더 해볼까요?", getString(R.string.tv_positive), CustomSimpleMessageDialog.FINISH_NONE, null);
         }
     }
 

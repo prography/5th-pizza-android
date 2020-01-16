@@ -149,14 +149,13 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     @Override
     public void validateFailure() {
         hideProgressDialog();
-        Log.i("GET", "gvalidateFauilure");
-        showToast("네트워크 오류입니다. 잠시 후 다시 실행해 주세요.");
+        showSimpleMessageDialog(getString(R.string.network_error));
     }
 
     @Override
     public void validateDeleteSuccess(int challengeId) {
         hideProgressDialog();
-        showToast("Delete Success");
+        showSimpleMessageDialog("챌린지를 삭제하였습니다.");
 
         /* Saving to Local DB... */
         ChallengeModel challengeModel = new ChallengeModel(this);
@@ -205,12 +204,9 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                Log.e("RESULT", "결과 받기 성공");
                 // Get Data From Server...
                 tryGetChallenge();
             }
-        } else {
-            Log.e("RESULT", "결과 받기 실패");
         }
     }
 

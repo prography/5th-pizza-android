@@ -41,7 +41,7 @@ public class CustomPosNegDialog extends Dialog implements View.OnClickListener{
 
         /* Set OnClick Listener */
         findViewById(R.id.tv_positive_dialog_posneg).setOnClickListener(this);
-        findViewById(R.id.tv_positive_dialog_posneg).setOnClickListener(this);
+        findViewById(R.id.tv_negative_dialog_posneg).setOnClickListener(this);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class CustomPosNegDialog extends Dialog implements View.OnClickListener{
                 }
                 break;
             case R.id.tv_negative_dialog_posneg:
-                cancel();
+                dismiss();
                 break;
         }
     }
