@@ -24,21 +24,23 @@ public class CustomSimpleMessageDialog extends Dialog implements View.OnClickLis
     private Context mContext;
     private int mType;
     private Class<?> mNextActivity;
+    private View.OnClickListener listener = null;
 
     private TextView tvDesc;
     private TextView tvButton;
 
-    public CustomSimpleMessageDialog(@NonNull Context context, String message, String btnText, int type, Class<?> nextActivity) {
+    public CustomSimpleMessageDialog(@NonNull Context context, String message, String btnText, int type, Class<?> nextActivity, View.OnClickListener positiveListener) {
         super(context);
         mBtnText = btnText;
         mMessage = message;
         mContext = context;
         mType = type;
         mNextActivity = nextActivity;
+        listener = positiveListener;
     }
 
     public CustomSimpleMessageDialog(Builder builder) {
-        this(builder.mContext, builder.mMessage, builder.mBtnText, builder.mType, builder.mNextActivity);
+        this(builder.mContext, builder.mMessage, builder.mBtnText, builder.mType, builder.mNextActivity, builder.listener);
     }
 
     public static class Builder {
@@ -47,6 +49,7 @@ public class CustomSimpleMessageDialog extends Dialog implements View.OnClickLis
         private Context mContext = null;
         private int mType = FINISH_NONE;
         private Class<?> mNextActivity = null;
+        private View.OnClickListener listener = null;
 
         public Builder(Context mContext) {
             this.mContext = mContext;
@@ -71,6 +74,11 @@ public class CustomSimpleMessageDialog extends Dialog implements View.OnClickLis
             return this;
         }
 
+        public Builder setPositiveOnClickListener(View.OnClickListener listener) {
+            this.listener = listener;
+            return this;
+        }
+
         public CustomSimpleMessageDialog build() {
             return new CustomSimpleMessageDialog(this);
         }
@@ -91,7 +99,11 @@ public class CustomSimpleMessageDialog extends Dialog implements View.OnClickLis
         tvButton.setText(mBtnText);
 
         /* Set On Click Listener */
-        tvButton.setOnClickListener(this);
+        if (listener == null) {
+            tvButton.setOnClickListener(this);
+        } else {
+            tvButton.setOnClickListener(listener);
+        }
     }
 
     @Override

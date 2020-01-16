@@ -19,16 +19,18 @@ public class CustomPosNegDialog extends Dialog implements View.OnClickListener{
     private Context mContext;
     private String mMessage;
     private int mType;
+    private View.OnClickListener positiveListener = null;
 
-    public CustomPosNegDialog(@NonNull Context context, String message, int type) {
+    public CustomPosNegDialog(@NonNull Context context, String message, int type, View.OnClickListener posListener) {
         super(context);
         mContext = context;
         mMessage = message;
         mType = type;
+        positiveListener = posListener;
     }
 
     public CustomPosNegDialog(Builder builder) {
-        this(builder.mContext, builder.mMessage, builder.mType);
+        this(builder.mContext, builder.mMessage, builder.mType, builder.posListener);
     }
 
     @Override
@@ -40,7 +42,11 @@ public class CustomPosNegDialog extends Dialog implements View.OnClickListener{
         ((TextView) findViewById(R.id.tv_desc_dialog_posneg)).setText(mMessage);
 
         /* Set OnClick Listener */
-        findViewById(R.id.tv_positive_dialog_posneg).setOnClickListener(this);
+        if (positiveListener == null) {
+            findViewById(R.id.tv_positive_dialog_posneg).setOnClickListener(this);
+        } else {
+            findViewById(R.id.tv_positive_dialog_posneg).setOnClickListener(positiveListener);
+        }
         findViewById(R.id.tv_negative_dialog_posneg).setOnClickListener(this);
     }
 
@@ -63,6 +69,7 @@ public class CustomPosNegDialog extends Dialog implements View.OnClickListener{
         private Context mContext;
         private String mMessage;
         private int mType;
+        private View.OnClickListener posListener = null;
 
         public Builder(Context mContext) {
             this.mContext = mContext;
@@ -74,6 +81,11 @@ public class CustomPosNegDialog extends Dialog implements View.OnClickListener{
         }
         public Builder setType(int type) {
             this.mType = type;
+            return this;
+        }
+
+        public Builder setPosListener(View.OnClickListener posListener) {
+            this.posListener = posListener;
             return this;
         }
 

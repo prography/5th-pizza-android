@@ -1,5 +1,6 @@
 package com.prography.prography_pizza.src.mypage;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,8 @@ import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferen
 
 public class MyPageActivity extends BaseActivity implements MyPageActivityView {
 
+    public static Activity sMyPageActivity;
+
     private Toolbar tbMyPage;
     private TextView tvToolbarTitleCollapsed;
     private AppBarLayout ablMypage;
@@ -44,6 +47,8 @@ public class MyPageActivity extends BaseActivity implements MyPageActivityView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page);
+
+        sMyPageActivity = this;
 
         /* findViewByID */
         tbMyPage = findViewById(R.id.toolbar_mypage);
