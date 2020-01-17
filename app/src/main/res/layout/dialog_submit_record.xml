@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
-        android:id="@+id/iv_star1_dialog_positive_negative"
+        android:id="@+id/iv_star1_dialog_submit_record"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/ic_star_empty"
@@ -25,7 +25,7 @@
         android:layout_marginTop="12dp"
         android:src="@drawable/ic_star_empty"
         app:layout_constraintEnd_toStartOf="@+id/iv_star3_dialog_submit_record"
-        app:layout_constraintStart_toEndOf="@+id/iv_star1_dialog_positive_negative"
+        app:layout_constraintStart_toEndOf="@+id/iv_star1_dialog_submit_record"
         app:layout_constraintBottom_toTopOf="@+id/tv_title_dialog_submit_record"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="star" />

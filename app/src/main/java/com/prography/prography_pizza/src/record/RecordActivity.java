@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -200,7 +201,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         break;
                 }
         }
-
 
         /* Set Constants */
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -693,13 +693,15 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             customSubmitDialog.show();
         } else if (mGoalPercent >= 0.f) {
             // 2. 충분한 거리를 달렸지만 목표를 달성하지 못했을 때.
-            int starCount = 0;
-            if (mGoalPercent >= 30) {
-                starCount = 1;
+            int starCount;
+            if (mGoalPercent >= 90) {
+                starCount = 3;
             } else if (mGoalPercent >= 60) {
                 starCount = 2;
-            } else if (mGoalPercent >= 90) {
-                starCount = 3;
+            } else if (mGoalPercent >= 30) {
+                starCount = 1;
+            } else {
+                starCount = 0;
             }
             CustomSubmitDialog customSubmitDialog = new CustomSubmitDialog(this, starCount, mGoalPercent, "목표를 아직 달성하지 못했어요.\n여기까지만 저장하고 잠시 쉴까요?");
             customSubmitDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

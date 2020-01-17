@@ -108,6 +108,7 @@
                 app:layout_constraintBottom_toTopOf="@id/v_separator2_settings"/>
 
             <TextView
+                android:id="@+id/tv_nickname_desc_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
@@ -149,6 +150,7 @@
                 app:layout_constraintBottom_toTopOf="@id/v_separator3_settings"/>
 
             <TextView
+                android:id="@+id/tv_gender_desc_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
@@ -175,7 +177,7 @@
                 android:layout_marginBottom="18dp" />
 
             <TextView
-                android:id="@+id/tv_email_settings"
+                android:id="@+id/tv_email_desc_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -189,7 +191,7 @@
                 app:layout_constraintBottom_toTopOf="@id/v_separator4_settings"/>
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/tv_email_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
@@ -198,9 +200,9 @@
                 android:text="wooisso@naver.com"
                 android:textColor="#171717"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_email_settings"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_email_desc_settings"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_email_settings" />
+                app:layout_constraintTop_toTopOf="@+id/tv_email_desc_settings" />
             <View
                 android:id="@+id/v_separator4_settings"
                 android:layout_width="match_parent"
@@ -208,7 +210,7 @@
                 android:background="#e8e8e8"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_email_settings"
+                app:layout_constraintTop_toBottomOf="@id/tv_email_desc_settings"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="18dp"

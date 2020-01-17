@@ -282,7 +282,14 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
     public void validateSuccess(String token) {
         hideProgressDialog();
         sSharedPreferences.edit().putString(X_ACCESS_TOKEN, token).apply();
-        showSimpleMessageDialog("환영합니다.", "닫기", CustomSimpleMessageDialog.FINISH_ACTIVITY_THEN_START, MainActivity.class);
+        CustomSimpleMessageDialog customSimpleMessageDialog = new CustomSimpleMessageDialog.Builder(this)
+                .setMessage("환영합니다")
+                .setButtonText("닫기")
+                .setNextActivity(MainActivity.class)
+                .setType(CustomSimpleMessageDialog.FINISH_ACTIVITY_THEN_START).build();
+        customSimpleMessageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        customSimpleMessageDialog.setCancelable(false);
+        customSimpleMessageDialog.show();
     }
 
     @Override

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.prography.prography_pizza.R;
-import com.prography.prography_pizza.src.mypage.MyPageActivity;
 import com.prography.prography_pizza.src.record.RecordActivity;
 
 import java.util.ArrayList;
@@ -48,19 +46,24 @@ public class CustomSubmitDialog extends Dialog implements View.OnClickListener{
         tvNegative = findViewById(R.id.tv_negative_dialog_submit_record);
         tvDesc = findViewById(R.id.tv_desc_dialog_submit_record);
         tvTitle = findViewById(R.id.tv_title_dialog_submit_record);
-        ivStars.add((ImageView) findViewById(R.id.iv_star1_record));
-        ivStars.add((ImageView) findViewById(R.id.iv_star2_record));
-        ivStars.add((ImageView) findViewById(R.id.iv_star3_record));
+        ivStars.add((ImageView) findViewById(R.id.iv_star1_dialog_submit_record));
+        ivStars.add((ImageView) findViewById(R.id.iv_star2_dialog_submit_record));
+        ivStars.add((ImageView) findViewById(R.id.iv_star3_dialog_submit_record));
 
         /* Set View */
         tvDesc.setText(mDesc);
         tvTitle.setText(String.format("%.1f", percentage) + "%");
         for (int i = 0; i < countStar; i++) {
-            ivStars.get(i).setImageResource(R.drawable.ic_star);
-            ivStars.get(i).setAlpha(0.f);
-            ivStars.get(i).setScaleX(1.5f);
-            ivStars.get(i).setScaleY(1.5f);
-            ivStars.get(i).animate().setDuration(200).setStartDelay(i * 100).setInterpolator(new LinearInterpolator()).scaleX(1).scaleY(1).alpha(1.f).start();
+            final int finalI = i;
+            ivStars.get(i).animate().withStartAction(new Runnable() {
+                @Override
+                public void run() {
+                    ivStars.get(finalI).setImageResource(R.drawable.ic_star);
+                    ivStars.get(finalI).setAlpha(0.f);
+                    ivStars.get(finalI).setScaleX(1.5f);
+                    ivStars.get(finalI).setScaleY(1.5f);
+                }
+            }).setDuration(300).setStartDelay(i * 300 + 500).setInterpolator(new LinearInterpolator()).scaleX(1).scaleY(1).alpha(1.f).start();
         }
 
         /* Set On Click Listener */

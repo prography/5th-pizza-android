@@ -69,6 +69,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/tv_rank_detail"
                 android:id="@+id/tv_lefttime_detail" />
 
+
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_rank_detail"
                 android:layout_width="match_parent"
@@ -83,6 +85,20 @@
                 app:layout_constraintBottom_toTopOf="@id/tv_more_rank_detail"
                 android:nestedScrollingEnabled="false"
                 android:layout_marginTop="5dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="@id/rv_rank_detail"
+                app:layout_constraintEnd_toEndOf="@id/rv_rank_detail"
+                app:layout_constraintTop_toTopOf="@id/rv_rank_detail"
+                app:layout_constraintBottom_toBottomOf="@id/rv_rank_detail"
+                android:gravity="center"
+                android:textSize="28sp"
+                android:textColor="@android:color/white"
+                android:text="Coming Soon!\n조금만 기다려주세요"
+                android:fontFamily="@font/cookierun_bold"
+                android:background="#77000000" />
 
             <TextView
                 android:id="@+id/tv_more_rank_detail"

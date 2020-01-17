@@ -40,7 +40,7 @@
                 android:id="@+id/iv_map_detail"
                 android:layout_width="61dp"
                 android:layout_height="61dp"
-                android:src="@drawable/ic_launcher_foreground"/>
+                android:src="@drawable/logo_prography_orange"/>
 
             <LinearLayout
                 android:layout_width="0dp"

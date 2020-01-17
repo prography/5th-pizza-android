@@ -73,8 +73,8 @@ public class SettingActivity extends BaseActivity implements SettingActivityView
         tbSettings = findViewById(R.id.toolbar_settings);
         tvSignOut = findViewById(R.id.tv_signout_settings);
         tvResign = findViewById(R.id.tv_resign_settings);
-        tvNickName = findViewById(R.id.tv_nickname_settings);
-        tvGender = findViewById(R.id.tv_gender_settings);
+        tvNickName = findViewById(R.id.tv_nickname_desc_settings);
+        tvGender = findViewById(R.id.tv_gender_desc_settings);
         tvEmail = findViewById(R.id.tv_email_settings);
 
         sActivity = this;
@@ -89,7 +89,9 @@ public class SettingActivity extends BaseActivity implements SettingActivityView
 
         /* Set View */
         tvUserName.setText(sSharedPreferences.getString(USER_NAME, "Unknown") + "님");
+        tvNickName.setText(sSharedPreferences.getString(USER_NAME, "Unknown") + "님");
         tvEmail.setText(sSharedPreferences.getString(USER_EMAIL, "이메일이 없습니다."));
+        tvGender.setText("--");
         ivProfile.setClipToOutline(true);
         Glide.with(this)
                 .load(sSharedPreferences.getString(USER_PROFILE, ""))
@@ -191,7 +193,7 @@ public class SettingActivity extends BaseActivity implements SettingActivityView
                 showPosNegDialog("정말 탈퇴하시겠습니까?", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showSimpleMessageDialog("미구현 기능입니다.", getString(R.string.tv_confirm), CustomSimpleMessageDialog.FINISH_NONE, null);
+                        showSimpleMessageDialog("서버 점검중입니다.\n 잠시 후 다시 시도해 주세요.", getString(R.string.tv_confirm), CustomSimpleMessageDialog.FINISH_NONE, null);
                     }
                 });
                 break;

@@ -109,7 +109,11 @@ public class RecordDetailAdapter extends RecyclerView.Adapter<RecordDetailAdapte
             holder.tvSpeed.setText(String.format("%2d'%2d'' /km", pace / 60, pace % 60));
 
             // Image
-            StorageReference ref = FirebaseStorage.getInstance().getReference().child("imgs").child(timeLineModel.getRecordImgUrl());
+            StorageReference ref = null;
+            if (timeLineModel.getRecordImgUrl() != null && !timeLineModel.getRecordImgUrl().equals("")) {
+                ref = FirebaseStorage.getInstance().getReference().child("imgs").child(timeLineModel.getRecordImgUrl());
+
+            }
             GlideApp.with(mContext)
                     .load(ref)
                     .placeholder(R.mipmap.ic_launcher)
