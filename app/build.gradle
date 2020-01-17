@@ -7,8 +7,8 @@ android {
         applicationId "com.prography.prography_pizza"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 6
-        versionName "1.4.3"
+        versionCode 7
+        versionName "2.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -91,6 +91,10 @@ dependencies {
 
     //viewPager_circleindicator
     implementation 'me.relex:circleindicator:1.2.2'
+
+
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+apply plugin: 'com.google.firebase.crashlytics'
