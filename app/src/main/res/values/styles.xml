@@ -6,7 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:statusBarColor">#AA000000</item>
+        <item name="android:statusBarColor">#ea7a58</item>
+        <item name="android:itemTextAppearance">@style/MenuText</item>
     </style>
 
     <!-- Splash Screen Theme -->
@@ -23,6 +24,13 @@
     <!-- Dialog Round Theme -->
     <style name="RoundDialogTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/background_round_shape_white</item>
+    </style>
+
+    <style name="MenuText">
+
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:fontFamily">@font/nanumsquare_bold</item>
+
     </style>
 
 </resources>

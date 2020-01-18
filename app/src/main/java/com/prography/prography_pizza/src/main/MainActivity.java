@@ -58,7 +58,6 @@ import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferen
 public class MainActivity extends BaseActivity implements MainActivityView {
 
     private static final int REQUEST_CODE = 1;
-    private static Activity sActivity;
     private FloatingActionButton fbtnAddChallenge;
     private RecyclerView rvMain;
     private Toolbar tbMain;
@@ -70,6 +69,8 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private TextView tvTitleCollapsed;
     private ImageView ivProfile;
     private ImageView ivProfileNext;
+
+    public static Activity sMainActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,18 +89,10 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         ivProfileNext = findViewById(R.id.iv_next_profile_main);
 
         /* Set static Activity */
-        sActivity = this;
+        sMainActivity = this;
 
         /* Get Contents From Server... */
         tryGetChallenge();
-
-
-        /* Toolbar */
-        setSupportActionBar(tbMain);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_sign_out);
 
         /* AppbarLayout OffSet Change Listener */
         ablMain.addOnOffsetChangedListener(this);
@@ -149,14 +142,13 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     @Override
     public void validateFailure() {
         hideProgressDialog();
-        Log.i("GET", "gvalidateFauilure");
-        showToast("네트워크 오류입니다. 잠시 후 다시 실행해 주세요.");
+        showSimpleMessageDialog(getString(R.string.network_error));
     }
 
     @Override
     public void validateDeleteSuccess(int challengeId) {
         hideProgressDialog();
-        showToast("Delete Success");
+        showSimpleMessageDialog("챌린지를 삭제하였습니다.");
 
         /* Saving to Local DB... */
         ChallengeModel challengeModel = new ChallengeModel(this);
@@ -205,12 +197,9 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                Log.e("RESULT", "결과 받기 성공");
                 // Get Data From Server...
                 tryGetChallenge();
             }
-        } else {
-            Log.e("RESULT", "결과 받기 실패");
         }
     }
 
@@ -218,68 +207,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     public void onRefresh() {
         tryGetChallenge();
         srlMain.setRefreshing(false);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // 임시 로그아웃
-                new AlertDialog.Builder(this).setMessage("앱을 종료 후 로그아웃하시겠습니까?")
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // 앱 내 정보 삭제
-                                sSharedPreferences.edit().remove(LOGIN_TYPE).remove(USER_EMAIL).remove(USER_NAME).remove(USER_PROFILE).apply();
-
-                                switch (sSharedPreferences.getString(LOGIN_TYPE, TYPE_KAKAO)) {
-                                    case TYPE_GOOGLE:
-                                        // Google 로그아웃
-                                        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getApplicationContext(),
-                                                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                                        .requestEmail()
-                                                        .requestIdToken(getString(R.string.google_client_key))
-                                                        .build());
-                                        googleSignInClient.signOut().addOnCompleteListener(sActivity, new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                finish();
-                                            }
-                                        });
-                                        break;
-                                    case TYPE_KAKAO:
-                                        // Kakao 로그아웃
-                                        UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
-                                            @Override
-                                            public void onCompleteLogout() {
-                                                finish();
-                                            }
-                                        });
-                                        break;
-                                    case TYPE_FACEBOOK:
-                                        // Facebook 로그아웃
-                                        LoginManager.getInstance().logOut();
-                                        finish();
-                                        break;
-                                    case TYPE_NAVER:
-                                        // Naver 로그아웃
-                                        OAuthLogin mOauthLoginModule = OAuthLogin.getInstance();
-                                        mOauthLoginModule.init(getApplicationContext(),getString(R.string.naver_client_id),getString(R.string.naver_client_key),getString(R.string.app_name));
-                                        mOauthLoginModule.logoutAndDeleteToken(getApplicationContext());
-                                        finish();
-                                        break;
-                                }
-                            }
-                        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                }).create().show();
-
-                return true;
-        }
-        return false;
     }
 
     @Override

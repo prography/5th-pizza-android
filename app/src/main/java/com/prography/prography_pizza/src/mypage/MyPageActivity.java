@@ -1,5 +1,6 @@
 package com.prography.prography_pizza.src.mypage;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,12 +21,15 @@ import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.mypage.adapter.MyPagePager;
 import com.prography.prography_pizza.src.mypage.interfaces.MyPageActivityView;
+import com.prography.prography_pizza.src.settings.SettingActivity;
 
 import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
 import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
 
 public class MyPageActivity extends BaseActivity implements MyPageActivityView {
+
+    public static Activity sMyPageActivity;
 
     private Toolbar tbMyPage;
     private TextView tvToolbarTitleCollapsed;
@@ -43,6 +47,8 @@ public class MyPageActivity extends BaseActivity implements MyPageActivityView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page);
+
+        sMyPageActivity = this;
 
         /* findViewByID */
         tbMyPage = findViewById(R.id.toolbar_mypage);
@@ -107,7 +113,7 @@ public class MyPageActivity extends BaseActivity implements MyPageActivityView {
                 finish();
                 break;
             case R.id.ti_setting_mypage:
-                startNextActivity(MyPageActivity.class);
+                startNextActivity(SettingActivity.class);
                 break;
         }
         return true;

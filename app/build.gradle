@@ -7,8 +7,8 @@ android {
         applicationId "com.prography.prography_pizza"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 6
-        versionName "1.4.3"
+        versionCode 7
+        versionName "2.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -60,9 +60,9 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     // https://firebase.google.com/docs/android/setup?authuser=0#available-libraries
-    implementation 'com.google.firebase:firebase-analytics:17.2.1'
+    implementation 'com.google.firebase:firebase-analytics:17.2.2'
     //implementation 'com.google.firebase:firebase-ads:18.3.0'
-    implementation 'com.google.firebase:firebase-core:17.2.1'
+    implementation 'com.google.firebase:firebase-core:17.2.2'
     implementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation 'com.google.firebase:firebase-storage:19.1.0'
     implementation 'com.firebaseui:firebase-ui-storage:6.1.0'
@@ -91,6 +91,10 @@ dependencies {
 
     //viewPager_circleindicator
     implementation 'me.relex:circleindicator:1.2.2'
+
+
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+apply plugin: 'com.google.firebase.crashlytics'

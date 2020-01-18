@@ -1,6 +1,8 @@
 package com.prography.prography_pizza.src;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,12 +14,31 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.prography.prography_pizza.src.common.utils.CustomSimpleMessageDialog;
+
 public class BaseFragment extends Fragment {
+
+    public CustomSimpleMessageDialog mCustomSimpleMessageDialog;
 
     protected final String TAG = getClass().getSimpleName();
 
     public void showToast(String toast) {
         Toast.makeText(getActivity(), toast, Toast.LENGTH_SHORT).show();
+    }
+
+    public void showSimpleMessageDialog(String message, String btnText, int type, Class<?> activity) {
+        mCustomSimpleMessageDialog = new CustomSimpleMessageDialog.Builder(getContext())
+                .setMessage(message)
+                .setButtonText(btnText)
+                .setType(type)
+                .setNextActivity(activity)
+                .build();
+        mCustomSimpleMessageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        mCustomSimpleMessageDialog.show();
+    }
+
+    public void showSimpleMessageDialog(String message) {
+        showSimpleMessageDialog(message, "닫기", CustomSimpleMessageDialog.FINISH_NONE, null);
     }
 
     @Override

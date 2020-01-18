@@ -20,6 +20,7 @@ import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.add_challenge.fragments.SelectorBottomSheetFragment;
 import com.prography.prography_pizza.src.add_challenge.interfaces.AddChallengeActivityView;
 import com.prography.prography_pizza.src.add_challenge.models.AddChallengeResponse;
+import com.prography.prography_pizza.src.common.utils.CustomSimpleMessageDialog;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 
 import java.util.ArrayList;
@@ -126,23 +127,19 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
     @Override
     public void postvalidateSuccess(AddChallengeResponse.Data datum) {
         hideProgressDialog();
-        showToast("postSuccess");
-        datum.setExerciseType(mExerceiseType);
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        showSimpleMessageDialog("챌린지 생성에 성공하였습니다.", getString(R.string.tv_confirm), CustomSimpleMessageDialog.FINISH_ACTIVITY, null);
+/*        datum.setExerciseType(mExerceiseType);
         datum.setObjectUnit(mObjectUnit);
         datum.setRoutineType(mRoutineType);
-        datum.setTime(mQuota);
-
-        Intent intent = new Intent();
-        intent.putExtra("item", datum);
-        setResult(RESULT_OK, intent);
-        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-        finish();
+        datum.setTime(mQuota);*/
     }
 
     @Override
     public void postvalidateFailure(int code) {
         hideProgressDialog();
-        showToast("postFailure: " + code);
+        showSimpleMessageDialog(getString(R.string.network_error) + " " + code);
     }
 
     @Override

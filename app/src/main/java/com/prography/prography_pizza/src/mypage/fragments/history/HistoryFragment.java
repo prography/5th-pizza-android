@@ -49,10 +49,6 @@ public class HistoryFragment extends BaseFragment implements HistoryFragmentView
         rvChallengeComplete = view.findViewById(R.id.rv_challenge_complete_history_mypage);
         rvChallengeIng = view.findViewById(R.id.rv_challenge_ing_history_mypage);
 
-        /* From Local DB... */
-        /*ChallengeModel challengeModel = new ChallengeModel(mContext);
-        mChallengeDataIng = challengeModel.getAllUnCompleted();
-        mChallengeDataCompleted = challengeModel.getAllCompleted();*/
         tryGetChallenges();
 
         /* RecyclerView */
@@ -83,7 +79,7 @@ public class HistoryFragment extends BaseFragment implements HistoryFragmentView
 
     @Override
     public void validateFailure(String message) {
-
+        showSimpleMessageDialog(getString(R.string.network_error));
     }
 
     public void tryGetChallenges() {

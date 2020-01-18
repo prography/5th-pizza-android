@@ -105,14 +105,13 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
     @Override
     public void validateSuccess(ArrayList<ChallengeDetailResponse.Data> data) {
         hideProgressDialog();
-        showToast("Success");
         rdAdapter.setData(data);
     }
 
     @Override
     public void validateFailure() {
         hideProgressDialog();
-        showToast("Failure");
+        showSimpleMessageDialog(getString(R.string.network_error));
     }
 
 
