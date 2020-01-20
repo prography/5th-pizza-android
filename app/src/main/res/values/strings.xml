@@ -4,20 +4,20 @@
     <string name="loading">로딩중입니다.</string>
     <string name="not_implemented">미구현기능입니다.</string>
     <string name="network_error">네트워크 연결이 원활하지 않습니다.</string>
-    <string name="kakao_app_key">4e1f3abef3128af5765f1bc592d8534b</string>
-    <string name="facebook_app_id">565790517546396</string>
-    <string name="fb_login_protocol_scheme">fb565790517546396</string>
-    <string name="google_client_key">1040046491707-l3egtlg5n72alvpb4ft8gqrru03g5j7m.apps.googleusercontent.com</string>
-    <string name="naver_client_id">0Ei9c5O7korykmJUa4_B</string>
-    <string name="naver_client_key">wpRd5BChYw</string>
-    <string name="mapbox_token">pk.eyJ1Ijoid29vaXNzbyIsImEiOiJjazRqc3hnOHcxcWF4M2RvYmhuZ2tqcW83In0.vthjGLkPZbyWuNnjhXMFxA</string>
-    <string name="tv_coming_soon">Coming Soon!</string>
+    <string name="kakao_app_key" translatable="false">4e1f3abef3128af5765f1bc592d8534b</string>
+    <string name="facebook_app_id" translatable="false">565790517546396</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb565790517546396</string>
+    <string name="google_client_key" translatable="false">1040046491707-l3egtlg5n72alvpb4ft8gqrru03g5j7m.apps.googleusercontent.com</string>
+    <string name="naver_client_id" translatable="false">0Ei9c5O7korykmJUa4_B</string>
+    <string name="naver_client_key" translatable="false">wpRd5BChYw</string>
+    <string name="mapbox_token" translatable="false">pk.eyJ1Ijoid29vaXNzbyIsImEiOiJjazRqc3hnOHcxcWF4M2RvYmhuZ2tqcW83In0.vthjGLkPZbyWuNnjhXMFxA</string>
+    <string name="tv_coming_soon" translatable="false">Coming Soon!</string>
     <string name="tv_wait_next_update">다음 업데이트를 기다려주세요</string>
-    <string name="tv_clear">!! CLEAR !!</string>
+    <string name="tv_clear" translatable="false">!! CLEAR !!</string>
 
     <!-- Unit -->
-    <string name="tv_unit_percent">%</string>
-    <string name="tv_unit_meter">m</string>
+    <string name="tv_unit_percent" translatable="false">%</string>
+    <string name="tv_unit_meter" translatable="false">m</string>
 
     <!-- Dialog -->
     <string name="tv_positive">네</string>
@@ -29,23 +29,23 @@
 
 
     <!-- AddChallenge Activity -->
-    <string name="tv_userid_addchallenge">UserName</string>
+    <string name="tv_userid_addchallenge" translatable="false">UserName</string>
     <string name="tv_daily_addchallenge">매일</string>
     <string name="tv_weekly_addchallenge">매주</string>
     <string name="tv_monthly_addchallenge">매달</string>
     <string name="tv_30min_addchallenge">30분</string>
     <string name="tv_60min_addchallenge">1시간</string>
     <string name="tv_120min_addchallenge">2시간</string>
-    <string name="tv_1km_addchallenge">1km</string>
-    <string name="tv_2km_addchallenge">2km</string>
-    <string name="tv_3km_addchallenge">3km</string>
-    <string name="tv_5km_addchallenge">5km</string>
+    <string name="tv_1km_addchallenge" translatable="false">1km</string>
+    <string name="tv_2km_addchallenge" translatable="false">2km</string>
+    <string name="tv_3km_addchallenge" translatable="false">3km</string>
+    <string name="tv_5km_addchallenge" translatable="false">5km</string>
     <string name="tv_run_addchallenge">달리기를 하겠다.</string>
     <string name="tv_cycle_addchallenge">자전거를 타겠다.</string>
-    <string name="tv_main_desc_addchallenge">새로운 도전을\n시작해볼까요?</string>
+    <string name="tv_main_desc_addchallenge">새로운 도전을 시작해볼까요?</string>
     <string name="tv_username_desc_addchallenge">나</string>
     <string name="tv_username_desc2_addchallenge">은(는)</string>
-    <string name="tv_time_desc_addchallenge">씩</string>
+    <string name="tv_time_desc_addchallenge" translatable="false">씩</string>
     <string name="btn_challenge_submit_addchallenge">챌린지 개설하기</string>
 
     <!-- ChallengeDetail Activity -->
@@ -56,7 +56,7 @@
     <string name="tv_record_detail">기록</string>
 
     <!-- Main Activity -->
-    <string name="tv_title_expanded_main">오늘 도전할 챌린지가\n0개 있습니다</string>
+    <string name="tv_title_expanded_main" translatable="false">오늘 도전할 챌린지가\n0개 있습니다</string>
 
     <!-- MyPage Activity -->
     <string name="tv_star_desc_mypage">모은 별</string>
@@ -70,33 +70,33 @@
     <string name="tv_challenge_complete_history_mypage">도전완료</string>
 
     <!-- Mypage Activity : Summary Fragment -->
-    <string name="tv_username_desc1_summary_mypage">도전 성공률이 높은</string>
+    <string name="tv_username_desc1_summary_mypage" translatable="false">도전 성공률이 높은</string>
     <string name="tv_username_desc2_summary_mypage">님은</string>
-    <string name="tv_type_summary_mypage">작심삼일이 뭐죠? 완벽형</string>
-    <string name="tv_type_desc1_summary_mypage">성공률이 전체 10% 그룹에 속해 있습니다</string>
-    <string name="tv_type_desc2_summary_mypage">지금까지 도전별 평균 거리는 4km 입니다.</string>
-    <string name="tv_type_desc3_summary_mypage">지금까지 도전별 평균 속도는 10.2km/h 입니다.</string>
+    <string name="tv_type_summary_mypage" translatable="false">작심삼일이 뭐죠? 완벽형</string>
+    <string name="tv_type_desc1_summary_mypage" translatable="false">성공률이 전체 10% 그룹에 속해 있습니다</string>
+    <string name="tv_type_desc2_summary_mypage" translatable="false">지금까지 도전별 평균 거리는 4km 입니다.</string>
+    <string name="tv_type_desc3_summary_mypage" translatable="false">지금까지 도전별 평균 속도는 10.2km/h 입니다.</string>
     <string name="tv_badges_summary_mypage">획득한 배지</string>
 
     <!-- Record Activity -->
     <string name="tv_main_desc_record">목표</string>
     <string name="tv_goal_record">1km 달리기</string>
     <string name="tv_progress_desc_record">오늘 목표 달성률</string>
-    <string name="tv_submit_record">SUBMIT</string>
+    <string name="tv_submit_record" translatable="false">SUBMIT</string>
     <string name="tv_distance_record">거리</string>
     <string name="tv_time_record">시간</string>
     <string name="tv_pace_record">페이스</string>
-    <string name="default_pace">00\'00\'\'</string>
-    <string name="default_time">00:00</string>
-    <string name="default_distance">0.0</string>
+    <string name="default_pace" translatable="false">00\'00\'\'</string>
+    <string name="default_time" translatable="false">00:00</string>
+    <string name="default_distance" translatable="false">0.0</string>
 
     <!-- SignIn Activity -->
     <string name="tv_subtitle_signin">우리 같이 운동하자</string>
     <string name="tv_simple_login_signin">SNS 계정으로 간편 로그인</string>
-    <string name="tv_desc_kakao">Kakao Login</string>
-    <string name="tv_desc_google">Google Login</string>
-    <string name="tv_desc_facebook">Facebook Login</string>
-    <string name="tv_desc_naver">Naver Login</string>
+    <string name="tv_desc_kakao" translatable="false">Kakao Login</string>
+    <string name="tv_desc_google" translatable="false">Google Login</string>
+    <string name="tv_desc_facebook" translatable="false">Facebook Login</string>
+    <string name="tv_desc_naver" translatable="false">Naver Login</string>
 
 
 </resources>

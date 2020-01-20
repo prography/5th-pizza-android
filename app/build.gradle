@@ -7,8 +7,8 @@ android {
         applicationId "com.prography.prography_pizza"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 7
-        versionName "2.0.1"
+        versionCode 8
+        versionName "2.0.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -92,7 +92,8 @@ dependencies {
     //viewPager_circleindicator
     implementation 'me.relex:circleindicator:1.2.2'
 
-
+    //https://github.com/airbnb/lottie-android
+    implementation 'com.airbnb.android:lottie:3.3.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

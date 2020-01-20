@@ -75,12 +75,14 @@ public class LocationRecordService extends Service implements LocationRecordServ
     }
 
     public void initData(Intent intent) {
-        if (intent.getParcelableExtra("locationDataSet") == null) {
-            mLocationDataSet = new LocationDataSet();
-        } else {
-            mLocationDataSet = intent.getParcelableExtra("locationDataSet");
+        if (intent != null) {
+            if (intent.getParcelableExtra("locationDataSet") == null) {
+                mLocationDataSet = new LocationDataSet();
+            } else {
+                mLocationDataSet = intent.getParcelableExtra("locationDataSet");
+            }
+            mChallenge = intent.getParcelableExtra("challenge");
         }
-        mChallenge = intent.getParcelableExtra("challenge");
     }
 
     @SuppressLint("MissingPermission")

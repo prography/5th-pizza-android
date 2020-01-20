@@ -67,6 +67,7 @@ import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.prography.prography_pizza.BuildConfig;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.services.LocationRecordService;
 import com.prography.prography_pizza.services.models.LocationDataSet;
@@ -686,12 +687,16 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     public void onSnapshotReady(MapSnapshot snapshot) {
         mImg = extractMapImageView(snapshot);
 
+        float minGoal = 0;
+        if (!BuildConfig.DEBUG)
+            minGoal = 3.f;
+
         if (mGoalPercent == 100) {
             // 1. 목표를 달성했을 때.
             CustomSubmitDialog customSubmitDialog = new CustomSubmitDialog(this, 3, mGoalPercent, "목표를 달성했어요!\n이제 저장하고 쉴까요?");
             customSubmitDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             customSubmitDialog.show();
-        } else if (mGoalPercent >= 0.f) {
+        } else if (mGoalPercent >= minGoal) {
             // 2. 충분한 거리를 달렸지만 목표를 달성하지 못했을 때.
             int starCount;
             if (mGoalPercent >= 90) {
