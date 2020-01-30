@@ -2,7 +2,6 @@ package com.prography.prography_pizza.src.record;
 
 import android.graphics.Bitmap;
 import android.util.Base64;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -17,7 +16,6 @@ import com.prography.prography_pizza.src.record.models.RecordRequest;
 import com.prography.prography_pizza.src.record.models.RecordResponse;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Calendar;
 import java.util.Date;
 
 import retrofit2.Call;
@@ -69,18 +67,10 @@ public class RecordService {
         byte[] data = byteArrayOutputStream.toByteArray();
         final String title = Base64.encodeToString(userName.getBytes(), Base64.NO_WRAP) + "_" + date.getTime() + ".jpg"; // 특수문자 고려하여 이름을 Base64로 인코딩
         mImageRef.child(title).putBytes(data)
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        mRecordActivityView.validateFailure("firebase Failure");
-                        e.printStackTrace();
-                    }
+                .addOnFailureListener((e) -> {
+                    mRecordActivityView.validateFailure("firebase Failure");
+                    e.printStackTrace();
                 })
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        mRecordActivityView.validateFirebaseSuccess(title);
-                    }
-                });
+                .addOnSuccessListener(taskSnapshot -> mRecordActivityView.validateFirebaseSuccess(title));
     }
 }

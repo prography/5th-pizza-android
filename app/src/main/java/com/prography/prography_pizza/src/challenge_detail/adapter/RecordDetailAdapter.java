@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.github.vipulasri.timelineview.TimelineView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -21,9 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import static com.prography.prography_pizza.src.ApplicationClass.CURRENT_TIME_FORMAT;
 import static com.prography.prography_pizza.src.ApplicationClass.DATE_FORMAT;
@@ -267,13 +267,10 @@ public class RecordDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             mTimelineView.initLine(getTimelineViewType(getAdapterPosition()));
 
             /* Set On Click Listener */
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (v == itemView) {
-                        VIEWTYPE.set(getAdapterPosition(), 0);
-                        notifyDataSetChanged();
-                    }
+            itemView.setOnClickListener(v -> {
+                if (v == itemView) {
+                    VIEWTYPE.set(getAdapterPosition(), 0);
+                    notifyDataSetChanged();
                 }
             });
         }

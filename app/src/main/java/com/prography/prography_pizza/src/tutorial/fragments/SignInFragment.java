@@ -6,11 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.prography.prography_pizza.R;
-import com.prography.prography_pizza.src.BaseFragment;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.prography.prography_pizza.R;
+import com.prography.prography_pizza.src.BaseFragment;
 
 public class SignInFragment extends BaseFragment {
     private ImageView imageView;

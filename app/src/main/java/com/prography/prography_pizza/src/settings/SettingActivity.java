@@ -1,9 +1,6 @@
 package com.prography.prography_pizza.src.settings;
 
 import android.app.Activity;
-import android.content.DialogInterface;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
@@ -29,11 +25,11 @@ import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.nhn.android.naverlogin.OAuthLogin;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
+import com.prography.prography_pizza.src.common.utils.CustomPosNegDialog;
 import com.prography.prography_pizza.src.common.utils.CustomSimpleMessageDialog;
 import com.prography.prography_pizza.src.main.MainActivity;
 import com.prography.prography_pizza.src.mypage.MyPageActivity;
 import com.prography.prography_pizza.src.settings.interfaces.SettingActivityView;
-import com.prography.prography_pizza.src.tutorial.fragments.MypageHistoryFragment;
 
 import static com.prography.prography_pizza.src.ApplicationClass.LOGIN_TYPE;
 import static com.prography.prography_pizza.src.ApplicationClass.TYPE_FACEBOOK;
@@ -132,70 +128,60 @@ public class SettingActivity extends BaseActivity implements SettingActivityView
                 break;
             case R.id.tv_signout_settings:
                 // 임시 로그아웃
-                showPosNegDialog("앱을 종료 후\n로그아웃하시겠습니까?", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // 앱 내 정보 삭제
-                        sSharedPreferences.edit().remove(LOGIN_TYPE).remove(USER_EMAIL).remove(USER_NAME).remove(USER_PROFILE).apply();
+                showPosNegDialog("앱을 종료 후\n로그아웃하시겠습니까?", v1 -> {
+                    // 앱 내 정보 삭제
+                    String logInType = sSharedPreferences.getString(LOGIN_TYPE, TYPE_KAKAO);
+                    sSharedPreferences.edit().remove(LOGIN_TYPE).remove(USER_EMAIL).remove(USER_NAME).remove(USER_PROFILE).apply();
 
-                        final Activity mainActivity = MainActivity.sMainActivity;
-                        final Activity myPageActivity = MyPageActivity.sMyPageActivity;
+                    final Activity mainActivity = MainActivity.sMainActivity;
+                    final Activity myPageActivity = MyPageActivity.sMyPageActivity;
 
-                        switch (sSharedPreferences.getString(LOGIN_TYPE, TYPE_KAKAO)) {
-                            case TYPE_GOOGLE:
-                                // Google 로그아웃
-                                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getApplicationContext(),
-                                        new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                                .requestEmail()
-                                                .requestIdToken(getString(R.string.google_client_key))
-                                                .build());
-                                googleSignInClient.signOut().addOnCompleteListener(sActivity, new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        mainActivity.finish();
-                                        myPageActivity.finish();
-                                        finish();
-                                    }
-                                });
-                                break;
-                            case TYPE_KAKAO:
-                                // Kakao 로그아웃
-                                UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
-                                    @Override
-                                    public void onCompleteLogout() {
-                                        mainActivity.finish();
-                                        myPageActivity.finish();
-                                        finish();
-                                    }
-                                });
-                                break;
-                            case TYPE_FACEBOOK:
-                                // Facebook 로그아웃
-                                LoginManager.getInstance().logOut();
+                    switch (logInType) {
+                        case TYPE_GOOGLE:
+                            // Google 로그아웃
+                            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getApplicationContext(),
+                                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                            .requestEmail()
+                                            .requestIdToken(getString(R.string.google_client_key))
+                                            .build());
+                            googleSignInClient.signOut().addOnCompleteListener(sActivity, task -> {
                                 mainActivity.finish();
                                 myPageActivity.finish();
                                 finish();
-                                break;
-                            case TYPE_NAVER:
-                                // Naver 로그아웃
-                                OAuthLogin mOauthLoginModule = OAuthLogin.getInstance();
-                                mOauthLoginModule.init(getApplicationContext(), getString(R.string.naver_client_id), getString(R.string.naver_client_key), getString(R.string.app_name));
-                                mOauthLoginModule.logoutAndDeleteToken(getApplicationContext());
-                                mainActivity.finish();
-                                myPageActivity.finish();
-                                finish();
-                                break;
-                        }
+                            });
+                            break;
+                        case TYPE_KAKAO:
+                            // Kakao 로그아웃
+                            UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
+                                @Override
+                                public void onCompleteLogout() {
+                                    mainActivity.finish();
+                                    myPageActivity.finish();
+                                    finish();
+                                }
+                            });
+                            break;
+                        case TYPE_FACEBOOK:
+                            // Facebook 로그아웃
+                            LoginManager.getInstance().logOut();
+                            mainActivity.finish();
+                            myPageActivity.finish();
+                            finish();
+                            break;
+                        case TYPE_NAVER:
+                            // Naver 로그아웃
+                            OAuthLogin mOauthLoginModule = OAuthLogin.getInstance();
+                            mOauthLoginModule.init(getApplicationContext(), getString(R.string.naver_client_id), getString(R.string.naver_client_key), getString(R.string.app_name));
+                            mOauthLoginModule.logoutAndDeleteToken(getApplicationContext());
+                            mainActivity.finish();
+                            myPageActivity.finish();
+                            finish();
+                            break;
                     }
                 });
                 break;
             case R.id.tv_resign_settings:
-                showPosNegDialog("정말 탈퇴하시겠습니까?", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showSimpleMessageDialog("서버 점검중입니다.\n 잠시 후 다시 시도해 주세요.", getString(R.string.tv_confirm), CustomSimpleMessageDialog.FINISH_NONE, null);
-                    }
-                });
+                showPosNegDialog("정말 탈퇴하시겠습니까?", v12 -> showSimpleMessageDialog("서버 점검중입니다.\n 잠시 후 다시 시도해 주세요.", getString(R.string.tv_confirm), CustomSimpleMessageDialog.FINISH_NONE, null));
                 break;
         }
     }

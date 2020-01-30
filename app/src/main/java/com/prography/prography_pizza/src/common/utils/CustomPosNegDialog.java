@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.prography.prography_pizza.R;
-
 import androidx.annotation.NonNull;
+
+import com.prography.prography_pizza.R;
 
 public class CustomPosNegDialog extends Dialog implements View.OnClickListener{
 
@@ -19,8 +19,9 @@ public class CustomPosNegDialog extends Dialog implements View.OnClickListener{
     private Context mContext;
     private String mMessage;
     private int mType;
+    private View.OnClickListener posListener = null;
 
-    public CustomPosNegDialog(@NonNull Context context, String message, int type) {
+    public CustomPosNegDialog(@NonNull Context context, String message, int type, View.OnClickListener posListener) {
         super(context);
         mContext = context;
         mMessage = message;
@@ -28,7 +29,7 @@ public class CustomPosNegDialog extends Dialog implements View.OnClickListener{
     }
 
     public CustomPosNegDialog(Builder builder) {
-        this(builder.mContext, builder.mMessage, builder.mType);
+        this(builder.mContext, builder.mMessage, builder.mType, builder.posListener);
     }
 
     @Override
@@ -40,7 +41,10 @@ public class CustomPosNegDialog extends Dialog implements View.OnClickListener{
         ((TextView) findViewById(R.id.tv_desc_dialog_posneg)).setText(mMessage);
 
         /* Set OnClick Listener */
-        findViewById(R.id.tv_positive_dialog_posneg).setOnClickListener(this);
+        if (posListener == null)
+            findViewById(R.id.tv_positive_dialog_posneg).setOnClickListener(this);
+        else
+            findViewById(R.id.tv_positive_dialog_posneg).setOnClickListener(posListener);
         findViewById(R.id.tv_negative_dialog_posneg).setOnClickListener(this);
     }
 
@@ -63,6 +67,7 @@ public class CustomPosNegDialog extends Dialog implements View.OnClickListener{
         private Context mContext;
         private String mMessage;
         private int mType;
+        private View.OnClickListener posListener = null;
 
         public Builder(Context mContext) {
             this.mContext = mContext;
@@ -74,6 +79,11 @@ public class CustomPosNegDialog extends Dialog implements View.OnClickListener{
         }
         public Builder setType(int type) {
             this.mType = type;
+            return this;
+        }
+
+        public Builder setPosListener(View.OnClickListener listener) {
+            this.posListener = listener;
             return this;
         }
 

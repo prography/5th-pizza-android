@@ -9,15 +9,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.challenge_detail.models.RankResponse;
-import com.prography.prography_pizza.src.common.utils.GlideApp;
 
 import java.util.ArrayList;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder> {
     private ArrayList<RankResponse.Data> mRankList;

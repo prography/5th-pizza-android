@@ -5,15 +5,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
 import com.prography.prography_pizza.src.signin.SignInActivity;
 import com.prography.prography_pizza.src.tutorial.adapter.TutorialPager;
 import com.prography.prography_pizza.src.tutorial.interfaces.TutorialView;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import me.relex.circleindicator.CircleIndicator;
 
 public class TutorialActivity extends BaseActivity implements TutorialView {

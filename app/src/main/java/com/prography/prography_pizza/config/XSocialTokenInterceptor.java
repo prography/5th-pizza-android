@@ -9,9 +9,6 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static com.prography.prography_pizza.src.ApplicationClass.X_ACCESS_TOKEN;
-import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
-
 public class XSocialTokenInterceptor implements Interceptor {
 
     private String token;

@@ -21,6 +21,10 @@ android {
             buildConfigField "boolean", "debug", "false"
         }
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 }
 
 dependencies {
@@ -66,6 +70,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation 'com.google.firebase:firebase-storage:19.1.0'
     implementation 'com.firebaseui:firebase-ui-storage:6.1.0'
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta01'
 
     // Timeline view
     implementation 'com.github.vipulasri:timelineview:1.1.2'

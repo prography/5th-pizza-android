@@ -30,7 +30,7 @@ public class AddChallengeService {
                     // Fail
                 }
                 // Success
-                addChallengeActivityView.postvalidateSuccess(addChallengeResponse.getData().get(0));
+                addChallengeActivityView.postvalidateSuccess(addChallengeResponse.getData());
             }
 
             @Override

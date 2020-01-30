@@ -4,18 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.Shader;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,14 +23,12 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -78,7 +72,6 @@ import com.prography.prography_pizza.src.common.utils.CustomSubmitDialog;
 import com.prography.prography_pizza.src.main.models.MainResponse;
 import com.prography.prography_pizza.src.mypage.MyPageActivity;
 import com.prography.prography_pizza.src.record.interfaces.RecordActivityView;
-import com.prography.prography_pizza.src.tutorial.fragments.MypageHistoryFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -177,12 +170,12 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         /* Get Intent */
         Intent intent = getIntent();
         mChallenge = intent.getParcelableExtra("challenge");
-        mGoal = mChallenge.getTime();
+        mGoal = mChallenge.getBaseChallengeData().getTime();
         mGoalPercentLast = mChallenge.getAchievement();
-        switch (mChallenge.getObjectUnit()) {
+        switch (mChallenge.getBaseChallengeData().getObjectUnit()) {
             case "distance":
                 mGoalType = GOALTYPE_DISTANCE;
-                switch (mChallenge.getExerciseType()) {
+                switch (mChallenge.getBaseChallengeData().getExerciseType()) {
                     case "running":
                         tvGoal.setText((int) mGoal / 1000 + "km 달리기");
                         break;
@@ -193,7 +186,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                 break;
             case "time":
                 mGoalType = GOALTYPE_TIME;
-                switch (mChallenge.getExerciseType()) {
+                switch (mChallenge.getBaseChallengeData().getExerciseType()) {
                     case "running":
                         tvGoal.setText((int) mGoal / 60 + "분 달리기");
                         break;
@@ -647,19 +640,11 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                         .setDuration(200)
                         .setInterpolator(new DecelerateInterpolator(1.f))
                         .scaleX(0.3f)
-                        .withStartAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                tvSubmitRecord.setTextColor(Color.parseColor("#ea7a58"));
-                            }
-                        })
-                        .withEndAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                tvSubmitRecord.setText("");
-                                tvSubmitRecord.setScaleX(1.f);
-                                pbLoading.setVisibility(View.VISIBLE);
-                            }
+                        .withStartAction(() -> tvSubmitRecord.setTextColor(Color.parseColor("#ea7a58")))
+                        .withEndAction(() -> {
+                            tvSubmitRecord.setText("");
+                            tvSubmitRecord.setScaleX(1.f);
+                            pbLoading.setVisibility(View.VISIBLE);
                         })
                         .start();
 

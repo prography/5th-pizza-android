@@ -10,6 +10,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.main.interfaces.MainActivityView;
 import com.prography.prography_pizza.src.main.models.MainResponse;
@@ -18,11 +23,6 @@ import com.prography.prography_pizza.src.record.RecordActivity;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.RecyclerView;
 
 
 public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdapter.ViewHolder> {
@@ -68,7 +68,7 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
         String time ="";
         if (data != null) {
             // 변환 필요.
-            switch (data.getRoutineType()) {
+            switch (data.getBaseChallengeData().getRoutineType()) {
                 case "daily":
                     routineType = "매일";
                     break;
@@ -80,17 +80,17 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
                     break;
             }
 
-            switch (data.getObjectUnit()) {
+            switch (data.getBaseChallengeData().getObjectUnit()) {
                 case "distance":
                     objectUnit = "km";
-                    time = String.valueOf((int) data.getTime() / 1000);
+                    time = String.valueOf((int) data.getBaseChallengeData().getTime() / 1000);
                     break;
                 case "time":
-                    time = String.valueOf((int) data.getTime() / 60);
+                    time = String.valueOf((int) data.getBaseChallengeData().getTime() / 60);
                     objectUnit = "분";
             }
 
-            switch (data.getExerciseType()) {
+            switch (data.getBaseChallengeData().getExerciseType()) {
                 case "running":
                     exerciseType = "뛰기";
                     break;
@@ -162,14 +162,11 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
             tvChallengers = itemView.findViewById(R.id.tv_challengers_item_challenge);
 
             /* Set On Click Listener */
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (v == itemView) {
-                        Intent intent = new Intent(v.getContext(), RecordActivity.class);
-                        intent.putExtra("challenge", challengeResponses.get(getAdapterPosition()));
-                        v.getContext().startActivity(intent);
-                    }
+            itemView.setOnClickListener(v -> {
+                if (v == itemView) {
+                    Intent intent = new Intent(v.getContext(), RecordActivity.class);
+                    intent.putExtra("challenge", challengeResponses.get(getAdapterPosition()));
+                    v.getContext().startActivity(intent);
                 }
             });
         }
@@ -189,23 +186,12 @@ public class ChallengeListAdapter extends RecyclerView.Adapter<ChallengeListAdap
         @Override
         public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
             new AlertDialog.Builder(mContext).setMessage("정말로 삭제하시겠습니까?")
-                    .setPositiveButton("예", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    int position = viewHolder.getAdapterPosition();
-                    deleteItem(position);
-                }
-            }).setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            }).setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    notifyDataSetChanged();
-                }
-            }).create().show();
+                    .setPositiveButton("예", (dialog, which) -> {
+                        int position = viewHolder.getAdapterPosition();
+                        deleteItem(position);
+                    }).setNegativeButton("아니오", (dialog, which) -> dialog.cancel())
+                    .setOnCancelListener(dialog -> notifyDataSetChanged())
+                    .create().show();
 
         }
     }

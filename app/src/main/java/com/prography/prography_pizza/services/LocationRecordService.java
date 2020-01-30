@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Binder;
 import android.os.Build;
@@ -18,7 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.google.android.gms.common.util.Hex;
 import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -27,7 +25,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.style.expressions.Expression;
 import com.prography.prography_pizza.BuildConfig;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.services.interfaces.LocationRecordServiceView;
@@ -90,31 +87,28 @@ public class LocationRecordService extends Service implements LocationRecordServ
     public void runThread() {
         SERVICE_RUNNING = true;
         // Thread
-        timerThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (SERVICE_RUNNING) {
-                    if (COUNT_PAUSE_TIME_IN_SEC > 0) {
-                        COUNT_PAUSE_TIME_IN_SEC--;
-                        mLocationDataSet.totalTime += 1; // 총 시간 계산 (매 쓰레드마다 1s 씩 증가
-                        if (mLocationDataSet.totalTime != 0 && mLocationDataSet.totalDistance != 0) {
-                            mLocationDataSet.speedAvg = (mLocationDataSet.totalDistance / mLocationDataSet.totalTime); // m/s
-                        } else {
-                            mLocationDataSet.speedAvg = 0.f;
-                        }
-                        // 평균 속도 계산
-
-                        /* Send Intent Back to Activity */
-                        Intent intentToActivity = new Intent("location-data");
-                        intentToActivity.putExtra("locationDataSet", mLocationDataSet);
-                        LocalBroadcastManager.getInstance(sContext).sendBroadcast(intentToActivity);
+        timerThread = new Thread(() -> {
+            while (SERVICE_RUNNING) {
+                if (COUNT_PAUSE_TIME_IN_SEC > 0) {
+                    COUNT_PAUSE_TIME_IN_SEC--;
+                    mLocationDataSet.totalTime += 1; // 총 시간 계산 (매 쓰레드마다 1s 씩 증가
+                    if (mLocationDataSet.totalTime != 0 && mLocationDataSet.totalDistance != 0) {
+                        mLocationDataSet.speedAvg = (mLocationDataSet.totalDistance / mLocationDataSet.totalTime); // m/s
+                    } else {
+                        mLocationDataSet.speedAvg = 0.f;
                     }
+                    // 평균 속도 계산
 
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    /* Send Intent Back to Activity */
+                    Intent intentToActivity = new Intent("location-data");
+                    intentToActivity.putExtra("locationDataSet", mLocationDataSet);
+                    LocalBroadcastManager.getInstance(sContext).sendBroadcast(intentToActivity);
+                }
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         });

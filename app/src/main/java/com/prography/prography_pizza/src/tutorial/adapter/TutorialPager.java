@@ -1,15 +1,15 @@
 package com.prography.prography_pizza.src.tutorial.adapter;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+
 import com.prography.prography_pizza.src.tutorial.fragments.AddChallengeFragment;
 import com.prography.prography_pizza.src.tutorial.fragments.MainFragment;
 import com.prography.prography_pizza.src.tutorial.fragments.MypageHistoryFragment;
 import com.prography.prography_pizza.src.tutorial.fragments.RecordFragment;
 import com.prography.prography_pizza.src.tutorial.fragments.SignInFragment;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 
 public class TutorialPager extends FragmentPagerAdapter {
     private static int NUM_ITEMS = 5;

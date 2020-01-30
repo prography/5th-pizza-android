@@ -42,12 +42,7 @@ public class SelectorListAdapter extends RecyclerView.Adapter<SelectorListAdapte
         if (item != null) {
             holder.tvItem.setText(item);
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSelectorBotomSheetFragmentView.onItemClick(recyclerIndex, position);
-            }
-        });
+        holder.itemView.setOnClickListener(v -> mSelectorBotomSheetFragmentView.onItemClick(recyclerIndex, position));
 
     }
 

@@ -21,7 +21,6 @@ import com.prography.prography_pizza.src.add_challenge.fragments.SelectorBottomS
 import com.prography.prography_pizza.src.add_challenge.interfaces.AddChallengeActivityView;
 import com.prography.prography_pizza.src.add_challenge.models.AddChallengeResponse;
 import com.prography.prography_pizza.src.common.utils.CustomSimpleMessageDialog;
-import com.prography.prography_pizza.src.main.models.MainResponse;
 
 import java.util.ArrayList;
 
@@ -222,12 +221,7 @@ public class AddChallengeActivity extends BaseActivity implements AddChallengeAc
                 if (tvDate.getText().toString().equals("") || tvTimeOrDistance.getText().toString().equals("") || tvType.getText().toString().equals("")) {
                     new AlertDialog.Builder(this)
                             .setMessage("입력값을 다시 확인해주세요.")
-                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            }).create()
+                            .setPositiveButton("확인", (dialog, which) -> dialog.dismiss()).create()
                             .show();
                     return;
                 }

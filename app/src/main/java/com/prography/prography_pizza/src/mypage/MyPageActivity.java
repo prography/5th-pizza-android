@@ -23,8 +23,8 @@ import com.prography.prography_pizza.src.mypage.adapter.MyPagePager;
 import com.prography.prography_pizza.src.mypage.interfaces.MyPageActivityView;
 import com.prography.prography_pizza.src.settings.SettingActivity;
 
-import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
+import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
 import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
 
 public class MyPageActivity extends BaseActivity implements MyPageActivityView {

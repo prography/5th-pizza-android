@@ -54,9 +54,9 @@ import static com.prography.prography_pizza.src.ApplicationClass.LOGIN_TYPE;
 import static com.prography.prography_pizza.src.ApplicationClass.TYPE_FACEBOOK;
 import static com.prography.prography_pizza.src.ApplicationClass.TYPE_GOOGLE;
 import static com.prography.prography_pizza.src.ApplicationClass.TYPE_KAKAO;
-import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_EMAIL;
 import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
+import static com.prography.prography_pizza.src.ApplicationClass.USER_PROFILE;
 import static com.prography.prography_pizza.src.ApplicationClass.X_ACCESS_TOKEN;
 import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
 

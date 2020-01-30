@@ -100,12 +100,8 @@ public class SelectorBottomSheetFragment extends BottomSheetDialogFragment imple
 
     @Override
     public void onItemClick(final int recyclerIndex, final int position) {
-        rvPickerLists.get(recyclerIndex).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                rvPickerLists.get(recyclerIndex).smoothScrollToPosition(position);
-            }
-        }, 100);
+        rvPickerLists.get(recyclerIndex).postDelayed(() ->
+                rvPickerLists.get(recyclerIndex).smoothScrollToPosition(position), 100);
     }
 
     @Override

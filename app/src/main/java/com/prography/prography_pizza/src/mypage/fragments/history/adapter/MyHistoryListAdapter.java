@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.challenge_detail.ChallengeDetailActivity;
 import com.prography.prography_pizza.src.main.models.MainResponse;
@@ -18,9 +21,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import static com.prography.prography_pizza.src.ApplicationClass.DATE_FORMAT;
 
@@ -57,7 +57,7 @@ public class MyHistoryListAdapter extends RecyclerView.Adapter<MyHistoryListAdap
             String exerciseType = "";
             String time = "";
             // 변환 필요.
-            switch (data.getRoutineType()) {
+            switch (data.getBaseChallengeData().getRoutineType()) {
                 case "daily":
                     routineType = "매일";
                     break;
@@ -69,17 +69,17 @@ public class MyHistoryListAdapter extends RecyclerView.Adapter<MyHistoryListAdap
                     break;
             }
 
-            switch (data.getObjectUnit()) {
+            switch (data.getBaseChallengeData().getObjectUnit()) {
                 case "distance":
                     objectUnit = "km";
-                    time = String.valueOf((int) data.getTime() / 1000);
+                    time = String.valueOf((int) data.getBaseChallengeData().getTime() / 1000);
                     break;
                 case "time":
                     objectUnit = "분";
-                    time = String.valueOf((int) data.getTime() / 60);
+                    time = String.valueOf((int) data.getBaseChallengeData().getTime() / 60);
             }
 
-            switch (data.getExerciseType()) {
+            switch (data.getBaseChallengeData().getExerciseType()) {
                 case "running":
                     exerciseType = "뛰기";
                     break;

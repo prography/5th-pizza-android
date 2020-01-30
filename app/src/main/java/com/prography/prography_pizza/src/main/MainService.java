@@ -36,6 +36,7 @@ public class MainService {
 
 
             public void onFailure(Call<MainResponse> call, Throwable t) {
+                t.printStackTrace();
                 mMainActivityView.validateFailure();
             }
         });
