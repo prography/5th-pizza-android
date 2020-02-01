@@ -8,9 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.github.vipulasri.timelineview.TimelineView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -25,12 +22,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import static com.prography.prography_pizza.src.ApplicationClass.CURRENT_TIME_FORMAT;
 import static com.prography.prography_pizza.src.ApplicationClass.DATE_FORMAT;
 
 public class RecordDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<ChallengeDetailResponse.Data> mRecordList;
-    private ArrayList<Integer> VIEWTYPE;
+    private int[] VIEWTYPE;
     private Context mContext;
     private RecyclerView mRecyclerView;
 
@@ -53,13 +53,16 @@ public class RecordDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         mContext = context;
         this.exerciseType = exerciseType;
         mChallenge = data;
-
-        VIEWTYPE = new ArrayList<>(mRecordList.size());
     }
 
     public void setData(ArrayList<ChallengeDetailResponse.Data> data) {
         mRecordList = data;
+        VIEWTYPE = new int[mRecordList.size()];
+        for (int i = 0; i < VIEWTYPE.length; i++) {
+            VIEWTYPE[i] = 0;
+        }
         notifyDataSetChanged();
+        Log.i("VIEWTYPE", String.valueOf(VIEWTYPE.length));
     }
 
     @NonNull
@@ -201,7 +204,22 @@ public class RecordDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
-        return VIEWTYPE.get(position);
+        if (VIEWTYPE[position] == 0) {
+            return PARENT_VIEW;
+        } else {
+            return CHILD_VIEW;
+        }
+//        try {
+//            if (VIEWTYPE[position] || VIEWTYPE.isEmpty() || VIEWTYPE.get(position) == 0) {
+//                return PARENT_VIEW;
+//            } else {
+//                return CHILD_VIEW;
+//            }
+//        } catch (IndexOutOfBoundsException e) {
+//            e.printStackTrace();
+//        } finally {
+//            return PARENT_VIEW;
+//        }
     }
 
     public int getTimelineViewType(int position) {
@@ -232,13 +250,10 @@ public class RecordDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             mTimelineView.initLine(getTimelineViewType(getAdapterPosition()));
 
             /* Set On Click Listener */
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (v == itemView) {
-                        VIEWTYPE.set(getAdapterPosition(), 1);
-                        notifyDataSetChanged();
-                    }
+            itemView.setOnClickListener(v -> {
+                if (v == itemView) {
+                    VIEWTYPE[getAdapterPosition()] = 1;
+                    notifyDataSetChanged();
                 }
             });
         }
@@ -269,7 +284,7 @@ public class RecordDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             /* Set On Click Listener */
             itemView.setOnClickListener(v -> {
                 if (v == itemView) {
-                    VIEWTYPE.set(getAdapterPosition(), 0);
+                    VIEWTYPE[getAdapterPosition()] = 0;
                     notifyDataSetChanged();
                 }
             });
