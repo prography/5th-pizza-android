@@ -5,6 +5,7 @@ import android.util.Log;
 import com.prography.prography_pizza.src.challenge_detail.interfaces.ChallengeDetailActivityView;
 import com.prography.prography_pizza.src.challenge_detail.interfaces.ChallengeDetailRetrofitInterface;
 import com.prography.prography_pizza.src.challenge_detail.models.ChallengeDetailResponse;
+import com.prography.prography_pizza.src.challenge_detail.models.RankResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,4 +45,25 @@ public class ChallengeDetailService {
         });
     }
 
+    public void getRank(int cid) {
+        final ChallengeDetailRetrofitInterface challengeDetailRetrofitInterface = getRetrofit().create(ChallengeDetailRetrofitInterface.class);
+        challengeDetailRetrofitInterface.getRanks(cid).enqueue(new Callback<RankResponse>() {
+            @Override
+            public void onResponse(Call<RankResponse> call, Response<RankResponse> response) {
+                final RankResponse rankResponse = response.body();
+                if (rankResponse == null) {
+                    mChallengeDetailActivityView.validateFailure();
+                    return;
+                }
+
+                mChallengeDetailActivityView.validateRankSuccess(rankResponse.getData().getRanks());
+            }
+
+            @Override
+            public void onFailure(Call<RankResponse> call, Throwable t) {
+                t.printStackTrace();
+                mChallengeDetailActivityView.validateFailure();
+            }
+        });
+    }
 }

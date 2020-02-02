@@ -19,15 +19,15 @@ import com.prography.prography_pizza.src.challenge_detail.models.RankResponse;
 import java.util.ArrayList;
 
 public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder> {
-    private ArrayList<RankResponse.Data> mRankList;
+    private ArrayList<RankResponse.Data.Rank> mRankList;
     private Context mContext;
 
-    public RankAdapter(Context mContext, ArrayList<RankResponse.Data> mRankList) {
+    public RankAdapter(Context mContext, ArrayList<RankResponse.Data.Rank> mRankList) {
         this.mRankList = mRankList;
         this.mContext = mContext;
     }
 
-    public void setData(ArrayList<RankResponse.Data> rankList) {
+    public void setData(ArrayList<RankResponse.Data.Rank> rankList) {
         mRankList = rankList;
         notifyDataSetChanged();
     }
@@ -42,20 +42,20 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RankViewHolder holder, int position) {
-        RankResponse.Data rankModel = mRankList.get(position);
+        RankResponse.Data.Rank rankModel = mRankList.get(position);
         if (rankModel != null) {
-            if (rankModel.getRank() % 2 == 1) {
+            if (position % 2 == 0) {
                 holder.itemView.setBackgroundColor(Color.rgb(255, 240, 196));
             }
-            holder.tvRank.setText(String.valueOf(rankModel.getRank()));
-            holder.tvUserName.setText(rankModel.getUserName());
-            Glide.with(mContext).load(rankModel.getProfileUrl()).placeholder(R.mipmap.ic_launcher)
+            holder.tvRank.setText(String.valueOf(position + 1));
+            holder.tvUserName.setText(rankModel.getUser().getUserName());
+            Glide.with(mContext).load(rankModel.getUser().getUserId()).placeholder(R.mipmap.ic_launcher)
                     .error(R.mipmap.ic_launcher).into(holder.ivProfile);
-            holder.tvPercent.setText(rankModel.getProgress() + "%");
-            if (rankModel.getProgress() == 100) {
+            holder.tvPercent.setText(rankModel.getAcheivement() + "%");
+            if (rankModel.getAcheivement() == 100) {
                 holder.tvPercent.setTextColor(Color.rgb(255, 160, 71));
             }
-            holder.pbDetail.setProgress(rankModel.getProgress());
+            holder.pbDetail.setProgress(rankModel.getAcheivement());
         }
     }
 

@@ -224,35 +224,6 @@
             app:layout_constraintTop_toBottomOf="@id/rv_badges_summary_mypage"
             app:layout_constraintBottom_toBottomOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:background="#77000000"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/tv_coming_soon"
-                android:textSize="32sp"
-                android:textColor="@android:color/white"
-                android:fontFamily="@font/cookierun_black"
-                />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/tv_wait_next_update"
-                android:textSize="24sp"
-                android:textColor="@android:color/white"
-                android:fontFamily="@font/cookierun_bold"
-                android:gravity="center" />
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

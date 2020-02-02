@@ -20,10 +20,10 @@ public class ChallengeDetailResponse {
         private double runningTime;
         @SerializedName("distance")
         private double totalDistance;
-        @SerializedName("created_at")
-        private String createdAt;
         @SerializedName("screenshot")
         private String recordImgUrl;
+        @SerializedName("created_at")
+        private String createdAt;
 
         public int getRecordId() {
             return recordId;

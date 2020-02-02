@@ -33,7 +33,7 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
 
     private MainResponse.Data mData;
     private ArrayList<ChallengeDetailResponse.Data> mRecordList = new ArrayList<>();
-    private ArrayList<RankResponse.Data> mRankList = new ArrayList<>();
+    private ArrayList<RankResponse.Data.Rank> mRankList = new ArrayList<>();
 
 
     @Override
@@ -69,13 +69,11 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
 
         /* RecyclerView - Rank */
         // Dummy
-        mRankList.add(new RankResponse.Data(1, "여누YEONU", "", 100));
-        mRankList.add(new RankResponse.Data(2, "여누YEONU", "", 90));
-        mRankList.add(new RankResponse.Data(3, "여누YEONU", "", 80));
         rAdapter = new RankAdapter(this, mRankList);
         rvRankDetail.setAdapter(rAdapter);
 
         tyrGetDetail(mChallengeId);
+        tryGetRank(mChallengeId);
     }
 
     @Override
@@ -97,6 +95,7 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
     private void tryGetRank(int mChallengeId) {
         showProgressDialog();
         ChallengeDetailService challengeDetailService = new ChallengeDetailService(this);
+        challengeDetailService.getRank(mChallengeId);
         //getRank
     }
 
@@ -110,6 +109,12 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengeDe
     public void validateFailure() {
         hideProgressDialog();
         showSimpleMessageDialog(getString(R.string.network_error));
+    }
+
+    @Override
+    public void validateRankSuccess(ArrayList<RankResponse.Data.Rank> ranks) {
+        hideProgressDialog();
+        rAdapter.setData(ranks);
     }
 
 
