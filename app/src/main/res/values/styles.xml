@@ -1,13 +1,23 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:statusBarColor">#ea7a58</item>
         <item name="android:itemTextAppearance">@style/MenuText</item>
+    </style>
+
+    <!-- Base application theme.Black -->
+    <style name="AppThemeSub" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">#ea7a58</item>
+        <item name="android:itemTextAppearance">@style/MenuTextBlack</item>
     </style>
 
     <!-- Splash Screen Theme -->
@@ -30,6 +40,13 @@
 
         <item name="android:textColor">@android:color/white</item>
         <item name="android:fontFamily">@font/nanumsquare_bold</item>
+
+    </style>
+
+    <style name="MenuTextBlack">
+
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:fontFamily">@font/nanumsquare_regular</item>
 
     </style>
 

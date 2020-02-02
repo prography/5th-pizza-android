@@ -19,6 +19,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseActivity;
+import com.prography.prography_pizza.src.main.MainActivity;
 import com.prography.prography_pizza.src.mypage.adapter.MyPagePager;
 import com.prography.prography_pizza.src.mypage.interfaces.MyPageActivityView;
 import com.prography.prography_pizza.src.settings.SettingActivity;
@@ -107,9 +108,16 @@ public class MyPageActivity extends BaseActivity implements MyPageActivityView {
     }
 
     @Override
+    public void onBackPressed() {
+        setResult(MainActivity.REQUEST_CODE);
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                setResult(MainActivity.REQUEST_CODE);
                 finish();
                 break;
             case R.id.ti_setting_mypage:

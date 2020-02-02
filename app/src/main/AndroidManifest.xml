@@ -27,7 +27,8 @@
         <activity
             android:name=".src.record.RecordActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".src.main.MainActivity" />
+        <activity android:name=".src.main.MainActivity"
+            android:theme="@style/AppThemeSub"/>
         <activity android:name=".src.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

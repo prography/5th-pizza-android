@@ -680,6 +680,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             // 1. 목표를 달성했을 때.
             CustomSubmitDialog customSubmitDialog = new CustomSubmitDialog(this, 3, mGoalPercent, "목표를 달성했어요!\n이제 저장하고 쉴까요?");
             customSubmitDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            customSubmitDialog.setCancelable(false);
             customSubmitDialog.show();
         } else if (mGoalPercent >= minGoal) {
             // 2. 충분한 거리를 달렸지만 목표를 달성하지 못했을 때.
@@ -695,6 +696,7 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             }
             CustomSubmitDialog customSubmitDialog = new CustomSubmitDialog(this, starCount, mGoalPercent, "목표를 아직 달성하지 못했어요.\n여기까지만 저장하고 잠시 쉴까요?");
             customSubmitDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            customSubmitDialog.setCancelable(false);
             customSubmitDialog.show();
         } else {
             // 3. 달린 거리나 시간이 너무 부족할 때, (3.0% 미만)

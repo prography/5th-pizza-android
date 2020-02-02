@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#93B9FF</color>
+    <color name="colorPrimaryDark">#614280</color>
+    <color name="colorAccent">#AE70FF</color>
     <color name="transparent">#00000000</color>
 
     <color name="piechart_record">#00CCFF</color>
