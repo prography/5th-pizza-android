@@ -59,7 +59,7 @@
     <string name="tv_title_expanded_main" translatable="false">오늘 도전할 챌린지가\n0개 있습니다</string>
 
     <!-- MyPage Activity -->
-    <string name="tv_star_desc_mypage">모은 별</string>
+    <string name="tv_badges_desc_mypage">모은 뱃지</string>
     <string name="tv_success_desc_mypage">완료</string>
     <string name="tv_percent_desc_mypage">성공률</string>
     <string name="tv_summary_mypage">요약</string>
@@ -73,9 +73,9 @@
     <string name="tv_username_desc1_summary_mypage" translatable="false">도전 성공률이 높은</string>
     <string name="tv_username_desc2_summary_mypage">님은</string>
     <string name="tv_type_summary_mypage" translatable="false">작심삼일이 뭐죠? 완벽형</string>
-    <string name="tv_type_desc1_summary_mypage" translatable="false">성공률이 전체 10% 그룹에 속해 있습니다</string>
-    <string name="tv_type_desc2_summary_mypage" translatable="false">지금까지 도전별 평균 거리는 4km 입니다.</string>
-    <string name="tv_type_desc3_summary_mypage" translatable="false">지금까지 도전별 평균 속도는 10.2km/h 입니다.</string>
+    <string name="tv_type_desc1_summary_mypage" translatable="false">성공률이 전체 00% 그룹에 속해 있습니다</string>
+    <string name="tv_type_desc2_summary_mypage" translatable="false">지금까지 도전별 평균 거리는 0km 입니다.</string>
+    <string name="tv_type_desc3_summary_mypage" translatable="false">지금까지 도전별 평균 속도는 0.0km/h 입니다.</string>
     <string name="tv_badges_summary_mypage">획득한 배지</string>
 
     <!-- Record Activity -->

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.AndroidViewModel;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -49,6 +50,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.prography.prography_pizza.src.ApplicationClass.LOGIN_TYPE;
 import static com.prography.prography_pizza.src.ApplicationClass.TYPE_FACEBOOK;
@@ -216,24 +221,20 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
                 final String refreshToken = mOAuthLoginModule.getRefreshToken(getParent());
 
                 Log.i("NAVER TOKEN", accessToken);
+                Thread getProfileThread = new Thread(() -> {
+                    try {
+                        JSONObject jsonObject = new JSONObject(mOAuthLoginModule.requestApi(getApplicationContext(), accessToken, "https://openapi.naver.com/v1/nid/me"))
+                                .getJSONObject("response");
+                        sSharedPreferences.edit().putString(USER_PROFILE, jsonObject.getString("profile_image"))
+                                .putString(USER_EMAIL, jsonObject.getString("email"))
+                                .putString(USER_NAME, jsonObject.getString("name"))
+                                .putString(LOGIN_TYPE, "naver")
+                                .apply();
 
-                Thread getProfileThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            JSONObject jsonObject = new JSONObject(mOAuthLoginModule.requestApi(getApplicationContext(), accessToken, "https://openapi.naver.com/v1/nid/me"))
-                                    .getJSONObject("response");
-                            sSharedPreferences.edit().putString(USER_PROFILE, jsonObject.getString("profile_image"))
-                                    .putString(USER_EMAIL, jsonObject.getString("email"))
-                                    .putString(USER_NAME, jsonObject.getString("name"))
-                                    .putString(LOGIN_TYPE, "naver")
-                                    .apply();
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+
                 });
                 getProfileThread.start();
                 try {

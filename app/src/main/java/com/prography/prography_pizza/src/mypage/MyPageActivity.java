@@ -95,9 +95,9 @@ public class MyPageActivity extends BaseActivity implements MyPageActivityView {
                 .placeholder(R.drawable.kakao_default_profile_image)
                 .into(ivProfile);
         ivProfile.setClipToOutline(true);
-        // tvSuccess
-        // tvSuccessPercentage
-        // tvStar
+        tvSuccess.setText("0");
+        tvSuccessPercentage.setText("0");
+        tvStar.setText("0");
 
     }
 

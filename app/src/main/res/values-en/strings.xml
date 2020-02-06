@@ -34,7 +34,7 @@
     <string name="tv_save">Save</string>
     <string name="tv_select">Select</string>
     <string name="tv_simple_login_signin">Sign In via Social Accouts</string>
-    <string name="tv_star_desc_mypage">Stars</string>
+    <string name="tv_badges_desc_mypage">Stars</string>
     <string name="tv_subtitle_signin">Workout Together</string>
     <string name="tv_success_desc_mypage">Complete</string>
     <string name="tv_summary_mypage">Summary</string>

@@ -17,17 +17,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.prography.prography_pizza.R;
 import com.prography.prography_pizza.src.BaseFragment;
 import com.prography.prography_pizza.src.mypage.fragments.summary.adapter.BadgeListAdapter;
+import com.prography.prography_pizza.src.mypage.fragments.summary.interfaces.SummaryFragmentView;
+import com.prography.prography_pizza.src.mypage.fragments.summary.models.BadgeResponse;
 
 import java.util.ArrayList;
 
 import static com.prography.prography_pizza.src.ApplicationClass.USER_NAME;
 import static com.prography.prography_pizza.src.ApplicationClass.sSharedPreferences;
 
-public class SummaryFragment extends BaseFragment {
+public class SummaryFragment extends BaseFragment implements SummaryFragmentView {
 
     private TextView tvUserName;
     private ImageView ivType;
     private RecyclerView rvBadges;
+    private TextView tvNoBadges;
 
     private Context mContext;
     private BadgeListAdapter badgeListAdapter;
@@ -47,27 +50,40 @@ public class SummaryFragment extends BaseFragment {
         tvUserName = view.findViewById(R.id.tv_username_summary_mypage);
         ivType = view.findViewById(R.id.iv_type_img_summary_mypage);
         rvBadges = view.findViewById(R.id.rv_badges_summary_mypage);
+        tvNoBadges = view.findViewById(R.id.tv_no_badges_summary_mypage);
 
         /* RecyclerView - Badges */
         // dummy
-        ArrayList<String> badges = new ArrayList<>();
-        badges.add("Badge1");
-        badges.add("Badge2");
-        badges.add("Badge3");
-        badges.add("Badge4");
-        badges.add("Badge5");
-        badges.add("Badge6");
-        badges.add("Badge7");
-        badges.add("더보기...");
         badgeListAdapter = new BadgeListAdapter(mContext);
         rvBadges.setAdapter(badgeListAdapter);
-        badgeListAdapter.setItems(badges);
 
         /* init View */
         tvUserName.setText(sSharedPreferences.getString(USER_NAME, "UserName"));
-        ivType.setBackground(new ShapeDrawable(new OvalShape()));
-        ivType.setClipToOutline(true);
+
+        tryGetBadges();
 
         return view;
+    }
+
+    public void tryGetBadges() {
+        final SummaryService summaryService = new SummaryService(this);
+        summaryService.tryGetBadges();
+    }
+
+    @Override
+    public void validateSuccess(ArrayList<BadgeResponse.Data> badges) {
+        badgeListAdapter.setItems(badges);
+        if (badges.size() == 0) {
+            tvNoBadges.setVisibility(View.VISIBLE);
+            rvBadges.setVisibility(View.GONE);
+        } else {
+            tvNoBadges.setVisibility(View.GONE);
+            rvBadges.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void validateFailure() {
+        showSimpleMessageDialog(getString(R.string.network_error));
     }
 }

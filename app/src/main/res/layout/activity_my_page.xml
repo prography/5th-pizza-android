@@ -94,7 +94,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/tv_star_desc_mypage"
+                    android:text="@string/tv_badges_desc_mypage"
                     android:textColor="@android:color/white"
                     android:textSize="13sp"
                     android:fontFamily="@font/nanumsquare_regular"

@@ -131,7 +131,6 @@ public class SettingActivity extends BaseActivity implements SettingActivityView
                 showPosNegDialog("앱을 종료 후\n로그아웃하시겠습니까?", v1 -> {
                     // 앱 내 정보 삭제
                     String logInType = sSharedPreferences.getString(LOGIN_TYPE, TYPE_KAKAO);
-                    sSharedPreferences.edit().remove(LOGIN_TYPE).remove(USER_EMAIL).remove(USER_NAME).remove(USER_PROFILE).apply();
 
                     final Activity mainActivity = MainActivity.sMainActivity;
                     final Activity myPageActivity = MyPageActivity.sMyPageActivity;
@@ -159,6 +158,14 @@ public class SettingActivity extends BaseActivity implements SettingActivityView
                                     myPageActivity.finish();
                                     finish();
                                 }
+
+                                @Override
+                                public void onSuccess(Long result) {
+                                    super.onSuccess(result);
+                                    mainActivity.finish();
+                                    myPageActivity.finish();
+                                    finish();
+                                }
                             });
                             break;
                         case TYPE_FACEBOOK:
@@ -179,6 +186,7 @@ public class SettingActivity extends BaseActivity implements SettingActivityView
                             break;
                     }
                 });
+                sSharedPreferences.edit().remove(LOGIN_TYPE).remove(USER_EMAIL).remove(USER_NAME).remove(USER_PROFILE).apply();
                 break;
             case R.id.tv_resign_settings:
                 showPosNegDialog("정말 탈퇴하시겠습니까?", v12 -> showSimpleMessageDialog("서버 점검중입니다.\n 잠시 후 다시 시도해 주세요.", getString(R.string.tv_confirm), CustomSimpleMessageDialog.FINISH_NONE, null));
