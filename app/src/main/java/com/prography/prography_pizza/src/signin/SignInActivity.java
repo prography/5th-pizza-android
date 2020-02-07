@@ -118,24 +118,21 @@ public class SignInActivity extends BaseActivity implements SignInActivityView {
             public void onSuccess(LoginResult loginResult) {
                 final AccessToken accessToken = loginResult.getAccessToken();
 
-                GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        try {
-                            sSharedPreferences.edit().putString(USER_NAME, object.getString("name"))
-                                    .putString(USER_EMAIL, object.getString("email"))
-                                    .putString(USER_PROFILE , object.getJSONObject("picture").getJSONObject("data").getString("url"))
-                                    .putString(LOGIN_TYPE, TYPE_FACEBOOK)
-                                    .apply();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        String token = accessToken.getToken();
-                        Log.i("FACEBOOK TOKEN", token);
-                        tryGetToken(token, TYPE_FACEBOOK);
-
+                GraphRequest request = GraphRequest.newMeRequest(accessToken, (object, response) -> {
+                    try {
+                        sSharedPreferences.edit().putString(USER_NAME, object.getString("name"))
+                                .putString(USER_EMAIL, object.getString("email"))
+                                .putString(USER_PROFILE , object.getJSONObject("picture").getJSONObject("data").getString("url"))
+                                .putString(LOGIN_TYPE, TYPE_FACEBOOK)
+                                .apply();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+
+                    String token = accessToken.getToken();
+                    Log.i("FACEBOOK TOKEN", token);
+                    tryGetToken(token, TYPE_FACEBOOK);
+
                 });
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id,name,email,gender,picture");

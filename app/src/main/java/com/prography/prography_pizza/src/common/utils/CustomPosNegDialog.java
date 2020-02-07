@@ -26,6 +26,7 @@ public class CustomPosNegDialog extends Dialog implements View.OnClickListener{
         mContext = context;
         mMessage = message;
         mType = type;
+        this.posListener = posListener;
     }
 
     public CustomPosNegDialog(Builder builder) {

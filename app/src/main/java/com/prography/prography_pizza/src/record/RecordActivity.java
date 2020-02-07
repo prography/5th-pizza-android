@@ -1,11 +1,13 @@
 package com.prography.prography_pizza.src.record;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -31,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -252,7 +255,9 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     public void onStyleLoaded(@NonNull Style style) {
         // Map is set.
         mvStyle = style;
-        if (PermissionsManager.areLocationPermissionsGranted(this)) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // Init
             LocationComponent locationComponent = mvImplRecord.getLocationComponent();
             locationComponent.activateLocationComponent(LocationComponentActivationOptions.builder(this, style).build());
@@ -328,8 +333,18 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
             }
 
         } else {
-            permissionsManager = new PermissionsManager(this);
-            permissionsManager.requestLocationPermissions(this);
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_BACKGROUND_LOCATION) ||
+                        shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) ||
+                        shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                    showToast("앱을 종료 후 다시 시작해서 권한을 승인해주세요.");
+                    finish();
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+                }
+            } else {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+            }
         }
     }
 
@@ -397,19 +412,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
                                         Expression.lineProgress(),
                                         stops1)));
                     }
-
-                    /* Debug TextView *//*
-                    if (BuildConfig.DEBUG) {
-                        ((TextView) findViewById(R.id.tv_debug))
-                                .setText("Provider: " + cur.getProvider() + "\n"
-                                        + "PrevLocation: " + prev.getLatitude() + ", " + prev.getLongitude() + "\n"
-                                        + "CurLocation: " + cur.getLatitude() + ", " + cur.getLongitude() + "\n"
-                                        + "Color: " + curPower.get(0) + ", " + curPower.get(1) + ", 0" + "\n"
-                                        + "Velocity: " + cur.getSpeed() + " m/s\n"
-                                        + "Accuracy: " + cur.getAccuracy() + "\n"
-                                        + "DistanceTo: " + cur.distanceTo(prev) + " m\n"
-                                        + "Distance(Vel): " + cur.getSpeed() * 1 + "m");
-                    } */
                 }
 
 
@@ -557,7 +559,6 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
         showSimpleMessageDialog("업로드에 실패하였습니다.", "확인", CustomSimpleMessageDialog.FINISH_NONE, null);
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -736,22 +737,22 @@ public class RecordActivity extends BaseActivity implements RecordActivityView {
     }
 
     @Override
-    public void onExplanationNeeded(List<String> permissionsToExplain) {
-
-    }
-
-    @Override
-    public void onPermissionResult(boolean granted) {
-        if (granted) {
-            mvImplRecord.getStyle(this);
-        } else {
-            finish();
-        }
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 0 && grantResults.length > 0) {
+            boolean check = true;
+            for (int grantresult : grantResults) {
+                if (grantresult != PackageManager.PERMISSION_GRANTED) {
+                    check = false;
+                    break;
+                }
+            }
+            if (check) {
+                mvImplRecord.getStyle(this);
+            } else {
+                finish();
+            }
+        }
     }
 
     @Override

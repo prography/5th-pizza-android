@@ -9,7 +9,6 @@ import com.mapbox.mapboxsdk.snapshotter.MapSnapshotter;
 public interface RecordActivityView extends View.OnClickListener,
         com.mapbox.mapboxsdk.maps.OnMapReadyCallback,
         com.mapbox.mapboxsdk.maps.Style.OnStyleLoaded,
-        PermissionsListener,
         ServiceConnection,
         MapSnapshotter.SnapshotReadyCallback {
 

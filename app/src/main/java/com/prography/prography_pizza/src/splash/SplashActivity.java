@@ -6,6 +6,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.facebook.AccessToken;
+import com.facebook.FacebookException;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.kakao.auth.ISessionCallback;
@@ -66,21 +67,27 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
                 }
                 break;
             case TYPE_FACEBOOK:
+
                 AccessToken accessToken = AccessToken.getCurrentAccessToken();
                 if (accessToken != null && !accessToken.isExpired()) {
-                    trySignIn(accessToken.getToken(), TYPE_FACEBOOK);
+                    AccessToken.refreshCurrentAccessTokenAsync(new AccessToken.AccessTokenRefreshCallback() {
+                        @Override
+                        public void OnTokenRefreshed(AccessToken accessToken) {
+                            trySignIn(accessToken.getToken(), TYPE_FACEBOOK);
+                        }
+
+                        @Override
+                        public void OnTokenRefreshFailed(FacebookException exception) {
+                            exception.printStackTrace();
+                        }
+                    });
                 }
                 break;
             case TYPE_NAVER:
                 final OAuthLogin mOAuthLoginModule = OAuthLogin.getInstance();
                 mOAuthLoginModule.init(this, getString(R.string.naver_client_id), getString(R.string.naver_client_key), getString(R.string.app_name));
                 final String[] naverToken = new String[1];
-                Thread naverThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        naverToken[0] = mOAuthLoginModule.refreshAccessToken(getApplicationContext());
-                    }
-                });
+                Thread naverThread = new Thread(() -> naverToken[0] = mOAuthLoginModule.refreshAccessToken(getApplicationContext()));
                 naverThread.start();
                 try {
                     naverThread.join();
@@ -90,12 +97,9 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
                 trySignIn(naverToken[0], TYPE_NAVER);
                 break;
             default:
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        startNextActivity(TutorialActivity.class);
-                        finish();
-                    }
+                new Handler().postDelayed(() -> {
+                    startNextActivity(TutorialActivity.class);
+                    finish();
                 }, 1000);
                 break;
 
